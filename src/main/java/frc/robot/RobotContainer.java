@@ -4,13 +4,18 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.Drivetrain.AutonomousDrive;
+import frc.robot.commands.Drivetrain.BlankDrivetrain;
+import frc.robot.commands.Drivetrain.DefaultDriveCommand;
+import frc.robot.commands.Drivetrain.DisabledSwerve;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.utility.Auton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,15 +25,32 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  public final XboxController d_controller = new XboxController(0);
+
+  /* Drive Controls */
+  private final int translationAxis = XboxController.Axis.kLeftY.value;
+  private final int strafeAxis = XboxController.Axis.kLeftX.value;
+  private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+  /* Driver Buttons */
+  private final JoystickButton zeroGyro =
+      new JoystickButton(d_controller, XboxController.Button.kA.value);
+
+  /* Subsystems */
+  private final Drivetrain m_drivetrain = new Drivetrain();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_drivetrain.setDefaultCommand(
+        new DefaultDriveCommand(
+            m_drivetrain,
+            () -> -d_controller.getRawAxis(translationAxis),
+            () -> -d_controller.getRawAxis(strafeAxis),
+            () -> -d_controller.getRawAxis(rotationAxis)));
+
     configureBindings();
   }
 
@@ -43,12 +65,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
   }
 
   /**
@@ -56,8 +76,19 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+  public Drivetrain getDrivetrain() {
+    return m_drivetrain;
+  }
+
+  public Command getAutonomousDriveCommand(Auton auton) {
+    return new AutonomousDrive(m_drivetrain, auton);
+  }
+
+  public void setBlankDrivetrainCommand() {
+    m_drivetrain.setDefaultCommand(new BlankDrivetrain(m_drivetrain));
+  }
+
+  public void ghostSwerve() {
+    new DisabledSwerve(m_drivetrain);
   }
 }
