@@ -28,6 +28,7 @@ public class AutonomousDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false " + "-1");
     m_drivetrainSubsystem.setAuton(true);
     m_drivetrainSubsystem.stopAuton = false;
@@ -37,20 +38,18 @@ public class AutonomousDrive extends CommandBase {
       commandGroup.addCommands(new AutonPathCommand(m_drivetrainSubsystem, auton.auton[i], auton));
     }
     // this.alongWith(commandGroup);
+
+    // commandGroup.schedule(false);
     commandGroup.cancel();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    System.out.println("In Main Auotnomous Drive");
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    System.out.println("Main Auton Command is ended---------------");
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

@@ -34,12 +34,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
 
-    ctreConfigs = new CTREConfigs();
-    m_robotContainer = new RobotContainer();
     compressor = new Compressor(30, PneumaticsModuleType.CTREPCM);
+
+    m_robotContainer = new RobotContainer();
+
     auton = new Auton(m_robotContainer.getDrivetrain());
 
     auton.setState(false);
@@ -65,10 +68,10 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-
     m_robotContainer.ghostSwerve();
     compressor.disable();
     auton.setState(false);
+
     if (m_robotContainer.getAutonomousDriveCommand(auton) != null) {
       m_robotContainer.getAutonomousDriveCommand(auton).cancel();
     }
@@ -84,9 +87,11 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // schedule the autonomous command (example)
 
+    auton.resetStates();
     compressor.enableDigital();
     auton.setState(true);
     m_robotContainer.setBlankDrivetrainCommand();
+    // m_robotContainer.getAutonomousDriveCommand(auton).schedule(true);
     m_robotContainer.getAutonomousDriveCommand(auton).schedule();
   }
 
@@ -100,9 +105,14 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+
+    auton.setState(false);
+    compressor.enableDigital();
+
+    if (m_robotContainer.getAutonomousDriveCommand(auton) != null) {
+      m_robotContainer.getAutonomousDriveCommand(auton).cancel();
     }
+    m_robotContainer.setDrivetrainDefaultCommand();
   }
 
   /** This function is called periodically during operator control. */

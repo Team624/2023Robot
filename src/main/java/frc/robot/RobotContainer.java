@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drivetrain.AutonomousDrive;
-import frc.robot.commands.Drivetrain.BlankDrivetrain;
-import frc.robot.commands.Drivetrain.DefaultDriveCommand;
+import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
+import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.Auton;
 
@@ -38,6 +38,8 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private final JoystickButton robotCentric =
+      new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -45,11 +47,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     m_drivetrain.setDefaultCommand(
-        new DefaultDriveCommand(
+        new SwerveDrive(
             m_drivetrain,
             () -> -d_controller.getRawAxis(translationAxis),
             () -> -d_controller.getRawAxis(strafeAxis),
-            () -> -d_controller.getRawAxis(rotationAxis)));
+            () -> -d_controller.getRawAxis(rotationAxis),
+            () -> robotCentric.getAsBoolean()));
 
     configureBindings();
   }
@@ -68,7 +71,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyro()));
+    zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
   }
 
   /**
@@ -84,11 +87,24 @@ public class RobotContainer {
     return new AutonomousDrive(m_drivetrain, auton);
   }
 
-  public void setBlankDrivetrainCommand() {
-    m_drivetrain.setDefaultCommand(new BlankDrivetrain(m_drivetrain));
-  }
-
   public void ghostSwerve() {
     new DisabledSwerve(m_drivetrain);
+  }
+
+  public void setBlankDrivetrainCommand() {
+    m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
+  }
+
+  public void setDrivetrainDefaultCommand() {
+    Command c =
+        new SwerveDrive(
+            m_drivetrain,
+            () -> -d_controller.getRawAxis(translationAxis),
+            () -> -d_controller.getRawAxis(strafeAxis),
+            () -> -d_controller.getRawAxis(rotationAxis),
+            () -> robotCentric.getAsBoolean());
+
+    m_drivetrain.setDefaultCommand(c);
+    c.schedule();
   }
 }

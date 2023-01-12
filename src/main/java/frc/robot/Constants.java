@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import frc.lib.util.COTSFalconSwerveConstants;
-import frc.lib.util.SdsModuleConfigurations;
 import frc.lib.util.SwerveModuleConstants;
 
 /**
@@ -26,19 +25,18 @@ public final class Constants {
     public static final double TRANSLATION_TUNING_CONSTANT = 1;
     public static final double PATH_POINT_RANGE = 0.1;
 
-    public static final double DRIVETRAIN_INPUT_TRANSLATION_MULTIPLIER = 1.1;
-    public static final double DRIVETRAIN_INPUT_ROTATION_MULTIPLIER = 5;
+    public static final double DRIVETRAIN_INPUT_TRANSLATION_MULTIPLIER = .8;
+    public static final double DRIVETRAIN_INPUT_ROTATION_MULTIPLIER = .4;
 
-    public static final double DRIVETRAIN_INPUT_SPEED_MULTIPLIER = 2.5;
-
-    public static final double MAX_VELOCITY_METERS_PER_SECOND =
-        6379.0
-            / 60.0
-            * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-            * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
-            * Math.PI;
-
+    public static final double DRIVETRAIN_INPUT_SPEED_MULTIPLIER = 1.4;
     public static final double DRIVETRAIN_INPUT_DEADBAND = .04;
+
+    // public static final double MAX_VELOCITY_METERS_PER_SECOND =
+    //     6379.0
+    //         / 60.0
+    //         * SdsModuleConfigurations.MK4_L2.getDriveReduction()
+    //         * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+    //         * Math.PI;
 
     public static final COTSFalconSwerveConstants
         chosenModule = // TODO: This must be tuned to specific robot
@@ -49,8 +47,8 @@ public final class Constants {
     public static final double wheelBase = 0.466598; // TODO: This must be tuned to specific robot
     public static final double wheelCircumference = chosenModule.wheelCircumference;
 
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-        MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    // public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+    //     MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
 
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
@@ -111,7 +109,7 @@ public final class Constants {
     public static final double maxSpeed = 4.5; // TODO: This must be tuned to specific robot
     /** Radians per Second */
     public static final double maxAngularVelocity =
-        Math.toRadians(0.5); // TODO: This must be tuned to specific robot
+        5.0; // TODO: This must be tuned to specific robot
 
     /* Neutral Modes */
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;

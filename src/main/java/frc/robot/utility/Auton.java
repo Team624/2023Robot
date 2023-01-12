@@ -10,6 +10,20 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
+// import frc.robot.commands.Intake.DeployIntake;
+// import frc.robot.commands.Intake.IdleIntake;
+// import frc.robot.commands.Shooter.IdleShoot;
+// import frc.robot.commands.LowShoot;
+// import frc.robot.commands.Tower.ShootTop;
+// import frc.robot.commands.Shooter.PrimeShoot;
+// import frc.robot.commands.Tower.IdleTower;
+// import frc.robot.commands.Tower.Poop;
+// import frc.robot.commands.Tower.Reverse;
+// import frc.robot.commands.Tower.Shoot;
+// import frc.robot.subsystems.Drivetrain;
+// import frc.robot.subsystems.Intake;
+// import frc.robot.subsystems.Shooter;
+// import frc.robot.subsystems.Tower;
 
 /** Add your docs here. */
 public class Auton {
@@ -17,6 +31,11 @@ public class Auton {
   public Path[] auton;
 
   private Drivetrain drivetrain;
+  // private Intake intake;
+  // private Tower tower;
+  // private Shooter shooter;
+  // private ShooterVision vision;
+
   public boolean isAuton = false;
 
   private ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
@@ -29,10 +48,19 @@ public class Auton {
           .getEntry();
 
   // States so that we don't schedule more than once
+  // private String shooterState = "none";
+  // private String intakeState = "none";
+  // private String colorState = "none";
 
   public Auton(Drivetrain drivetrain) {
+    // public Auton(Drivetrain drivetrain, Intake intake, Tower tower, Shooter shooter,
+    // ShooterVision vision) {
     auton = getAuto();
     this.drivetrain = drivetrain;
+    // this.intake = intake;
+    // this.tower = tower;
+    // this.shooter = shooter;
+    // this.vision = vision;
   }
 
   public void updatePaths() {
@@ -40,6 +68,8 @@ public class Auton {
   }
 
   public void sendAutoChoice() {
+
+    // Number autoChoice = autoChoiceGet.getNumber(0.0);
     Number autoChoice = autoChoiceGet.getDouble(0.0);
     SmartDashboard.putNumber("/auto/select", (double) autoChoice);
   }
@@ -95,7 +125,64 @@ public class Auton {
     SmartDashboard.putBoolean("/auto/state", state);
   }
 
+  public void resetStates() {
+    System.out.println("reset states");
+  }
+
   public int getStartPathIndex() {
     return SmartDashboard.getEntry("/pathTable/startPathIndex").getNumber(-1).intValue();
   }
+
+  // public String getShooterState() {
+  //     String state = SmartDashboard.getEntry("/auto/shooter/state").getString("idle");
+  //     if (state.equals("shoot") && !shooterState.equals("shoot")) {
+  //         shooterState = state;
+  //         new Shoot(tower).schedule();
+  //         new PrimeShoot(shooter, vision, tower).schedule();
+  //     } else if (state.equals("prime") && !shooterState.equals("prime")) {
+  //         shooterState = state;
+  //         new PrimeShoot(shooter, vision, tower).schedule();
+  //     } else if (state.equals("hide_shoot") && !shooterState.equals("hide_shoot")) {
+  //         shooterState = state;
+  //         new Reverse(tower).schedule();
+  //     } else if (state.equals("hide_poop") && !shooterState.equals("hide_poop")) {
+  //         shooterState = state;
+  //         new Poop(tower).schedule();
+  //     } else if (state.equals("lob_prime") && !shooterState.equals("lob_prime")) {
+  //         shooterState = state;
+  //         new LowShoot(shooter, tower).schedule();
+  //     } else if (state.equals("lob_shoot") && !shooterState.equals("lob_shoot")) {
+  //         shooterState = state;
+  //         new ShootTop(tower).schedule();
+  //         new LowShoot(shooter, tower).schedule();
+  //     } else if (state.equals("idle") && !shooterState.equals("idle")) {
+  //         shooterState = state;
+  //         new IdleShoot(shooter).schedule();
+  //         new IdleTower(tower, intake).schedule();
+  //     }
+  //     return state;
+  // }
+
+  // public void getIntakeState() {
+  //     String state = SmartDashboard.getEntry("/auto/intake/state").getString("retract");
+  //     if (state.equals("deploy") && !intakeState.equals("deploy")) {
+  //         intakeState = state;
+  //         new DeployIntake(intake).schedule();
+  //     } else if (state.equals("retract") && !intakeState.equals("retract")) {
+  //         intakeState = state;
+  //         new IdleIntake(intake).schedule();
+  //     }
+  // }
+
+  // public void getColorState() {
+  //     String state = SmartDashboard.getEntry("/auto/color/state").getString("enable");
+  //     if (state.equals("enable") && !colorState.equals("enable")) {
+  //         colorState = state;
+  //         tower.enableColorSensor();
+  //     } else if (state.equals("disable") && !colorState.equals("disable")) {
+  //         colorState = state;
+  //         tower.disableColorSensor();
+  //     }
+  // }
+
 }

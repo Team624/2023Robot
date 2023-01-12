@@ -7,13 +7,14 @@ package frc.robot.commands.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
-public class BlankDrivetrain extends CommandBase {
-  /** Creates a new BlankDrivetrain. */
-  Drivetrain m_drivetrainSubsystem;
+public class BlankDrive extends CommandBase {
+  /** Creates a new BlankDrive. */
+  private final Drivetrain m_drivetrainSubsystem;
 
-  public BlankDrivetrain(Drivetrain drive) {
-    this.m_drivetrainSubsystem = drive;
+  public BlankDrive(Drivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
+
+    this.m_drivetrainSubsystem = drive;
     addRequirements(drive);
   }
 
@@ -24,6 +25,8 @@ public class BlankDrivetrain extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // System.out.println("In BLANK");
     if (!m_drivetrainSubsystem.isAuton) {
 
       this.cancel();

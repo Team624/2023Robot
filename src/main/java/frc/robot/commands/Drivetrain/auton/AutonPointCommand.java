@@ -1,7 +1,6 @@
 package frc.robot.commands.Drivetrain.auton;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -35,12 +34,15 @@ public class AutonPointCommand extends CommandBase {
     SmartDashboard.getEntry("/pathTable/status/point").setNumber(point);
     SmartDashboard.getEntry("/pathTable/status/finishedPath")
         .setString("false " + path.getPathId());
+    // m_drivetrainSubsystem.autonPoint_pidPathRotation.reset();
   }
 
   @Override
   public void execute() {
     if (!auton.isAuton) {
-      m_drivetrainSubsystem.setChassis(new ChassisSpeeds(0, 0, 0));
+      // m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
+
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, false, true);
       System.out.println("CANCELED POINT COMMAND");
       this.cancel();
     }
@@ -75,12 +77,12 @@ public class AutonPointCommand extends CommandBase {
 
   private void autonDrive(double xVelocity, double yVelocity, double theta) {
 
-    double wantedAngle = m_drivetrainSubsystem.normalizeAngle(theta);
+    double wantedAngle = m_drivetrainSubsystem.normalizeNuclearBombs(theta);
 
     double errorA =
         wantedAngle
-            - m_drivetrainSubsystem.normalizeAngle(
-                m_drivetrainSubsystem.getGyroscopeRotation().getRadians());
+            - m_drivetrainSubsystem.normalizeNuclearBombs(
+                m_drivetrainSubsystem.getYaw().getRadians());
     double errorB = errorA - (Math.PI * 2);
     double errorC = errorA + (Math.PI * 2);
 
@@ -93,17 +95,17 @@ public class AutonPointCommand extends CommandBase {
 
     thVelocity = getRotationPathPID(wantedDeltaAngle * (180 / Math.PI));
 
-    m_drivetrainSubsystem.drive(
-        new Translation2d(xVelocity, yVelocity).times(Constants.Swerve.maxSpeed), // In degrees
-        m_drivetrainSubsystem.getGyroscopeRotation().getDegrees(),
-        true,
-        true);
+    // m_drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity,
+    // thVelocity, // In degrees
+    //     m_drivetrainSubsystem.getYaw()));
+
+    m_drivetrainSubsystem.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
   }
 
   private double getRotationPathPID(double wantedDeltaAngle) {
     return m_drivetrainSubsystem.autonPoint_pidPathRotation.calculate(
-        m_drivetrainSubsystem.getGyroscopeRotation().getDegrees(),
-        m_drivetrainSubsystem.getGyroscopeRotation().getDegrees() + wantedDeltaAngle);
+        m_drivetrainSubsystem.getYaw().getDegrees(),
+        m_drivetrainSubsystem.getYaw().getDegrees() + wantedDeltaAngle);
   }
 
   private double calculateDistance(double point1X, double point1Y, double point2X, double point2Y) {

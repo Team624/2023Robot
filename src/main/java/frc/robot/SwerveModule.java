@@ -2,7 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -54,10 +53,10 @@ public class SwerveModule {
 
   private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
     if (isOpenLoop) {
-      double percentOutput =
-          desiredState.speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
+      double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
       mDriveMotor.set(ControlMode.PercentOutput, percentOutput);
-    } else {
+    } 
+    else {
       double velocity =
           Conversions.MPSToFalcon(
               desiredState.speedMetersPerSecond,
@@ -84,7 +83,7 @@ public class SwerveModule {
     lastAngle = angle;
   }
 
-  public Rotation2d getAngle() {
+  private Rotation2d getAngle() {
     return Rotation2d.fromDegrees(
         Conversions.falconToDegrees(
             mAngleMotor.getSelectedSensorPosition(), Constants.Swerve.angleGearRatio));
@@ -138,47 +137,5 @@ public class SwerveModule {
             Constants.Swerve.wheelCircumference,
             Constants.Swerve.driveGearRatio),
         getAngle());
-  }
-
-  public double getVelocity() {
-    return mDriveMotor.getSelectedSensorVelocity();
-  }
-
-  public void setReferenceVoltage(double voltage) {}
-
-  public void set(double driveVoltage, double steerAngle) {
-    steerAngle %= (2.0 * Math.PI);
-    if (steerAngle < 0.0) {
-      steerAngle += 2.0 * Math.PI;
-    }
-
-    double difference = steerAngle - getAngle().getRadians();
-    // Change the target angle so the difference is in the range [-pi, pi) instead of [0, 2pi)
-    if (difference >= Math.PI) {
-      steerAngle -= 2.0 * Math.PI;
-    } else if (difference < -Math.PI) {
-      steerAngle += 2.0 * Math.PI;
-    }
-    difference = steerAngle - getAngle().getRadians(); // Recalculate difference
-
-    // If the difference is greater than 90 deg or less than -90 deg the drive can be inverted so
-    // the total
-    // movement of the module is less than 90 deg
-    if (difference > Math.PI / 2.0 || difference < -Math.PI / 2.0) {
-      // Only need to add 180 deg here because the target angle will be put back into the range [0,
-      // 2pi)
-      steerAngle += Math.PI;
-      driveVoltage *= -1.0;
-    }
-
-    // Put the target angle back into the range [0, 2pi)
-    steerAngle %= (2.0 * Math.PI);
-    if (steerAngle < 0.0) {
-      steerAngle += 2.0 * Math.PI;
-    }
-
-    mDriveMotor.set(TalonFXControlMode.PercentOutput, driveVoltage / 12.0);
-
-    // mAngleMotor.setReferenceAngle(steerAngle);
   }
 }

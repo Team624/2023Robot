@@ -4,33 +4,37 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class DefaultDriveCommand extends CommandBase {
-  /** Creates a new DefaultDriveCommand. */
-  private Drivetrain m_drivetrain;
+public class SwerveDrive extends CommandBase {
+  /** Creates a new SwerveDrive. */
+  Drivetrain m_drivetrain;
 
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
+  private BooleanSupplier robotCentricSup;
 
-  public DefaultDriveCommand(
-      Drivetrain m_drivetrain,
+  public SwerveDrive(
+      Drivetrain s_Swerve,
       DoubleSupplier translationSup,
       DoubleSupplier strafeSup,
-      DoubleSupplier rotationSup) {
+      DoubleSupplier rotationSup,
+      BooleanSupplier robotCentricSup) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    this.m_drivetrain = m_drivetrain;
-    addRequirements(m_drivetrain);
+    this.m_drivetrain = s_Swerve;
+    addRequirements(s_Swerve);
 
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
+    this.robotCentricSup = robotCentricSup;
   }
 
   // Called when the command is initially scheduled.
@@ -40,19 +44,20 @@ public class DefaultDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    double vx = translationSup.getAsDouble();
-    double vy = strafeSup.getAsDouble();
-    double omega = rotationSup.getAsDouble();
-
-    vx *= Constants.Swerve.DRIVETRAIN_INPUT_TRANSLATION_MULTIPLIER;
-    vy *= Constants.Swerve.DRIVETRAIN_INPUT_TRANSLATION_MULTIPLIER;
-    omega *= Constants.Swerve.DRIVETRAIN_INPUT_ROTATION_MULTIPLIER;
-
-    System.out.println(omega);
+    double translationVal =
+        MathUtil.applyDeadband(
+            translationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+    double strafeVal =
+        MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+    double rotationVal =
+        MathUtil.applyDeadband(
+            rotationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
 
     m_drivetrain.drive(
-        new Translation2d(vx, vy).times(Constants.Swerve.maxSpeed), -omega, true, true);
+        new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
+        -rotationVal * Constants.Swerve.maxAngularVelocity,
+        !robotCentricSup.getAsBoolean(),
+        true);
   }
 
   // Called once the command ends or is interrupted.
