@@ -34,7 +34,7 @@ public class AutonPointCommand extends CommandBase {
     SmartDashboard.getEntry("/pathTable/status/point").setNumber(point);
     SmartDashboard.getEntry("/pathTable/status/finishedPath")
         .setString("false " + path.getPathId());
-    // m_drivetrainSubsystem.autonPoint_pidPathRotation.reset();
+    m_drivetrainSubsystem.autonPoint_pidPathRotation.reset();
   }
 
   @Override

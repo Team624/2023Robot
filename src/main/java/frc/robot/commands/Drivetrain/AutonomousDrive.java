@@ -35,21 +35,27 @@ public class AutonomousDrive extends CommandBase {
     m_drivetrainSubsystem.setPose();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < auton.getPathCount(); i++) {
+      System.out.println("Running path");
       commandGroup.addCommands(new AutonPathCommand(m_drivetrainSubsystem, auton.auton[i], auton));
     }
     // this.alongWith(commandGroup);
 
     // commandGroup.schedule(false);
-    commandGroup.cancel();
+    // commandGroup.cancel();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    System.out.println("In Main Auotnomous Drive");
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Main Auton Command is ended---------------");
+  }
 
   // Returns true when the command should end.
   @Override

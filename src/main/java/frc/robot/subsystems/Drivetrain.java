@@ -50,13 +50,25 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(
       Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
-    SwerveModuleState[] swerveModuleStates =
-        Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                    translation.getX(), translation.getY(), rotation, getYaw())
-                : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+    SwerveModuleState[] swerveModuleStates;
+    if (fieldRelative) {
+      swerveModuleStates =
+          Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  translation.getX(), translation.getY(), rotation, getYaw()));
+
+    } else {
+      swerveModuleStates =
+          Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+              new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
+    }
+    // SwerveModuleState[] swerveModuleStates =
+    //     Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+    //         fieldRelative
+    //             ? ChassisSpeeds.fromFieldRelativeSpeeds(
+    //                 translation.getX(), translation.getY(), rotation, getYaw())
+    //             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
+    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);

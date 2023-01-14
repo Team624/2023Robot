@@ -33,6 +33,7 @@ public class AutonPathCommand extends CommandBase {
     // m_drivetrainSubsystem.autonPath_pidVision.reset();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < path.getLength(); i++) {
+
       commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
     }
 
@@ -52,6 +53,7 @@ public class AutonPathCommand extends CommandBase {
       // auton.getIntakeState();
       // auton.getShooterState();
       // auton.getColorState();
+      System.out.println("stopped auton");
     } else {
       // m_drivetrainSubsystem.drive(
       //         ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
@@ -66,7 +68,6 @@ public class AutonPathCommand extends CommandBase {
       System.out.println("STARTED NEW PATH: " + path.getPathId());
 
       //   commandGroup.schedule(false);
-      commandGroup.cancel();
 
       SmartDashboard.getEntry("/pathTable/status/path").setNumber(path.getPathId());
       currentID = path.getPathId();
