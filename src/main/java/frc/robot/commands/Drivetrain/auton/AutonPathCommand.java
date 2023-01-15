@@ -68,27 +68,33 @@ public class AutonPathCommand extends CommandBase {
       System.out.println("STARTED NEW PATH: " + path.getPathId());
 
       //   commandGroup.schedule(false);
+      commandGroup.schedule();
 
       SmartDashboard.getEntry("/pathTable/status/path").setNumber(path.getPathId());
       currentID = path.getPathId();
     }
-    if ((currentID != path.getPathId() || lastPath) && !m_drivetrainSubsystem.stopAuton) {
-      // When the path is not currently running
-      // if ((auton.getShooterState().equals("prime") || auton.getShooterState().equals("shoot"))
-      //         && (Math.abs(m_drivetrainSubsystem.getVisionRotationAngle()) < 500)) {
-      //     double wantedDeltaAngle = m_drivetrainSubsystem.getVisionRotationAngle();
-      //     System.out.println("Doing vision: " + wantedDeltaAngle);
-      //     double pidVal = getRotationPID(wantedDeltaAngle);
-      //     System.out.println("Doing vision pid: " + pidVal);
-      //     m_drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, pidVal,
-      //             m_drivetrainSubsystem.getGyroscopeRotation()));
-    } else {
+    // if ((currentID != path.getPathId() || lastPath) && !m_drivetrainSubsystem.stopAuton) {
+    //   // When the path is not currently running
+    //   // if ((auton.getShooterState().equals("prime") || auton.getShooterState().equals("shoot"))
+    //   //         && (Math.abs(m_drivetrainSubsystem.getVisionRotationAngle()) < 500)) {
+    //   //     double wantedDeltaAngle = m_drivetrainSubsystem.getVisionRotationAngle();
+    //   //     System.out.println("Doing vision: " + wantedDeltaAngle);
+    //   //     double pidVal = getRotationPID(wantedDeltaAngle);
+    //   //     System.out.println("Doing vision pid: " + pidVal);
+    //   //     m_drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, pidVal,
+    //   //             m_drivetrainSubsystem.getGyroscopeRotation()));
+
+    if (m_drivetrainSubsystem.stopAuton) {
       // m_drivetrainSubsystem.drive(
       //         ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
 
-      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, true, true);
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, false, false);
     }
-    // }
+
+    if (currentID == path.getLength() - 1) {
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, false, false);
+      System.out.println("STOPPPINGGGG");
+    }
   }
 
   // private double getRotationPID(double wantedDeltaAngle) {
@@ -111,6 +117,7 @@ public class AutonPathCommand extends CommandBase {
         lastPath = true;
         return false;
       }
+
       return true;
     }
     return false;

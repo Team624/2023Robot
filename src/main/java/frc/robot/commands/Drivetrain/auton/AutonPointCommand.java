@@ -103,9 +103,10 @@ public class AutonPointCommand extends CommandBase {
   }
 
   private double getRotationPathPID(double wantedDeltaAngle) {
+    System.out.println(wantedDeltaAngle);
     return m_drivetrainSubsystem.autonPoint_pidPathRotation.calculate(
         m_drivetrainSubsystem.getYaw().getDegrees(),
-        m_drivetrainSubsystem.getYaw().getDegrees() + wantedDeltaAngle);
+        m_drivetrainSubsystem.getYaw().getDegrees()); // + wantedDeltaAngle)
   }
 
   private double calculateDistance(double point1X, double point1Y, double point2X, double point2Y) {
@@ -163,6 +164,7 @@ public class AutonPointCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (point == path.getLength() - 1) {
+
       System.out.println("LAST POINT IN PATH OF LENGTH: " + path.getLength());
       m_drivetrainSubsystem.lastPointCommand = true;
       SmartDashboard.getEntry("/pathTable/status/finishedPath")

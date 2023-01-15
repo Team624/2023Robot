@@ -92,7 +92,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private PIDController getRotationPathPID() {
-    return new PIDController(.06, 0, 0);
+    return new PIDController(.009, 0, 0);
   }
 
   public void setAuton(boolean state) {

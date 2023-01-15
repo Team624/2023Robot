@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
     auton.setState(true);
     m_robotContainer.setBlankDrivetrainCommand();
     // m_robotContainer.getAutonomousDriveCommand(auton).schedule(true);
-    m_robotContainer.getAutonomousDriveCommand(auton).execute();
+    m_robotContainer.getAutonomousDriveCommand(auton).schedule();
   }
 
   /** This function is called periodically during autonomous. */
