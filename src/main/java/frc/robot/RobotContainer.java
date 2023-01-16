@@ -49,9 +49,18 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
         new SwerveDrive(
             m_drivetrain,
-            () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(strafeAxis),
-            () -> -d_controller.getRawAxis(rotationAxis),
+            () ->
+                -modifyAxis(
+                    d_controller.getRawAxis(translationAxis)
+                        * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
+            () ->
+                -modifyAxis(
+                    d_controller.getRawAxis(strafeAxis)
+                        * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
+            () ->
+                -modifyAxis(
+                    d_controller.getRawAxis(rotationAxis)
+                        * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
             () -> robotCentric.getAsBoolean()));
 
     configureBindings();
@@ -99,12 +108,40 @@ public class RobotContainer {
     Command c =
         new SwerveDrive(
             m_drivetrain,
-            () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(strafeAxis),
-            () -> -d_controller.getRawAxis(rotationAxis),
+            () ->
+                -modifyAxis(
+                    d_controller.getRawAxis(translationAxis)
+                        * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
+            () ->
+                -modifyAxis(
+                    d_controller.getRawAxis(strafeAxis)
+                        * Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
+            () ->
+                -modifyAxis(
+                    d_controller.getRawAxis(rotationAxis)
+                        * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
             () -> robotCentric.getAsBoolean());
 
     m_drivetrain.setDefaultCommand(c);
     c.schedule();
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+
+    return value;
   }
 }

@@ -7,19 +7,18 @@ package frc.robot.commands.Drivetrain;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Drivetrain.auton.AutonPathCommand;
+import frc.robot.commands.Drivetrain.auton.*;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.Auton;
 
 public class AutonomousDrive extends CommandBase {
-  /** Creates a new AutonomousDrive. */
   private Auton auton;
 
   private SequentialCommandGroup commandGroup;
   private final Drivetrain m_drivetrainSubsystem;
 
+  /** Creates a new AutonomousDrive. */
   public AutonomousDrive(Drivetrain drivetrainSubsystem, Auton auton) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrainSubsystem = drivetrainSubsystem;
     this.auton = auton;
     addRequirements(drivetrainSubsystem);
@@ -28,32 +27,30 @@ public class AutonomousDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false " + "-1");
     m_drivetrainSubsystem.setAuton(true);
     m_drivetrainSubsystem.stopAuton = false;
     m_drivetrainSubsystem.setPose();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < auton.getPathCount(); i++) {
-      System.out.println("Running path");
       commandGroup.addCommands(new AutonPathCommand(m_drivetrainSubsystem, auton.auton[i], auton));
     }
-    // this.alongWith(commandGroup);
 
     // commandGroup.schedule(false);
+
     commandGroup.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("In Man Auotnomous Drive");
+    System.out.println("In Main Auotnomous Drive");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Main Auton Command hAS ended---------------");
+    System.out.println("Main Auton Command is ended---------------");
   }
 
   // Returns true when the command should end.

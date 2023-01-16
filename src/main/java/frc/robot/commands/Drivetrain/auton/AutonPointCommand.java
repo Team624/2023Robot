@@ -1,6 +1,6 @@
 package frc.robot.commands.Drivetrain.auton;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -40,9 +40,7 @@ public class AutonPointCommand extends CommandBase {
   @Override
   public void execute() {
     if (!auton.isAuton) {
-      // m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
-
-      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, false, true);
+      m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
       System.out.println("CANCELED POINT COMMAND");
       this.cancel();
     }
@@ -95,18 +93,18 @@ public class AutonPointCommand extends CommandBase {
 
     thVelocity = getRotationPathPID(wantedDeltaAngle * (180 / Math.PI));
 
-    // m_drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity,
-    // thVelocity, // In degrees
-    //     m_drivetrainSubsystem.getYaw()));
-
-    m_drivetrainSubsystem.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
+    m_drivetrainSubsystem.drive(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xVelocity,
+            yVelocity,
+            thVelocity, // In degrees
+            m_drivetrainSubsystem.getYaw()));
   }
 
   private double getRotationPathPID(double wantedDeltaAngle) {
-    System.out.println(wantedDeltaAngle);
     return m_drivetrainSubsystem.autonPoint_pidPathRotation.calculate(
         m_drivetrainSubsystem.getYaw().getDegrees(),
-        m_drivetrainSubsystem.getYaw().getDegrees()); // + wantedDeltaAngle)
+        m_drivetrainSubsystem.getYaw().getDegrees() + wantedDeltaAngle);
   }
 
   private double calculateDistance(double point1X, double point1Y, double point2X, double point2Y) {
@@ -164,7 +162,6 @@ public class AutonPointCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (point == path.getLength() - 1) {
-
       System.out.println("LAST POINT IN PATH OF LENGTH: " + path.getLength());
       m_drivetrainSubsystem.lastPointCommand = true;
       SmartDashboard.getEntry("/pathTable/status/finishedPath")

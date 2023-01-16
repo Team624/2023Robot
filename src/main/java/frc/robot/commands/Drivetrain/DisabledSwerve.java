@@ -4,7 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -26,11 +26,10 @@ public class DisabledSwerve extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_drivetrainSubsystem.drive(
-    //     ChassisSpeeds.fromFieldRelativeSpeeds(
-    //         0, 0, .01, m_drivetrainSubsystem.getGyroscopeRotation()));
+    m_drivetrainSubsystem.drive(
+        ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, .01, m_drivetrainSubsystem.getYaw()));
 
-    m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0.01, true, true);
+    // m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0.01, true, true);
   }
 
   // Called once the command ends or is interrupted.

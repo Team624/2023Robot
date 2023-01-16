@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import frc.lib.util.COTSFalconSwerveConstants;
+import frc.lib.util.SdsModuleConfigurations;
 import frc.lib.util.SwerveModuleConstants;
 
 /**
@@ -31,13 +32,6 @@ public final class Constants {
     public static final double DRIVETRAIN_INPUT_SPEED_MULTIPLIER = 1.4;
     public static final double DRIVETRAIN_INPUT_DEADBAND = .04;
 
-    // public static final double MAX_VELOCITY_METERS_PER_SECOND =
-    //     6379.0
-    //         / 60.0
-    //         * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-    //         * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
-    //         * Math.PI;
-
     public static final COTSFalconSwerveConstants
         chosenModule = // TODO: This must be tuned to specific robot
         COTSFalconSwerveConstants.SDSMK4(COTSFalconSwerveConstants.driveGearRatios.SDSMK4_L2);
@@ -47,8 +41,15 @@ public final class Constants {
     public static final double wheelBase = 0.466598; // TODO: This must be tuned to specific robot
     public static final double wheelCircumference = chosenModule.wheelCircumference;
 
-    // public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-    //     MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    public static final double MAX_VELOCITY_METERS_PER_SECOND =
+        6379.0
+            / 60.0
+            * SdsModuleConfigurations.MK4_L2.getDriveReduction()
+            * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            * Math.PI;
+
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+        MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
 
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
