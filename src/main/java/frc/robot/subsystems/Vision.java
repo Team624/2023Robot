@@ -43,7 +43,7 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     double[] botpose_data = botpose_network.getDoubleArray(new double[] {});
-    if (botpose_data.length>2) {
+    if (botpose_data.length > 2) {
       x_coordinate = botpose_data[0];
       y_coordinate = botpose_data[1];
     } else {
@@ -56,6 +56,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getX() {
+    //return length / 2 - x_coordinate - (length - 15.513558);
     return x_coordinate;
   }
 
