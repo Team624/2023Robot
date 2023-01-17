@@ -1,6 +1,6 @@
 package frc.robot.commands.Drivetrain.auton;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -40,11 +40,14 @@ public class AutonPointCommand extends CommandBase {
   @Override
   public void execute() {
     if (!auton.isAuton) {
-      m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
+      // m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, false, true);
+
       System.out.println("CANCELED POINT COMMAND");
       this.cancel();
     }
     if (!m_drivetrainSubsystem.stopAuton) {
+      
       currentX = m_drivetrainSubsystem.getSwervePose()[0];
       currentY = m_drivetrainSubsystem.getSwervePose()[1];
 
@@ -65,7 +68,7 @@ public class AutonPointCommand extends CommandBase {
         double velocityY =
             pathPoint.getVy()
                 + (nearestPoint[1] - currentY) * Constants.Swerve.TRANSLATION_TUNING_CONSTANT;
-
+                
         autonDrive(velocityX, velocityY, pathPoint.getHeading());
       }
     } else {
@@ -74,7 +77,7 @@ public class AutonPointCommand extends CommandBase {
   }
 
   private void autonDrive(double xVelocity, double yVelocity, double theta) {
-
+    
     double wantedAngle = m_drivetrainSubsystem.normalizeNuclearBombs(theta);
 
     double errorA =
@@ -93,12 +96,10 @@ public class AutonPointCommand extends CommandBase {
 
     thVelocity = getRotationPathPID(wantedDeltaAngle * (180 / Math.PI));
 
-    m_drivetrainSubsystem.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xVelocity,
-            yVelocity,
-            thVelocity, // In degrees
-            m_drivetrainSubsystem.getYaw()));
+    // m_drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity,
+    // thVelocity, // In degrees
+    //     m_drivetrainSubsystem.getYaw()));
+    m_drivetrainSubsystem.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
   }
 
   private double getRotationPathPID(double wantedDeltaAngle) {
@@ -163,9 +164,11 @@ public class AutonPointCommand extends CommandBase {
   public boolean isFinished() {
     if (point == path.getLength() - 1) {
       System.out.println("LAST POINT IN PATH OF LENGTH: " + path.getLength());
+      
       m_drivetrainSubsystem.lastPointCommand = true;
       SmartDashboard.getEntry("/pathTable/status/finishedPath")
           .setString("true " + path.getPathId());
+          
       return true;
     }
     double distance =

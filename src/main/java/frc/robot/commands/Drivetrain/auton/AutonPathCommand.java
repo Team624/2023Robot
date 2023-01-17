@@ -1,6 +1,6 @@
 package frc.robot.commands.Drivetrain.auton;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -33,7 +33,9 @@ public class AutonPathCommand extends CommandBase {
     // m_drivetrainSubsystem.autonPath_pidVision.reset();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < path.getLength(); i++) {
+        
       commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
+      
     }
 
     m_drivetrainSubsystem.lastPointCommand = false;
@@ -43,7 +45,8 @@ public class AutonPathCommand extends CommandBase {
   public void execute() {
     // auton.getColorState();
     if (!auton.isAuton) {
-      m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
+      // m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, false, true);
       System.out.println("CANCELED PATH COMMAND");
       this.cancel();
     }
@@ -52,10 +55,11 @@ public class AutonPathCommand extends CommandBase {
       // auton.getShooterState();
       // auton.getColorState();
 
-      System.out.println("getting subsystem states");
+      System.out.println("getting states");
     } else {
-      m_drivetrainSubsystem.drive(
-          ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
+      // m_drivetrainSubsystem.drive(
+      //         ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, true, true);
     }
 
     if (auton.getStartPathIndex() >= path.getPathId()
@@ -70,7 +74,6 @@ public class AutonPathCommand extends CommandBase {
       SmartDashboard.getEntry("/pathTable/status/path").setNumber(path.getPathId());
       currentID = path.getPathId();
     }
-
     if ((currentID != path.getPathId() || lastPath) && !m_drivetrainSubsystem.stopAuton) {
       // When the path is not currently running
       // if ((auton.getShooterState().equals("prime") || auton.getShooterState().equals("shoot"))
@@ -83,20 +86,19 @@ public class AutonPathCommand extends CommandBase {
       //             m_drivetrainSubsystem.getGyroscopeRotation()));
       // }
       // else {
-
-      m_drivetrainSubsystem.drive(
-          ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
-
+      // m_drivetrainSubsystem.drive(
+      //         ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
+      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, true, true);
       // }
     }
   }
 
-  //   private double getRotationPID(double wantedDeltaAngle) {
-  //       double setpoint = m_drivetrainSubsystem.getYaw().getDegrees() + wantedDeltaAngle;
+  // private double getRotationPID(double wantedDeltaAngle) {
+  //     double setpoint = m_drivetrainSubsystem.getYaw().getDegrees() + wantedDeltaAngle;
 
-  //       return m_drivetrainSubsystem.autonPath_pidVision
-  //               .calculate(m_drivetrainSubsystem.getYaw().getDegrees(), setpoint);
-  //   }
+  //     return m_drivetrainSubsystem.autonPath_pidVision
+  //             .calculate(m_drivetrainSubsystem.getGyroscopeRotation().getDegrees(), setpoint);
+  // }
 
   @Override
   public void end(boolean interrupted) {

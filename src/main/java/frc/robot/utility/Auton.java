@@ -71,7 +71,7 @@ public class Auton {
 
     // Number autoChoice = autoChoiceGet.getNumber(0.0);
     Number autoChoice = autoChoiceGet.getDouble(0.0);
-    SmartDashboard.putNumber("/auto/select", (double) autoChoice);
+    SmartDashboard.putNumber("/auto/select", (Double) autoChoice);
   }
 
   public Path[] getAuto() {
