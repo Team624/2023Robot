@@ -33,9 +33,8 @@ public class AutonPathCommand extends CommandBase {
     // m_drivetrainSubsystem.autonPath_pidVision.reset();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < path.getLength(); i++) {
-        
+
       commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
-      
     }
 
     m_drivetrainSubsystem.lastPointCommand = false;
@@ -69,7 +68,9 @@ public class AutonPathCommand extends CommandBase {
       System.out.println("STARTED NEW PATH: " + path.getPathId());
 
       // commandGroup.schedule(false);
-      commandGroup.schedule();
+    //   commandGroup.schedule();
+    commandGroup.withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    commandGroup.schedule();
 
       SmartDashboard.getEntry("/pathTable/status/path").setNumber(path.getPathId());
       currentID = path.getPathId();

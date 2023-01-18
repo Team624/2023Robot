@@ -80,7 +80,7 @@ public class Drivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
 
     swerveOdometry.update(getYaw(), getModulePositions());
-    SwerveModulePosition[] positions= getModulePositions();
+    SwerveModulePosition[] positions = getModulePositions();
     for (SwerveModule mod : mSwerveMods) {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
@@ -92,9 +92,9 @@ public class Drivetrain extends SubsystemBase {
 
     if (isAuton) {
       swerveOdometry.update(getYaw(), positions);
-} else {
+    } else {
       swerveOdometry.update(getYaw(), getModulePositions());
-}
+    }
 
     updateROSpose();
   }

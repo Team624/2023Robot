@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -93,6 +94,10 @@ public class RobotContainer {
 
   public void setBlankDrivetrainCommand() {
     m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
+  }
+
+  public void testAuton() {
+    m_drivetrain.drive(new Translation2d(1, 1), 1, false, true);
   }
 
   public void setDrivetrainDefaultCommand() {

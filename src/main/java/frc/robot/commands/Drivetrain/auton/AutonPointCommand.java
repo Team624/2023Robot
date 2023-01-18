@@ -47,7 +47,7 @@ public class AutonPointCommand extends CommandBase {
       this.cancel();
     }
     if (!m_drivetrainSubsystem.stopAuton) {
-      
+
       currentX = m_drivetrainSubsystem.getSwervePose()[0];
       currentY = m_drivetrainSubsystem.getSwervePose()[1];
 
@@ -68,7 +68,7 @@ public class AutonPointCommand extends CommandBase {
         double velocityY =
             pathPoint.getVy()
                 + (nearestPoint[1] - currentY) * Constants.Swerve.TRANSLATION_TUNING_CONSTANT;
-                
+
         autonDrive(velocityX, velocityY, pathPoint.getHeading());
       }
     } else {
@@ -77,7 +77,7 @@ public class AutonPointCommand extends CommandBase {
   }
 
   private void autonDrive(double xVelocity, double yVelocity, double theta) {
-    
+
     double wantedAngle = m_drivetrainSubsystem.normalizeNuclearBombs(theta);
 
     double errorA =
@@ -164,16 +164,18 @@ public class AutonPointCommand extends CommandBase {
   public boolean isFinished() {
     if (point == path.getLength() - 1) {
       System.out.println("LAST POINT IN PATH OF LENGTH: " + path.getLength());
-      
+
       m_drivetrainSubsystem.lastPointCommand = true;
       SmartDashboard.getEntry("/pathTable/status/finishedPath")
           .setString("true " + path.getPathId());
-          
+
       return true;
     }
     double distance =
         calculateDistance(
             currentX, currentY, path.getPoint(point + 1).getX(), path.getPoint(point + 1).getY());
+
+    System.out.println(distance);
     if (distance > 1.0) {
       System.out.println("EMERGENCY STOPPED AUTON");
       m_drivetrainSubsystem.stopAuton = true;
