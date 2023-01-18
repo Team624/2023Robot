@@ -100,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private PIDController getRotationPathPID() {
-    return new PIDController(.009, 0, 0);
+    return new PIDController(0.000, 0, 0);
   }
 
   public void updateROSpose() {
@@ -125,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
     zeroGyroscope();
     double[] zeros = {0.0, 0.0, 0.0};
     double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(zeros);
-    Rotation2d newRot = new Rotation2d(-startPosition[2]);
+    Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
     // swerveOdometry.resetPosition(newPose, newRot);
     swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);

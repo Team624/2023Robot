@@ -130,7 +130,9 @@ public class Auton {
   }
 
   public int getStartPathIndex() {
-    return SmartDashboard.getEntry("/pathTable/startPathIndex").getNumber(-1).intValue();
+    int index = SmartDashboard.getEntry("/pathTable/startPathIndex").getNumber(-1).intValue();
+    System.out.println("START PATH INDEX!!! -> " + index);
+    return index;
   }
 
   // public String getShooterState() {

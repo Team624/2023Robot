@@ -166,6 +166,9 @@ public class AutonPointCommand extends CommandBase {
       System.out.println("LAST POINT IN PATH OF LENGTH: " + path.getLength());
 
       m_drivetrainSubsystem.lastPointCommand = true;
+
+      m_drivetrainSubsystem.drive(new Translation2d(0.0, 0.0), 0.0, true, true);
+
       SmartDashboard.getEntry("/pathTable/status/finishedPath")
           .setString("true " + path.getPathId());
 
@@ -182,5 +185,10 @@ public class AutonPointCommand extends CommandBase {
       return true;
     }
     return distance < path.getPoint(point).getTolerance();
+  }
+
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
   }
 }

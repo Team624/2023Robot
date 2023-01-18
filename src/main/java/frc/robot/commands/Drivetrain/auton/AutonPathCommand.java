@@ -68,9 +68,8 @@ public class AutonPathCommand extends CommandBase {
       System.out.println("STARTED NEW PATH: " + path.getPathId());
 
       // commandGroup.schedule(false);
-    //   commandGroup.schedule();
-    commandGroup.withInterruptBehavior(InterruptionBehavior.kCancelSelf);
-    commandGroup.schedule();
+      //   commandGroup.schedule();
+      commandGroup.schedule();
 
       SmartDashboard.getEntry("/pathTable/status/path").setNumber(path.getPathId());
       currentID = path.getPathId();
@@ -117,5 +116,10 @@ public class AutonPathCommand extends CommandBase {
       return true;
     }
     return false;
+  }
+
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelSelf;
   }
 }

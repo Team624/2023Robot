@@ -39,7 +39,7 @@ public class AutonomousDrive extends CommandBase {
     // this.alongWith(commandGroup);
     // commandGroup.schedule(false);
     // commandGroup.schedule();
-    commandGroup.withInterruptBehavior(InterruptionBehavior.kCancelSelf).schedule();
+    commandGroup.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,5 +58,10 @@ public class AutonomousDrive extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelSelf;
   }
 }
