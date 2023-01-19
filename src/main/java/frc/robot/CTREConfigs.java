@@ -7,6 +7,8 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 
+import frc.robot.Constants.Swerve;
+
 public final class CTREConfigs {
   public TalonFXConfiguration swerveAngleFXConfig;
   public TalonFXConfiguration swerveDriveFXConfig;

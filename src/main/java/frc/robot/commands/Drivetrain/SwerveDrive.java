@@ -5,6 +5,7 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -20,6 +21,9 @@ public class SwerveDrive extends CommandBase {
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
   private BooleanSupplier robotCentricSup;
+
+  private SlewRateLimiter filterX = new SlewRateLimiter(7);
+  private SlewRateLimiter filterY = new SlewRateLimiter(7);
 
   public SwerveDrive(
       Drivetrain s_Swerve,
@@ -53,6 +57,9 @@ public class SwerveDrive extends CommandBase {
         MathUtil.applyDeadband(
             rotationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
 
+    translationVal = filterX.calculate(translationVal);
+    strafeVal = filterY.calculate(strafeVal);
+
     m_drivetrain.drive(
         new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
         -rotationVal * Constants.Swerve.maxAngularVelocity,
@@ -62,7 +69,9 @@ public class SwerveDrive extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_drivetrain.drive(new Translation2d(0,0), 0, false, true);
+  }
 
   // Returns true when the command should end.
   @Override

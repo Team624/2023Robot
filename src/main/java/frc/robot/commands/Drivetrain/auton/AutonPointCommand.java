@@ -167,7 +167,7 @@ public class AutonPointCommand extends CommandBase {
 
       m_drivetrainSubsystem.lastPointCommand = true;
 
-      m_drivetrainSubsystem.drive(new Translation2d(0.0, 0.0), 0.0, true, true);
+      // m_drivetrainSubsystem.drive(new Translation2d(0.0, 0.0), 0.0, true, true);
 
       SmartDashboard.getEntry("/pathTable/status/finishedPath")
           .setString("true " + path.getPathId());
