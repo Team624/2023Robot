@@ -43,8 +43,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    System.out.println("line 48");
     getLim.onTrue(new Limelight(m_vision));
-    System.out.println("line 50");
   }
 }
