@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.utility.Auton;
 
 /**
@@ -93,7 +92,7 @@ public class Robot extends TimedRobot {
     auton.setState(true);
     m_robotContainer.setBlankDrivetrainCommand();
     // m_robotContainer.getAutonomousDriveCommand(auton).schedule(true);
-    m_robotContainer.getAutonomousDriveCommand(auton).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).schedule();
+    m_robotContainer.getAutonomousDriveCommand(auton).schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -137,6 +136,4 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
-
-
 }

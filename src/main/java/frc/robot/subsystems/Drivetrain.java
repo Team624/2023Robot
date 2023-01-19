@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -32,16 +31,13 @@ public class Drivetrain extends SubsystemBase {
 
   private AHRS ahrs = new AHRS(edu.wpi.first.wpilibj.SPI.Port.kMXP);
 
-
   public boolean isAuton = false;
   public boolean lastPointCommand = false;
   public boolean stopAuton = false;
   public PIDController autonPoint_pidPathRotation;
 
-  
-
-  private SwerveModuleState[] lstates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
-
+  private SwerveModuleState[] lstates =
+      Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
 
   public Drivetrain() {
 
@@ -69,8 +65,7 @@ public class Drivetrain extends SubsystemBase {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   translation.getX(), translation.getY(), rotation, getYaw()));
 
-    } 
-    else {
+    } else {
       swerveModuleStates =
           Constants.Swerve.swerveKinematics.toSwerveModuleStates(
               new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
@@ -87,13 +82,13 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    
     SwerveModulePosition[] positions = getModulePositions();
-    SwerveModuleState[] states = Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
+    // SwerveModuleState[] states =
+    //     Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
 
-    if (!isAuton) {
-      states = freezeLogic(states);
-}
+    // if (!isAuton) {
+    //   states = freezeLogic(states);
+    // }
     for (SwerveModule mod : mSwerveMods) {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
@@ -103,7 +98,7 @@ public class Drivetrain extends SubsystemBase {
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
 
-    setModuleStates(states);
+    // setModuleStates(states);
 
     if (isAuton) {
       swerveOdometry.update(getYaw(), positions);
@@ -115,23 +110,24 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private PIDController getRotationPathPID() {
-    return new PIDController(0.1, 0, 0);
+    return new PIDController(0.001, 0, 0);
   }
-  
 
-private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
-    if (Math.abs(m_chassisSpeeds.omegaRadiansPerSecond) +
-                    Math.abs(m_chassisSpeeds.vxMetersPerSecond) +
-                    Math.abs(m_chassisSpeeds.vyMetersPerSecond) < Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND) {
-            current[0].angle = lstates[0].angle;
-            current[1].angle = lstates[1].angle;
-            current[2].angle = lstates[2].angle;
-            current[3].angle = lstates[3].angle;
+  private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
+    if (Math.abs(m_chassisSpeeds.omegaRadiansPerSecond)
+            + Math.abs(m_chassisSpeeds.vxMetersPerSecond)
+            + Math.abs(m_chassisSpeeds.vyMetersPerSecond)
+        < Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND) {
+      current[0].angle = lstates[0].angle;
+      current[1].angle = lstates[1].angle;
+      current[2].angle = lstates[2].angle;
+      current[3].angle = lstates[3].angle;
     } else {
-            lstates = current;
+      lstates = current;
     }
     return current;
-}
+  }
+
   public void updateROSpose() {
     SmartDashboard.putNumber("/pose/th", getYaw().getRadians());
     SmartDashboard.putNumber("/pose/x", swerveOdometry.getPoseMeters().getX());
@@ -174,7 +170,6 @@ private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
     double[] pose = {swerveOdometry.getPoseMeters().getX(), swerveOdometry.getPoseMeters().getY()};
     return pose;
   }
-  
 
   public void resetOdometry(Pose2d pose) {
     swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
@@ -213,6 +208,6 @@ private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
 
   private PIDController getSkewAprilPID() {
 
-    return new PIDController(0.1, 0.0, 0.0);
-}
+    return new PIDController(0.01, 0.0, 0.0);
+  }
 }

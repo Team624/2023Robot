@@ -186,9 +186,4 @@ public class AutonPointCommand extends CommandBase {
     }
     return distance < path.getPoint(point).getTolerance();
   }
-
-  @Override
-  public InterruptionBehavior getInterruptionBehavior() {
-    return InterruptionBehavior.kCancelIncoming;
-  }
 }

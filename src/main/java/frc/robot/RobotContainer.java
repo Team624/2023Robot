@@ -15,7 +15,9 @@ import frc.robot.commands.Drivetrain.AutonomousDrive;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
+import frc.robot.commands.Drivetrain.VisionApirlTags;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 import frc.robot.utility.Auton;
 
 /**
@@ -37,8 +39,12 @@ public class RobotContainer {
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
 
+  private final JoystickButton alignTag =
+      new JoystickButton(d_controller, XboxController.Button.kY.value);
+
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Limelight m_limelight = new Limelight();
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
@@ -73,6 +79,9 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
+
+    alignTag.onTrue(
+        new VisionApirlTags(m_drivetrain, m_limelight, () -> -d_controller.getRawAxis(strafeAxis)));
   }
 
   /**

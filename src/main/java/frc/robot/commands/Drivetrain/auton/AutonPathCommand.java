@@ -30,9 +30,10 @@ public class AutonPathCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    //m_drivetrainSubsystem.autonPath_pidVision.reset();
+    // m_drivetrainSubsystem.autonPath_pidVision.reset();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < path.getLength(); i++) {
+      System.out.println("POINT IN Path" + i);
 
       commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
     }
@@ -55,14 +56,13 @@ public class AutonPathCommand extends CommandBase {
       // auton.getColorState();
 
       System.out.println("getting states");
-    } 
-    else {
+    } else {
       // m_drivetrainSubsystem.drive(
       //         ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, m_drivetrainSubsystem.getYaw()));
       m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, true, true);
     }
 
-    if (auton.getStartPathIndex() >= path.getPathId()
+    if (auton.getStartPathIndex() <= path.getPathId()
         && currentID != path.getPathId()
         && !m_drivetrainSubsystem.stopAuton) {
       // Starts the path once
@@ -93,9 +93,6 @@ public class AutonPathCommand extends CommandBase {
       // }
     }
   }
-  private double getRotationPID(double wantedDeltaAngle) {
-    double setpoint = m_drivetrainSubsystem.getYaw().getDegrees() + wantedDeltaAngle;
-
 
   @Override
   public void end(boolean interrupted) {
@@ -104,9 +101,11 @@ public class AutonPathCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    System.out.println(currentID);
+    System.out.println(path.getPathId());
     if (m_drivetrainSubsystem.lastPointCommand && currentID == path.getPathId()) {
-      m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, true, true);
 
+      // m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0, true, true);
 
       if (path.getPathId() == auton.getPathCount() - 1) {
         lastPath = true;
