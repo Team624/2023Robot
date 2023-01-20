@@ -11,22 +11,25 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 import java.util.function.DoubleSupplier;
 
-public class VisionApirlTags extends CommandBase {
+public class VisionAprilTags extends CommandBase {
   /** Creates a new VisionApirlTags. */
   private final Drivetrain m_drivetrain;
 
   private final Limelight m_limelight;
   private final DoubleSupplier m_translationXSupplier;
+  private final DoubleSupplier m_translationYSupplier;
 
   private SlewRateLimiter filterX = new SlewRateLimiter(4.5);
+  private SlewRateLimiter filterY = new SlewRateLimiter(4.5);
 
-  public VisionApirlTags(
-      Drivetrain drivetrain, Limelight limelight, DoubleSupplier translationXSupplier) {
+  public VisionAprilTags(
+      Drivetrain drivetrain, Limelight limelight, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
     this.m_translationXSupplier = translationXSupplier;
+    this.m_translationYSupplier = translationYSupplier;
     addRequirements(m_drivetrain);
   }
 
@@ -41,35 +44,60 @@ public class VisionApirlTags extends CommandBase {
   @Override
   public void execute() {
     double thVelocity = 0;
-    double xVelocity = 0;
+    
 
     double horiz_distance = m_limelight.alignment_values()[0];
+
     double skew_angle = m_limelight.alignment_values()[1];
 
-    if (horiz_distance < 0) {
-      xVelocity = -1.5;
-    } else {
-      xVelocity = 1.5;
-    }
     thVelocity = getSkewPID(skew_angle);
 
-    double yVelocity = m_translationXSupplier.getAsDouble();
+    if (thVelocity > 0.7) {
+          thVelocity = 0.7;
+        }
+    if (thVelocity < -0.7) {
+          thVelocity = -0.7;
+        }
 
-    yVelocity = filterX.calculate(yVelocity);
+  
+    
+    
+    
 
+    double xVelocity = m_translationXSupplier.getAsDouble();
+
+
+
+    
+    // if (horiz_distance<0){
+    //   xVelocity = 0.5;
+    // }
+    // else{
+    //   xVelocity = -0.5;
+    // }
+    double yVelocity = m_translationYSupplier.getAsDouble();
+
+    xVelocity = filterX.calculate(xVelocity);
+    yVelocity = filterY.calculate(yVelocity);
+
+    
     m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
+
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_drivetrain.drive(new Translation2d(0,0), 0, true, true);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // if (m_limelight.alignment_values()[1] <4){
-    //   return true;
-    // }
+    if (m_limelight.alignment_values()[0] <.1){
+      return true;
+    }
     return false;
   }
 

@@ -11,11 +11,11 @@ public class BlankDrive extends CommandBase {
   /** Creates a new BlankDrive. */
   private final Drivetrain m_drivetrainSubsystem;
 
-  public BlankDrive(Drivetrain drive) {
+  public BlankDrive(Drivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
 
-    this.m_drivetrainSubsystem = drive;
-    addRequirements(drive);
+    this.m_drivetrainSubsystem = drivetrain;
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.

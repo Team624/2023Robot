@@ -15,7 +15,7 @@ import frc.robot.commands.Drivetrain.AutonomousDrive;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
-import frc.robot.commands.Drivetrain.VisionApirlTags;
+import frc.robot.commands.Drivetrain.VisionAprilTags;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 import frc.robot.utility.Auton;
@@ -80,8 +80,9 @@ public class RobotContainer {
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    alignTag.onTrue(
-        new VisionApirlTags(m_drivetrain, m_limelight, () -> -d_controller.getRawAxis(strafeAxis)));
+    
+
+    alignTag.whileTrue(new VisionAprilTags(m_drivetrain, m_limelight, () -> -d_controller.getRawAxis(translationAxis),() -> -d_controller.getRawAxis(strafeAxis)));
   }
 
   /**
