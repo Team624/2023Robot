@@ -27,7 +27,7 @@ public class BlankDrive extends CommandBase {
   public void execute() {
 
     System.out.println("In BLANK");
-    if (!m_drivetrainSubsystem.isAuton) {
+    if (m_drivetrainSubsystem.isAuton) {
       System.out.println(m_drivetrainSubsystem.isAuton);
       this.cancel();
     }

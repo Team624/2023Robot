@@ -23,7 +23,10 @@ public class VisionAprilTags extends CommandBase {
   private SlewRateLimiter filterY = new SlewRateLimiter(4.5);
 
   public VisionAprilTags(
-      Drivetrain drivetrain, Limelight limelight, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier) {
+      Drivetrain drivetrain,
+      Limelight limelight,
+      DoubleSupplier translationXSupplier,
+      DoubleSupplier translationYSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_drivetrain = drivetrain;
@@ -44,7 +47,6 @@ public class VisionAprilTags extends CommandBase {
   @Override
   public void execute() {
     double thVelocity = 0;
-    
 
     double horiz_distance = m_limelight.alignment_values()[0];
 
@@ -52,51 +54,43 @@ public class VisionAprilTags extends CommandBase {
 
     thVelocity = getSkewPID(skew_angle);
 
-    if (thVelocity > 0.7) {
-          thVelocity = 0.7;
-        }
-    if (thVelocity < -0.7) {
-          thVelocity = -0.7;
-        }
-
-  
-    
-    
-    
-
     double xVelocity = m_translationXSupplier.getAsDouble();
+    // double yVelocity = m_translationYSupplier.getAsDouble();
 
+    double yVelocity = 0;
 
+    if (horiz_distance < 0) {
+      yVelocity = 0.5;
+    } else {
+      yVelocity = -0.5;
+    }
 
-    
-    // if (horiz_distance<0){
-    //   xVelocity = 0.5;
-    // }
-    // else{
-    //   xVelocity = -0.5;
-    // }
-    double yVelocity = m_translationYSupplier.getAsDouble();
-
+    if (skew_angle < 0) {
+      thVelocity = -0.5;
+    } else {
+      thVelocity = 0.5;
+    }
     xVelocity = filterX.calculate(xVelocity);
-    yVelocity = filterY.calculate(yVelocity);
+    // yVelocity = filterY.calculate(yVelocity);
 
-    
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
-
-    
+    m_drivetrain.drive(new Translation2d(xVelocity,yVelocity ), thVelocity, true, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new Translation2d(0,0), 0, true, true);
+    m_drivetrain.drive(new Translation2d(0, 0), 0, true, true);
+    System.out.println("interrupt");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_limelight.alignment_values()[0] <.1){
+    System.out.println(m_limelight.alignment_values()[0]);
+    System.out.println("angle" + m_limelight.alignment_values()[1]);
+    if (m_limelight.alignment_values()[1] < 5 && m_limelight.alignment_values()[1] >-5 && m_limelight.alignment_values()[0] < .1 && m_limelight.alignment_values()[0] >-.1) {
       return true;
+      
     }
     return false;
   }

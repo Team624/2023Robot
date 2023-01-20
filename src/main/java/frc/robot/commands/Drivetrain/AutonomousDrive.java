@@ -33,7 +33,6 @@ public class AutonomousDrive extends CommandBase {
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < auton.getPathCount(); i++) {
       commandGroup.addCommands(new AutonPathCommand(m_drivetrainSubsystem, auton.auton[i], auton));
-      
     }
     // this.alongWith(commandGroup);
     // commandGroup.schedule(false);

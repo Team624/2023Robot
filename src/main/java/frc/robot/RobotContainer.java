@@ -80,9 +80,12 @@ public class RobotContainer {
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    
-
-    alignTag.whileTrue(new VisionAprilTags(m_drivetrain, m_limelight, () -> -d_controller.getRawAxis(translationAxis),() -> -d_controller.getRawAxis(strafeAxis)));
+    alignTag.whileTrue(
+        new VisionAprilTags(
+            m_drivetrain,
+            m_limelight,
+            () -> -d_controller.getRawAxis(translationAxis),
+            () -> -d_controller.getRawAxis(strafeAxis)));
   }
 
   /**

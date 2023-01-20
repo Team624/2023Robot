@@ -50,6 +50,7 @@ public class Limelight extends SubsystemBase {
   public double[] alignment_values() {
     if (tid <= 8 && tid >= 1) {
       double distance = Math.abs(y_coordinate - id_json.get(tid));
+      // System.out.println(angle);
       if (angle < 0) {
         double[] output = {-distance, -angle};
         return output;

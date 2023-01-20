@@ -125,6 +125,10 @@ public class Auton {
     SmartDashboard.putBoolean("/auto/state", state);
   }
 
+  public boolean getState() {
+    return isAuton;
+  }
+
   public void resetStates() {
     System.out.println("reset states");
   }
