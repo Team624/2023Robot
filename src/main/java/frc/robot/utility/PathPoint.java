@@ -1,5 +1,8 @@
 package frc.robot.utility;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class PathPoint {
   private double x, y, vx, vy, heading, tolerance;
 
@@ -58,5 +61,9 @@ public class PathPoint {
 
   public double getTolerance() {
     return tolerance;
+  }
+
+  public Pose2d getPose() {
+    return new Pose2d(this.x, this.y, new Rotation2d(heading));
   }
 }

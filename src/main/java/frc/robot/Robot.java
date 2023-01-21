@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.utility.Auton;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,12 +18,11 @@ import frc.robot.utility.Auton;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_autonSelectionCommand;
 
   public static CTREConfigs ctreConfigs;
 
   private RobotContainer m_robotContainer;
-
-  private Auton auton;
 
   private Compressor compressor;
 
@@ -43,9 +41,8 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
 
-    auton = new Auton(m_robotContainer.getDrivetrain());
-
-    auton.setState(false);
+    m_autonSelectionCommand = m_robotContainer.getAutonSelectionCommand();
+    m_autonSelectionCommand.schedule();
   }
 
   /**
@@ -57,7 +54,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    auton.sendAutoChoice();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -70,30 +66,22 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_robotContainer.ghostSwerve();
     compressor.disable();
-    auton.setState(false);
 
-    if (m_robotContainer.getAutonomousDriveCommand(auton) != null) {
-      m_robotContainer.getAutonomousDriveCommand(auton).cancel();
-    }
+    if (m_autonomousCommand != null) m_autonomousCommand.cancel();
   }
 
   @Override
-  public void disabledPeriodic() {
-    auton.updatePaths();
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // schedule the autonomous command (example)
-
-    auton.resetStates();
     compressor.enableDigital();
-    auton.setState(true);
     m_robotContainer.setBlankDrivetrainCommand();
-    // m_robotContainer.getAutonomousDriveCommand(auton).schedule(true);
-    // m_robotContainer.getAutonomousDriveCommand(auton).schedule();
-    m_robotContainer.getAutonomousDriveCommand(auton).schedule();
+
+    this.m_autonomousCommand = m_robotContainer.getAutonManager();
+
+    m_autonomousCommand.schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -102,17 +90,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
+    // This makes sure that the autonomous stops running when`
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    auton.setState(false);
+    if (m_autonomousCommand != null) m_autonomousCommand.cancel();
+
     compressor.enableDigital();
 
-    if (m_robotContainer.getAutonomousDriveCommand(auton) != null) {
-      m_robotContainer.getAutonomousDriveCommand(auton).cancel();
-    }
     m_robotContainer.setDrivetrainDefaultCommand();
   }
 

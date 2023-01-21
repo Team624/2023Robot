@@ -75,6 +75,10 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public void stop() {
+    this.drive(new Translation2d(0.0, 0.0), 0.0, false, true);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -100,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private PIDController getRotationPathPID() {
-    return new PIDController(0.000, 0, 0);
+    return new PIDController(0.006, 0.0005, 0.0);
   }
 
   public void updateROSpose() {
@@ -123,8 +127,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void setPose() {
     zeroGyroscope();
-    double[] zeros = {0.0, 0.0, 0.0};
-    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(zeros);
+    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
+    System.out.println("Start pose: " + startPosition.toString());
     Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
     // swerveOdometry.resetPosition(newPose, newRot);

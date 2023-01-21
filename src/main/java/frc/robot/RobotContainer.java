@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Drivetrain.AutonomousDrive;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
+import frc.robot.commands.auton.AutonManager;
+import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.utility.Auton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -84,8 +84,12 @@ public class RobotContainer {
     return m_drivetrain;
   }
 
-  public Command getAutonomousDriveCommand(Auton auton) {
-    return new AutonomousDrive(m_drivetrain, auton);
+  public Command getAutonManager() {
+    return new AutonManager(m_drivetrain);
+  }
+
+  public Command getAutonSelectionCommand() {
+    return new AutonSelection();
   }
 
   public void ghostSwerve() {
