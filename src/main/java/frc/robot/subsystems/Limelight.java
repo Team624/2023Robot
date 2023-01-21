@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Vision extends SubsystemBase {
+public class Limelight extends SubsystemBase {
 
   private final NetworkTable networkTable;
   private final NetworkTableEntry botpose_network;
@@ -22,7 +22,7 @@ public class Vision extends SubsystemBase {
   private double tid;
   private Map<Double, Double> id_json;
 
-  public Vision() {
+  public Limelight() {
     networkTable = NetworkTableInstance.getDefault().getTable("limelight");
     botpose_network = networkTable.getEntry("botpose");
     camtran_network = networkTable.getEntry("camtran");
@@ -50,6 +50,7 @@ public class Vision extends SubsystemBase {
   public double[] alignment_values() {
     if (tid <= 8 && tid >= 1) {
       double distance = Math.abs(y_coordinate - id_json.get(tid));
+      // System.out.println(angle);
       if (angle < 0) {
         double[] output = {-distance, -angle};
         return output;
