@@ -11,7 +11,6 @@ import frc.robot.utility.Path;
 public class AutonPathCommand extends CommandBase {
   private final Drivetrain m_drivetrainSubsystem;
 
-  private SequentialCommandGroup commandGroup;
   private Path path;
 
   private Auton auton;
@@ -19,6 +18,8 @@ public class AutonPathCommand extends CommandBase {
   private int currentID = -1;
 
   private boolean lastPath = false;
+
+  private SequentialCommandGroup commandGroup;
 
   public AutonPathCommand(Drivetrain drive, Path path, Auton auton) {
     this.m_drivetrainSubsystem = drive;
@@ -30,13 +31,16 @@ public class AutonPathCommand extends CommandBase {
 
   @Override
   public void initialize() {
+
     // m_drivetrainSubsystem.autonPath_pidVision.reset();
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < path.getLength(); i++) {
       System.out.println("POINT IN Path" + i);
-
+      
       commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
     }
+
+    commandGroup.schedule();
 
     m_drivetrainSubsystem.lastPointCommand = false;
   }
@@ -70,7 +74,6 @@ public class AutonPathCommand extends CommandBase {
 
       // commandGroup.schedule(false);
       //   commandGroup.schedule();
-      commandGroup.schedule();
 
       SmartDashboard.getEntry("/pathTable/status/path").setNumber(path.getPathId());
       currentID = path.getPathId();

@@ -73,7 +73,7 @@ public class VisionAprilTags extends CommandBase {
     xVelocity = filterX.calculate(xVelocity);
     // yVelocity = filterY.calculate(yVelocity);
 
-    m_drivetrain.drive(new Translation2d(xVelocity,yVelocity ), thVelocity, true, false);
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
   }
 
   // Called once the command ends or is interrupted.
@@ -88,9 +88,11 @@ public class VisionAprilTags extends CommandBase {
   public boolean isFinished() {
     System.out.println(m_limelight.alignment_values()[0]);
     System.out.println("angle" + m_limelight.alignment_values()[1]);
-    if (m_limelight.alignment_values()[1] < 5 && m_limelight.alignment_values()[1] >-5 && m_limelight.alignment_values()[0] < .1 && m_limelight.alignment_values()[0] >-.1) {
+    if (m_limelight.alignment_values()[1] < 5
+        && m_limelight.alignment_values()[1] > -5
+        && m_limelight.alignment_values()[0] < .1
+        && m_limelight.alignment_values()[0] > -.1) {
       return true;
-      
     }
     return false;
   }
