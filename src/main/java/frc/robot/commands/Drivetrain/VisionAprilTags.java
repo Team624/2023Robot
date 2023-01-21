@@ -17,62 +17,61 @@ public class VisionAprilTags extends CommandBase {
 
   private final Limelight m_limelight;
   private final DoubleSupplier m_translationXSupplier;
-  private final DoubleSupplier m_translationYSupplier;
+  private final DoubleSupplier m_translationThSupplier;
 
   private SlewRateLimiter filterX = new SlewRateLimiter(4.5);
-  private SlewRateLimiter filterY = new SlewRateLimiter(4.5);
+  private SlewRateLimiter filterTh = new SlewRateLimiter(4.5);
 
   public VisionAprilTags(
       Drivetrain drivetrain,
       Limelight limelight,
       DoubleSupplier translationXSupplier,
-      DoubleSupplier translationYSupplier) {
+      DoubleSupplier translationThSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
     this.m_translationXSupplier = translationXSupplier;
-    this.m_translationYSupplier = translationYSupplier;
+    this.m_translationThSupplier = translationThSupplier;
     addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-    m_drivetrain.skewApril_pid.reset();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double thVelocity = 0;
 
-    double horiz_distance = m_limelight.alignment_values()[0];
+    double thVelocity = 0;
+    double yVelocity = 0;
 
     double skew_angle = m_limelight.alignment_values()[1];
 
     thVelocity = getSkewPID(skew_angle);
-
-    double xVelocity = m_translationXSupplier.getAsDouble();
-    // double yVelocity = m_translationYSupplier.getAsDouble();
-
-    double yVelocity = 0;
-
-    if (horiz_distance < 0) {
-      yVelocity = 0.5;
-    } else {
-      yVelocity = -0.5;
-    }
 
     if (skew_angle < 0) {
       thVelocity = -0.5;
     } else {
       thVelocity = 0.5;
     }
-    xVelocity = filterX.calculate(xVelocity);
-    // yVelocity = filterY.calculate(yVelocity);
 
+<<<<<<< HEAD
+=======
+    double horiz_distance = m_limelight.alignment_values()[0];
+
+    double xVelocity = m_translationXSupplier.getAsDouble();
+
+    if (horiz_distance < 0) {
+      yVelocity = -0.4;
+    } else {
+      yVelocity = 0.4;
+    }
+
+    xVelocity = filterX.calculate(xVelocity);
+
+>>>>>>> 9f24c3ebd1181c781890549a453b1d858909f089
     m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
   }
 
@@ -86,14 +85,23 @@ public class VisionAprilTags extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+<<<<<<< HEAD
     System.out.println(m_limelight.alignment_values()[0]);
     System.out.println("angle" + m_limelight.alignment_values()[1]);
     if (m_limelight.alignment_values()[1] < 5
         && m_limelight.alignment_values()[1] > -5
         && m_limelight.alignment_values()[0] < .1
         && m_limelight.alignment_values()[0] > -.1) {
+=======
+    System.out.println("distance: " + m_limelight.alignment_values()[0]);
+    System.out.println("angle: " + m_limelight.alignment_values()[1]);
+
+    if (Math.abs(m_limelight.alignment_values()[0]) < 0.1
+        && Math.abs(m_limelight.alignment_values()[1]) < 5) {
+>>>>>>> 9f24c3ebd1181c781890549a453b1d858909f089
       return true;
     }
+
     return false;
   }
 

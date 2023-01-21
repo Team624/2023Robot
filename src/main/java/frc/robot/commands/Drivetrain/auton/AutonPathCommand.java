@@ -11,6 +11,10 @@ import frc.robot.utility.Path;
 public class AutonPathCommand extends CommandBase {
   private final Drivetrain m_drivetrainSubsystem;
 
+<<<<<<< HEAD
+=======
+  private SequentialCommandGroup commandGroup = new SequentialCommandGroup();
+>>>>>>> 9f24c3ebd1181c781890549a453b1d858909f089
   private Path path;
 
   private Auton auton;
@@ -33,11 +37,22 @@ public class AutonPathCommand extends CommandBase {
   public void initialize() {
 
     // m_drivetrainSubsystem.autonPath_pidVision.reset();
+<<<<<<< HEAD
     commandGroup = new SequentialCommandGroup();
     for (int i = 0; i < path.getLength(); i++) {
       System.out.println("POINT IN Path" + i);
       
       commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
+=======
+    // commandGroup = new SequentialCommandGroup();
+
+    while (path.getLength() != currentID) {
+      for (int i = 0; i < path.getLength(); i++) {
+        System.out.println("POINT IN Path" + i);
+
+        commandGroup.addCommands(new AutonPointCommand(m_drivetrainSubsystem, path, i, auton));
+      }
+>>>>>>> 9f24c3ebd1181c781890549a453b1d858909f089
     }
 
     commandGroup.schedule();
@@ -47,6 +62,7 @@ public class AutonPathCommand extends CommandBase {
 
   @Override
   public void execute() {
+
     // auton.getColorState();
     if (!auton.isAuton) {
       // m_drivetrainSubsystem.drive(new ChassisSpeeds(0, 0, 0));
@@ -99,7 +115,7 @@ public class AutonPathCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    commandGroup.cancel();
+    // commandGroup.cancel();
   }
 
   @Override

@@ -85,7 +85,7 @@ public class RobotContainer {
             m_drivetrain,
             m_limelight,
             () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(strafeAxis)));
+            () -> -d_controller.getRawAxis(rotationAxis)));
   }
 
   /**
