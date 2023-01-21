@@ -42,6 +42,9 @@ public class RobotContainer {
   private final JoystickButton alignTag =
       new JoystickButton(d_controller, XboxController.Button.kY.value);
 
+  private final JoystickButton alignTag2 =
+      new JoystickButton(d_controller, XboxController.Button.kB.value);
+
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Limelight m_limelight = new Limelight();
@@ -86,6 +89,13 @@ public class RobotContainer {
             m_limelight,
             () -> -d_controller.getRawAxis(translationAxis),
             () -> -d_controller.getRawAxis(rotationAxis)));
+
+    alignTag2.whileTrue(
+        new VisionAprilTags(
+            m_drivetrain,
+            m_limelight,
+            () -> -d_controller.getRawAxis(translationAxis),
+            () -> -d_controller.getRawAxis(strafeAxis)));
   }
 
   /**
