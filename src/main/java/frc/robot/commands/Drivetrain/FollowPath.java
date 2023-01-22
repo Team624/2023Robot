@@ -38,7 +38,7 @@ public class FollowPath extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (isWithinTolerance() && !nextPoint() || currentPointIndex >= path.getLength()-1) return;
+    if (isWithinTolerance() && !nextPoint() || currentPointIndex >= path.getLength() - 1) return;
 
     double[] errors = getErrors();
 
@@ -46,7 +46,7 @@ public class FollowPath extends CommandBase {
     double vy = point.getVy() + errors[1];
     double vHeading = applyAutonRotationPID(point.getHeading());
 
-    drivetrain.drive(new Translation2d(vx, vy), vHeading, true, false);
+    drivetrain.drive(new Translation2d(vx, vy), vHeading, true, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -126,17 +126,22 @@ public class FollowPath extends CommandBase {
     double wantedAngle = drivetrain.normalizeNuclearBombs(heading);
 
     double errorA =
-        wantedAngle - drivetrain.normalizeNuclearBombs(drivetrain.getYaw().getRadians());
+      drivetrain.normalizeNuclearBombs(wantedAngle - drivetrain.normalizeNuclearBombs(drivetrain.getYaw().getRadians()));
     double errorB = errorA - (Math.PI * 2);
     double errorC = errorA + (Math.PI * 2);
-
+    
     double wantedDeltaAngle = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
     wantedDeltaAngle = Math.abs(wantedDeltaAngle) < Math.abs(errorA) ? wantedDeltaAngle : errorA;
 
+    System.out.println("Wanted: " + wantedAngle);
+    System.out.println("Current: " + drivetrain.normalizeNuclearBombs(drivetrain.getYaw().getRadians()));
+    System.out.println("Error: " + wantedDeltaAngle);
+    System.out.println("Selected " + (wantedAngle == errorA ? "A" : wantedAngle == errorB ? "B" : "C"));
+
     double thVelocity =
         drivetrain.autonPoint_pidPathRotation.calculate(
-            drivetrain.getYaw().getDegrees(),
-            drivetrain.getYaw().getDegrees() + wantedDeltaAngle * (180 / Math.PI));
+            drivetrain.getYaw().getRadians(),
+            drivetrain.getYaw().getRadians() + wantedDeltaAngle);
 
     return thVelocity;
   }

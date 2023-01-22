@@ -28,8 +28,7 @@ public class AutonManager extends CommandBase {
     updatePaths();
     drivetrain.setPose();
     drivetrain.setAuton(true);
-    SmartDashboard.getEntry("/pathTable/status/finishedPath")
-        .setString("false -1");
+    SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
 
     SmartDashboard.putBoolean("/auto/state", true);
   }
@@ -59,9 +58,8 @@ public class AutonManager extends CommandBase {
     if (currentFollowPathCommand != null && currentFollowPathCommand.isScheduled()) return false;
 
     int index = SmartDashboard.getEntry("/pathTable/startPathIndex").getNumber(-1).intValue();
-    
-    if (index < 0 || index >= paths.length || index <= previousPath) return false;
 
+    if (index < 0 || index >= paths.length || index <= previousPath) return false;
 
     FollowPath followPathCommand = new FollowPath(this.drivetrain, this.paths[index]);
 
@@ -71,7 +69,7 @@ public class AutonManager extends CommandBase {
 
     // Use deadlineWith to stop when AutonManager stops.
     followPathCommand.schedule();
-    
+
     SmartDashboard.getEntry("/pathTable/startPathIndex").setNumber(-1);
 
     return true;

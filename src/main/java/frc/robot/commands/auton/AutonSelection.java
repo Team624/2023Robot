@@ -22,8 +22,7 @@ public class AutonSelection extends CommandBase {
             .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
 
-    SmartDashboard.getEntry("/pathTable/status/finishedPath")
-            .setString("false -1");
+    SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
 
     System.out.println("Started disabled command");
   }

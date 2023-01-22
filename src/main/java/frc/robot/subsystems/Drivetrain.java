@@ -27,10 +27,14 @@ public class Drivetrain extends SubsystemBase {
 
   private AHRS ahrs = new AHRS(edu.wpi.first.wpilibj.SPI.Port.kMXP);
 
+  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
   public boolean isAuton = false;
   public boolean lastPointCommand = false;
   public boolean stopAuton = false;
   public PIDController autonPoint_pidPathRotation;
+
+  public SwerveModuleState[] mainStates;
 
   public Drivetrain() {
 
@@ -52,27 +56,27 @@ public class Drivetrain extends SubsystemBase {
       Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates;
     if (fieldRelative) {
-      swerveModuleStates =
-          Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  translation.getX(), translation.getY(), rotation, getYaw()));
+      // swerveModuleStates =
+      //     Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+      //         ChassisSpeeds.fromFieldRelativeSpeeds(
+      //             translation.getX(), translation.getY(), rotation, getYaw()));
+      m_chassisSpeeds =
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+              translation.getX(), translation.getY(), rotation, getYaw());
 
     } else {
-      swerveModuleStates =
-          Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-              new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-    }
-    // SwerveModuleState[] swerveModuleStates =
-    //     Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-    //         fieldRelative
-    //             ? ChassisSpeeds.fromFieldRelativeSpeeds(
-    //                 translation.getX(), translation.getY(), rotation, getYaw())
-    //             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+      // swerveModuleStates =
+      //     Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+      //         new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
-    for (SwerveModule mod : mSwerveMods) {
-      mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+      m_chassisSpeeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
     }
+
+    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+
+    //   for (SwerveModule mod : mSwerveMods) {
+    //     mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+    //   }
   }
 
   public void stop() {
@@ -82,8 +86,15 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SwerveModuleState[] m_States =
+        Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
 
-    swerveOdometry.update(getYaw(), getModulePositions());
+    SwerveDriveKinematics.desaturateWheelSpeeds(m_States, Constants.Swerve.maxSpeed);
+
+    for (SwerveModule mod : mSwerveMods) {
+      mod.setDesiredState(m_States[mod.moduleNumber], true);
+    }
+
     SwerveModulePosition[] positions = getModulePositions();
     for (SwerveModule mod : mSwerveMods) {
       SmartDashboard.putNumber(
@@ -104,7 +115,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private PIDController getRotationPathPID() {
-    return new PIDController(0.006, 0.0005, 0.0);
+    return new PIDController(0.4, 0.0, 0.0);
   }
 
   public void updateROSpose() {
@@ -118,7 +129,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+    // SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(desiredStates[mod.moduleNumber], false);
@@ -127,7 +138,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void setPose() {
     zeroGyroscope();
-    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
+    double[] startPosition =
+        SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
     System.out.println("Start pose: " + startPosition.toString());
     Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
