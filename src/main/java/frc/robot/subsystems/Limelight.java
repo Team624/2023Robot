@@ -20,6 +20,8 @@ public class Limelight extends SubsystemBase {
   private double angle;
   private double tv;
   private double tid;
+
+  private double[] botpose;
   private Map<Double, Double> id_json;
 
   public Limelight() {
@@ -50,10 +52,10 @@ public class Limelight extends SubsystemBase {
   public double[] alignment_values() {
     if (tid <= 8 && tid >= 1) {
       double distance = Math.abs(y_coordinate - id_json.get(tid));
-      // System.out.println(angle);
       if (angle < 0) {
         double[] output = {-distance, -angle};
         return output;
+
       } else {
         double[] output = {distance, -angle};
         return output;
@@ -66,6 +68,7 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     double[] botpose_data = botpose_network.getDoubleArray(new double[] {});
+    botpose = botpose_data;
     if (botpose_data.length == 6) {
       x_coordinate = botpose_data[0];
       y_coordinate = botpose_data[1];
@@ -93,6 +96,10 @@ public class Limelight extends SubsystemBase {
 
   public double getAngle() {
     return angle;
+  }
+
+  public double[] getBotPose() {
+    return botpose;
   }
 
   public String getValues() {

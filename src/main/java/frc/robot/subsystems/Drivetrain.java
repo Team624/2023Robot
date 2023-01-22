@@ -65,17 +65,21 @@ public class Drivetrain extends SubsystemBase {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   translation.getX(), translation.getY(), rotation, getYaw()));
 
-    } else {
+    } 
+    else {
       swerveModuleStates =
           Constants.Swerve.swerveKinematics.toSwerveModuleStates(
               new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
     }
+
+    
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
     }
+
   }
 
   @Override
@@ -132,6 +136,14 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("/pose/th", getYaw().getRadians());
     SmartDashboard.putNumber("/pose/x", swerveOdometry.getPoseMeters().getX());
     SmartDashboard.putNumber("/pose/y", swerveOdometry.getPoseMeters().getY());
+  }
+
+  public void updatePoseLimelight(double[] pose) {
+    
+
+    Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
+    System.out.println(newPose);
+    swerveOdometry.resetPosition(getYaw(), getModulePositions(), newPose);
   }
 
   public void setAuton(boolean state) {
