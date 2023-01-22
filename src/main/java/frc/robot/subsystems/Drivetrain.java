@@ -65,21 +65,18 @@ public class Drivetrain extends SubsystemBase {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   translation.getX(), translation.getY(), rotation, getYaw()));
 
-    } 
-    else {
+    } else {
       swerveModuleStates =
           Constants.Swerve.swerveKinematics.toSwerveModuleStates(
               new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
     }
 
-    
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
     }
-
   }
 
   @Override
@@ -139,7 +136,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void updatePoseLimelight(double[] pose) {
-    
 
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
     System.out.println(newPose);
@@ -151,7 +147,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(desiredStates[mod.moduleNumber], false);

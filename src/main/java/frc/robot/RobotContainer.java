@@ -47,7 +47,7 @@ public class RobotContainer {
   private final JoystickButton alignTag2 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
 
-      private final JoystickButton resetpose =
+  private final JoystickButton resetpose =
       new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
@@ -68,8 +68,6 @@ public class RobotContainer {
             () -> -d_controller.getRawAxis(strafeAxis),
             () -> -d_controller.getRawAxis(rotationAxis),
             () -> robotCentric.getAsBoolean()));
-
-  
 
     configureBindings();
   }
@@ -98,7 +96,6 @@ public class RobotContainer {
             () -> -d_controller.getRawAxis(rotationAxis)));
 
     resetpose.whileTrue(new UpdatePose(m_drivetrain, m_limelight));
-    
 
     alignTag2.whileTrue(
         new AprilTagTheta(
@@ -106,8 +103,6 @@ public class RobotContainer {
             m_limelight,
             () -> -d_controller.getRawAxis(translationAxis),
             () -> -d_controller.getRawAxis(strafeAxis)));
-
-            
   }
 
   /**
