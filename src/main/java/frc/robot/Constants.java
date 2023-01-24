@@ -181,4 +181,26 @@ public final class Constants {
               angleOffset3);
     }
   }
+
+  public static final class Autonomous {
+    // PID Controler for x alignment
+    public static final double DRIVE_CONTROLLER_X_KP = 0.0;
+    public static final double DRIVE_CONTROLLER_X_KI = 0.0;
+    public static final double DRIVE_CONTROLLER_X_KD = 0.0;
+
+    // PID Controller for y alignment
+    public static final double DRIVE_CONTROLLER_Y_KP = 0.0;
+    public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
+    public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
+
+    // Profiled PID Controller for rotation
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 0.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY = 1.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = 1.0;
+
+    // Rotational tolerance for autonomous paths
+    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromDegrees(10);
+  }
 }

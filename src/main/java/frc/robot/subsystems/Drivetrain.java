@@ -5,15 +5,12 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-<<<<<<< eli-auton
-=======
 import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
 import com.swervedrivespecialties.swervelib.MotorType;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.MathUtil;
->>>>>>> local
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,7 +38,6 @@ public class Drivetrain extends SubsystemBase {
   public boolean isAuton = false;
   public boolean lastPointCommand = false;
   public boolean stopAuton = false;
-  public PIDController autonPoint_pidPathRotation;
 
   public SwerveModuleState[] mainStates;
 
@@ -58,7 +54,6 @@ public class Drivetrain extends SubsystemBase {
     swerveOdometry =
         new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
 
-    autonPoint_pidPathRotation = getRotationPathPID();
   }
 
   public void drive(
@@ -86,6 +81,10 @@ public class Drivetrain extends SubsystemBase {
     //   for (SwerveModule mod : mSwerveMods) {
     //     mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
     //   }
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds) {
+    m_chassisSpeeds = chassisSpeeds;
   }
 
   public void stop() {
@@ -123,13 +122,6 @@ public class Drivetrain extends SubsystemBase {
     updateROSpose();
   }
 
-  private PIDController getRotationPathPID() {
-<<<<<<< eli-auton
-    return new PIDController(0.4, 0.0, 0.0);
-=======
-    return new PIDController(0.45, 0, 0);
-  }
-
   private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
     if (Math.abs(m_chassisSpeeds.omegaRadiansPerSecond)
             + Math.abs(m_chassisSpeeds.vxMetersPerSecond)
@@ -143,7 +135,6 @@ public class Drivetrain extends SubsystemBase {
       lstates = current;
     }
     return current;
->>>>>>> local
   }
 
   public void updateROSpose() {
@@ -166,7 +157,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void setPose() {
     zeroGyroscope();
-    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
+    double[] zeros = {0.0, 0.0, 0.0};
+    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(zeros);
     Rotation2d newRot = new Rotation2d( startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
     // swerveOdometry.resetPosition(newPose, newRot);
@@ -179,13 +171,8 @@ public class Drivetrain extends SubsystemBase {
     ahrs.reset();
   }
 
-  public Pose2d getPose() {
-    return swerveOdometry.getPoseMeters();
-  }
-
-  public double[] getSwervePose() {
-    double[] pose = {swerveOdometry.getPoseMeters().getX(), swerveOdometry.getPoseMeters().getY()};
-    return pose;
+  public Pose2d getPose() {    
+    return new Pose2d(swerveOdometry.getPoseMeters().getTranslation(), getYaw());
   }
 
   public void resetOdometry(Pose2d pose) {
