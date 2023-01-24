@@ -95,9 +95,4 @@ public class VisionAprilTags extends CommandBase {
 
     return false;
   }
-
-  private double getSkewPID(double wantedDeltaAngle) {
-    return m_drivetrain.skewApril_pid.calculate(
-        m_drivetrain.getYaw().getDegrees(), m_drivetrain.getYaw().getDegrees() + wantedDeltaAngle);
-  }
 }
