@@ -5,6 +5,15 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+<<<<<<< eli-auton
+=======
+import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
+import com.swervedrivespecialties.swervelib.MotorType;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import edu.wpi.first.math.MathUtil;
+>>>>>>> local
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -115,7 +124,26 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private PIDController getRotationPathPID() {
+<<<<<<< eli-auton
     return new PIDController(0.4, 0.0, 0.0);
+=======
+    return new PIDController(0.45, 0, 0);
+  }
+
+  private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
+    if (Math.abs(m_chassisSpeeds.omegaRadiansPerSecond)
+            + Math.abs(m_chassisSpeeds.vxMetersPerSecond)
+            + Math.abs(m_chassisSpeeds.vyMetersPerSecond)
+        < Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND) {
+      current[0].angle = lstates[0].angle;
+      current[1].angle = lstates[1].angle;
+      current[2].angle = lstates[2].angle;
+      current[3].angle = lstates[3].angle;
+    } else {
+      lstates = current;
+    }
+    return current;
+>>>>>>> local
   }
 
   public void updateROSpose() {
@@ -138,10 +166,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void setPose() {
     zeroGyroscope();
-    double[] startPosition =
-        SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
-    System.out.println("Start pose: " + startPosition.toString());
-    Rotation2d newRot = new Rotation2d(startPosition[2]);
+    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
+    Rotation2d newRot = new Rotation2d( startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
     // swerveOdometry.resetPosition(newPose, newRot);
     swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);

@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -123,7 +124,11 @@ public class FollowPath extends CommandBase {
 
   // Calculates the PID for durning to the given heading
   private double applyAutonRotationPID(double heading) {
-    double wantedAngle = drivetrain.normalizeNuclearBombs(heading);
+    double currentAngle = drivetrain.getYaw().getRadians();
+
+    int rotations = (int) (currentAngle / (Math.PI * 2));
+
+    double wantedAngle = heading + Math.abs(rotations * Math.PI * 2);
 
     double errorA =
       drivetrain.normalizeNuclearBombs(wantedAngle - drivetrain.normalizeNuclearBombs(drivetrain.getYaw().getRadians()));
@@ -133,15 +138,13 @@ public class FollowPath extends CommandBase {
     double wantedDeltaAngle = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
     wantedDeltaAngle = Math.abs(wantedDeltaAngle) < Math.abs(errorA) ? wantedDeltaAngle : errorA;
 
-    System.out.println("Wanted: " + wantedAngle);
-    System.out.println("Current: " + drivetrain.normalizeNuclearBombs(drivetrain.getYaw().getRadians()));
-    System.out.println("Error: " + wantedDeltaAngle);
-    System.out.println("Selected " + (wantedAngle == errorA ? "A" : wantedAngle == errorB ? "B" : "C"));
+    System.out.println("Measurement: " + currentAngle);
+    System.out.println("Setpoint: " + wantedAngle);
 
     double thVelocity =
         drivetrain.autonPoint_pidPathRotation.calculate(
-            drivetrain.getYaw().getRadians(),
-            drivetrain.getYaw().getRadians() + wantedDeltaAngle);
+            currentAngle,
+            wantedAngle);
 
     return thVelocity;
   }
