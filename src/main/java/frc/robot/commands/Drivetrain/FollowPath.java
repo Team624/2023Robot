@@ -118,30 +118,30 @@ public class FollowPath extends CommandBase {
 
     double distance = Math.hypot(diffX, diffY);
 
-    System.out.println("this is distance"+distance);
+    System.out.println("this is distance" + distance);
 
     return distance;
   }
 
   // Calculates the PID for durning to the given heading
   private double applyAutonRotationPID(double heading) {
-    double wantedAngle = drivetrain.normalizeNuclearBombs(heading);
+    double wantedAngle = drivetrain.normalizeAngle(heading);
 
     double errorA =
-        drivetrain.normalizeNuclearBombs(
-            wantedAngle - drivetrain.normalizeNuclearBombs(drivetrain.getYaw().getRadians()));
+        drivetrain.normalizeAngle(
+            wantedAngle - drivetrain.normalizeAngle(drivetrain.getYaw().getRadians()));
     double errorB = errorA - (Math.PI * 2);
     double errorC = errorA + (Math.PI * 2);
 
     double wantedDeltaAngle = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
     wantedDeltaAngle = Math.abs(wantedDeltaAngle) < Math.abs(errorA) ? wantedDeltaAngle : errorA;
 
+    double thVelocity = 0;
 
-
-
-    double thVelocity =
+    thVelocity =
         drivetrain.autonPoint_pidPathRotation.calculate(
-            drivetrain.getYaw().getDegrees(), drivetrain.getYaw().getDegrees() + wantedDeltaAngle*(180/ Math.PI));
+            drivetrain.getYaw().getDegrees(),
+            drivetrain.getYaw().getDegrees() + wantedDeltaAngle * (180 / Math.PI));
 
     return thVelocity;
   }
