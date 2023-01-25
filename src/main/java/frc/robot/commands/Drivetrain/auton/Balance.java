@@ -24,7 +24,7 @@ public class Balance extends CommandBase {
   @Override
   public void execute() {
     angle = m_drivetrain.getAngle();
-    double pid_val = -pidController.calculate(angle);
+    double pid_val = pidController.calculate(angle);
     System.out.println(angle + "° : " + pid_val);
     // m_drivetrain.drive(new Translation2d(pidController.calculate(angle), 0), 0, true, false);
   }
