@@ -16,6 +16,7 @@ import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.VisionAprilTags;
+import frc.robot.commands.Drivetrain.auton.Balance;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 import frc.robot.utility.Auton;
@@ -44,6 +45,9 @@ public class RobotContainer {
 
   private final JoystickButton alignTag2 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
+
+  private final JoystickButton balanceButton =
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -96,6 +100,8 @@ public class RobotContainer {
             m_limelight,
             () -> -d_controller.getRawAxis(translationAxis),
             () -> -d_controller.getRawAxis(strafeAxis)));
+
+    balanceButton.whileTrue(new Balance(m_drivetrain));
   }
 
   /**

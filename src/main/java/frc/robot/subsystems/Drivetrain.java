@@ -210,4 +210,12 @@ public class Drivetrain extends SubsystemBase {
 
     return new PIDController(0.008, 0.0, 0.0);
   }
+
+  public AHRS getAhrs() {
+    return ahrs;
+  }
+
+  public double getAngle() {
+    return ahrs.getRoll();
+  }
 }
