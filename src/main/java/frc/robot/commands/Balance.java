@@ -27,7 +27,7 @@ public class Balance extends CommandBase {
     angle = m_drivetrain.getAngle();
     double pid_val = pidController.calculate(angle);
     System.out.println(angle + "° : " + pid_val);
-    m_drivetrain.drive(new Translation2d(pidController.calculate(angle), 0), 0, true, false);
+    m_drivetrain.drive(new Translation2d(pidController.calculate(angle), 0), 0, true);
   }
 
   @Override
@@ -35,9 +35,9 @@ public class Balance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    
-    if (-angleThreshold < angle && angle < angleThreshold){
-      m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, false);
+
+    if (-angleThreshold < angle && angle < angleThreshold) {
+      m_drivetrain.drive(new Translation2d(0, 0), 0.5, true);
       return true;
     }
     return false;

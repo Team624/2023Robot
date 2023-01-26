@@ -26,13 +26,13 @@ public class AprilTagTheta extends CommandBase {
       Drivetrain drivetrain,
       Limelight limelight,
       DoubleSupplier translationXSupplier,
-      DoubleSupplier translationThSupplier) {
+      DoubleSupplier translationYSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
     this.m_translationXSupplier = translationXSupplier;
-    this.m_translationYSupplier = translationThSupplier;
+    this.m_translationYSupplier = translationYSupplier;
     addRequirements(m_drivetrain);
   }
 
@@ -46,14 +46,15 @@ public class AprilTagTheta extends CommandBase {
 
     double thVelocity = 0;
 
-    double skew_angle = m_limelight.alignment_values()[1];
+    if (m_limelight.hasTarget()) {
+      double skew_angle = m_limelight.alignment_values()[1];
+      thVelocity = getSkewPID(skew_angle);
 
-    thVelocity = getSkewPID(skew_angle);
-
-    if (skew_angle < 0) {
-      thVelocity = -0.5;
-    } else {
-      thVelocity = 0.5;
+      if (skew_angle < 0) {
+        thVelocity = -1;
+      } else {
+        thVelocity = 1;
+      }
     }
 
     double xVelocity = m_translationXSupplier.getAsDouble();
@@ -62,13 +63,15 @@ public class AprilTagTheta extends CommandBase {
     xVelocity = filterX.calculate(xVelocity);
     yVelocity = filterY.calculate(yVelocity);
 
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
+    System.out.println("this is the turning velocity  : " + thVelocity);
+
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new Translation2d(0, 0), 0, true, true);
+    m_drivetrain.drive(new Translation2d(0, 0), 0, true);
     System.out.println("interrupt");
   }
 

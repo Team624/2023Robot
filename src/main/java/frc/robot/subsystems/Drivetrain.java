@@ -117,8 +117,7 @@ public class Drivetrain extends SubsystemBase {
     skewApril_pid = getSkewAprilPID();
   }
 
-  public void drive(
-      Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
     if (fieldRelative) {
 
       m_chassisSpeeds =
@@ -240,18 +239,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double[] getSwervePose() {
+
     double[] pose = {swerveOdometry.getPoseMeters().getX(), swerveOdometry.getPoseMeters().getY()};
     return pose;
-  }
-
-  public void autoBalance() {
-    double t = 2.5;
-
-    double pitch = ahrs.getPitch();
-
-    double pitchPID = autoBalance_pid.calculate(pitch, 0);
-
-    System.out.println("pitch: " + pitchPID);
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -286,7 +276,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void stop() {
-    this.drive(new Translation2d(0.0, 0.0), 0.0, false, true);
+    this.drive(new Translation2d(0.0, 0.0), 0.0, false);
   }
 
   public AHRS getAhrs() {

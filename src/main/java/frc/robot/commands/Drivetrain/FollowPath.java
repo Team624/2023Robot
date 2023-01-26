@@ -46,7 +46,7 @@ public class FollowPath extends CommandBase {
     double vy = point.getVy() + errors[1];
     double vHeading = applyAutonRotationPID(point.getHeading());
 
-    drivetrain.drive(new Translation2d(vx, vy), vHeading, true, true);
+    drivetrain.drive(new Translation2d(vx, vy), vHeading, true);
   }
 
   // Called once the command ends or is interrupted.

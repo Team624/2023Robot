@@ -103,7 +103,7 @@ public class Limelight extends SubsystemBase {
     // width = 8.02
     // length = 16.54
 
-    botpose[0] = getX() - 8.27;
+    botpose[0] = getX() + 8.27;
     botpose[1] = getY() - 4.01;
     return botpose;
   }

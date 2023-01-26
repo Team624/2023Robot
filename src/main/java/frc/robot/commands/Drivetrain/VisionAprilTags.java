@@ -57,27 +57,49 @@ public class VisionAprilTags extends CommandBase {
     //   thVelocity = 0.5;
     // }
 
-    double horiz_distance = m_limelight.alignment_values()[0];
+    double thVelocity = 0;
 
-    double xVelocity = m_translationXSupplier.getAsDouble();
-    double thVelocity = m_translationThSupplier.getAsDouble();
+    if (m_limelight.hasTarget()) {
+      double skew_angle = m_limelight.alignment_values()[1];
 
-    if (horiz_distance < 0) {
-      yVelocity = -0.4;
-    } else {
-      yVelocity = 0.4;
+      // if (skew_angle < 0) {
+      //   thVelocity = -1;
+      // } else {
+      //   thVelocity = 1;
+      // }
+
+      double horiz_distance = m_limelight.alignment_values()[0];
+
+      if (horiz_distance < 0) {
+        yVelocity = -0.4;
+      } else {
+        yVelocity = 0.4;
+      }
     }
 
-    xVelocity = filterX.calculate(xVelocity);
-    thVelocity = filterTh.calculate(thVelocity);
+    double xVelocity = m_translationXSupplier.getAsDouble();
+    // double thVelocity = m_translationThSupplier.getAsDouble();
 
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
+    xVelocity = filterX.calculate(xVelocity);
+    // thVelocity = filterTh.calculate(thVelocity);
+
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true);
+
+    if (Math.abs(m_limelight.alignment_values()[0]) < 0.1) {
+      yVelocity = 0.0;
+    }
+
+    if (Math.abs(m_limelight.alignment_values()[1]) < 5) {
+      thVelocity = 0.0;
+    }
+//&& Math.abs(m_limelight.alignment_values()[1]) < 5
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new Translation2d(0, 0), 0, true, true);
+    m_drivetrain.drive(new Translation2d(0, 0), 0, true);
     System.out.println("interrupt");
   }
 
@@ -85,11 +107,10 @@ public class VisionAprilTags extends CommandBase {
   @Override
   public boolean isFinished() {
     System.out.println("distance: " + m_limelight.alignment_values()[0]);
-    // System.out.println("angle: " + m_limelight.alignment_values()[1]);
+    System.out.println("angle: " + m_limelight.alignment_values()[1]);
 
-    if (Math.abs(m_limelight.alignment_values()[0])
-        < 0.05) // && Math.abs(m_limelight.alignment_values()[1]) < 5
-    {
+    if (Math.abs(m_limelight.alignment_values()[0]) < 0.1
+        ) {
       return true;
     }
 
