@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -47,17 +48,21 @@ public class SwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double translationVal = translationSup.getAsDouble();
-    double strafeVal = strafeSup.getAsDouble();
-    double rotationVal = rotationSup.getAsDouble();
+    double translationVal =
+        MathUtil.applyDeadband(
+            translationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+    double strafeVal =
+        MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+    double rotationVal =
+        MathUtil.applyDeadband(
+            rotationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
 
     translationVal = filterX.calculate(translationVal);
     strafeVal = filterY.calculate(strafeVal);
 
     m_drivetrain.drive(
-        new Translation2d(translationVal, strafeVal)
-            .times(Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
-        -rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+        new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
+        -rotationVal * Constants.Swerve.maxAngularVelocity,
         !robotCentricSup.getAsBoolean(),
         true);
   }
@@ -65,7 +70,7 @@ public class SwerveDrive extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.stop();
+    m_drivetrain.drive(new Translation2d(0, 0), 0, false, true);
   }
 
   // Returns true when the command should end.

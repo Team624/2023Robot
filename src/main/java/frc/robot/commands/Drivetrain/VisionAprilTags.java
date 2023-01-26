@@ -88,16 +88,11 @@ public class VisionAprilTags extends CommandBase {
     // System.out.println("angle: " + m_limelight.alignment_values()[1]);
 
     if (Math.abs(m_limelight.alignment_values()[0])
-        < 0.1 // && Math.abs(m_limelight.alignment_values()[1]) < 5
-    ) {
+        < 0.05) // && Math.abs(m_limelight.alignment_values()[1]) < 5
+    {
       return true;
     }
 
     return false;
-  }
-
-  private double getSkewPID(double wantedDeltaAngle) {
-    return m_drivetrain.skewApril_pid.calculate(
-        m_drivetrain.getYaw().getDegrees(), m_drivetrain.getYaw().getDegrees() + wantedDeltaAngle);
   }
 }

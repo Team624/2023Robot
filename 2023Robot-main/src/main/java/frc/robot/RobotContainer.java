@@ -4,22 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Balance;
-import frc.robot.commands.Drivetrain.AprilTagTheta;
+import frc.robot.commands.Drivetrain.AutonomousDrive;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.VisionAprilTags;
-import frc.robot.commands.auton.AutonManager;
-import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
+import frc.robot.utility.Auton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,12 +45,6 @@ public class RobotContainer {
   private final JoystickButton alignTag2 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
 
-  // private final JoystickButton resetpose =
-  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
-
-  private final JoystickButton balance =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
-
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Limelight m_limelight = new Limelight();
@@ -62,14 +55,13 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     // Configure the trigger bindings
     m_drivetrain.setDefaultCommand(
         new SwerveDrive(
             m_drivetrain,
-            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
-            () -> -modifyAxis((d_controller.getRawAxis(rotationAxis))),
+            () -> -d_controller.getRawAxis(translationAxis),
+            () -> -d_controller.getRawAxis(strafeAxis),
+            () -> -d_controller.getRawAxis(rotationAxis),
             () -> robotCentric.getAsBoolean()));
 
     configureBindings();
@@ -98,10 +90,8 @@ public class RobotContainer {
             () -> -d_controller.getRawAxis(translationAxis),
             () -> -d_controller.getRawAxis(rotationAxis)));
 
-    balance.whileTrue(new Balance(m_drivetrain));
-
     alignTag2.whileTrue(
-        new AprilTagTheta(
+        new VisionAprilTags(
             m_drivetrain,
             m_limelight,
             () -> -d_controller.getRawAxis(translationAxis),
@@ -117,12 +107,8 @@ public class RobotContainer {
     return m_drivetrain;
   }
 
-  public Command getAutonManager() {
-    return new AutonManager(m_drivetrain);
-  }
-
-  public Command getAutonSelectionCommand() {
-    return new AutonSelection();
+  public Command getAutonomousDriveCommand(Auton auton) {
+    return new AutonomousDrive(m_drivetrain, auton);
   }
 
   public void ghostSwerve() {
@@ -133,38 +119,20 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
   }
 
+  public void testAuton() {
+    m_drivetrain.drive(new Translation2d(1, 1), 1, false, true);
+  }
+
   public void setDrivetrainDefaultCommand() {
     Command c =
         new SwerveDrive(
             m_drivetrain,
-            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
-            () -> -modifyAxis((d_controller.getRawAxis(rotationAxis))),
+            () -> -d_controller.getRawAxis(translationAxis),
+            () -> -d_controller.getRawAxis(strafeAxis),
+            () -> -d_controller.getRawAxis(rotationAxis),
             () -> robotCentric.getAsBoolean());
 
     m_drivetrain.setDefaultCommand(c);
     c.schedule();
-  }
-
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
-
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
-
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
   }
 }
