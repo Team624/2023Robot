@@ -4,7 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -20,6 +20,9 @@ public class SwerveDrive extends CommandBase {
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
   private BooleanSupplier robotCentricSup;
+
+  private SlewRateLimiter filterX = new SlewRateLimiter(7);
+  private SlewRateLimiter filterY = new SlewRateLimiter(7);
 
   public SwerveDrive(
       Drivetrain s_Swerve,
@@ -44,25 +47,26 @@ public class SwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double translationVal =
-        MathUtil.applyDeadband(
-            translationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
-    double strafeVal =
-        MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
-    double rotationVal =
-        MathUtil.applyDeadband(
-            rotationSup.getAsDouble(), Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+    double translationVal = translationSup.getAsDouble();
+    double strafeVal = strafeSup.getAsDouble();
+    double rotationVal = rotationSup.getAsDouble();
+
+    translationVal = filterX.calculate(translationVal);
+    strafeVal = filterY.calculate(strafeVal);
 
     m_drivetrain.drive(
-        new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed),
-        -rotationVal * Constants.Swerve.maxAngularVelocity,
+        new Translation2d(translationVal, strafeVal)
+            .times(Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
+        -rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
         !robotCentricSup.getAsBoolean(),
         true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_drivetrain.stop();
+  }
 
   // Returns true when the command should end.
   @Override

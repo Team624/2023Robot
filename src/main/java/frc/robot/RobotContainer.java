@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -37,6 +36,15 @@ public class RobotContainer {
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
 
+  private final JoystickButton alignTag =
+      new JoystickButton(d_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton alignTag2 =
+      new JoystickButton(d_controller, XboxController.Button.kB.value);
+
+  private final JoystickButton resetpose =
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
+
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final JoystickButton robotCentric =
@@ -46,13 +54,14 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     // Configure the trigger bindings
     m_drivetrain.setDefaultCommand(
         new SwerveDrive(
             m_drivetrain,
-            () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(strafeAxis),
-            () -> -d_controller.getRawAxis(rotationAxis),
+            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
+            () -> -modifyAxis((d_controller.getRawAxis(rotationAxis))),
             () -> robotCentric.getAsBoolean()));
 
     configureBindings();
@@ -100,20 +109,38 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
   }
 
-  public void testAuton() {
-    m_drivetrain.drive(new Translation2d(1, 1), 1, false, true);
-  }
-
   public void setDrivetrainDefaultCommand() {
     Command c =
         new SwerveDrive(
             m_drivetrain,
-            () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(strafeAxis),
-            () -> -d_controller.getRawAxis(rotationAxis),
+            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
+            () -> -modifyAxis((d_controller.getRawAxis(rotationAxis))),
             () -> robotCentric.getAsBoolean());
 
     m_drivetrain.setDefaultCommand(c);
     c.schedule();
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
   }
 }

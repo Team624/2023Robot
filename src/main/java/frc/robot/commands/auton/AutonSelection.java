@@ -31,6 +31,8 @@ public class AutonSelection extends CommandBase {
   public void execute() {
     double autonChoice = autonChoiceGet.getDouble(0.0);
     SmartDashboard.putNumber("/auto/select", autonChoice);
+
+    
   }
 
   @Override
