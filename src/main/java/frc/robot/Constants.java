@@ -203,25 +203,25 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 1.0;
+    public static final double DRIVE_CONTROLLER_X_KP = 3.0;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 1.0;
+    public static final double DRIVE_CONTROLLER_Y_KP = 3.0;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = 5.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 0.4;
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
-    public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY = 1.0;
-    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = 1.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = 2.0;
 
     // Rotational tolerance for autonomous paths
-    public static final double AUTONOMOUS_X_TOLERANCE = 0.1;
-    public static final double AUTONOMOUS_Y_TOLERANCE = 0.1;
-    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromDegrees(10);
+    public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
+    public static final double AUTONOMOUS_Y_TOLERANCE = 0.2;
+    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromDegrees(30);
   }
 }

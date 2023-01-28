@@ -48,6 +48,7 @@ public class AutonManager extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drivetrain.setAuton(false);
+    currentFollowPathCommand.cancel();
 
     SmartDashboard.putBoolean("/auto/state", false);
 

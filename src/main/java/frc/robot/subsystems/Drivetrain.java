@@ -9,6 +9,9 @@ import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
 import com.swervedrivespecialties.swervelib.MotorType;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import edu.wpi.first.hal.SimDevice;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,9 +21,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,6 +46,7 @@ public class Drivetrain extends SubsystemBase {
 
   private AHRS ahrs = new AHRS(edu.wpi.first.wpilibj.SPI.Port.kMXP);
 
+
   private ShuffleboardTab drivetrain_tab = Shuffleboard.getTab("Drivetrain");
 
   public boolean isAuton = false;
@@ -50,6 +56,8 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveModuleState[] lstates =
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+  private Field2d fieldSim;
 
   public Drivetrain() {
 
@@ -123,6 +131,9 @@ public class Drivetrain extends SubsystemBase {
     autonPoint_pidPathRotation = getRotationPathPID();
     skewApril_pid = getSkewAprilPID();
     autoBalance_pid = getAutoBalancePID();
+
+    fieldSim = new Field2d();
+    Shuffleboard.getTab("Field").add(fieldSim);
   }
 
   public void drive(
@@ -160,25 +171,6 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-
-    // SwerveModuleState[] states =
-    //     Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
-
-    // if (!isAuton) {
-    //   states = freezeLogic(states);
-    // }
-    // for (SwerveModule mod : mSwerveMods) {
-    //   SmartDashboard.putNumber(
-    //       "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-    //   SmartDashboard.putNumber(
-    //       "Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-    //   SmartDashboard.putNumber(
-    //       "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-    // }
-
-    // setModuleStates(states);
-
     SwerveModulePosition[] positions =
         new SwerveModulePosition[] {
           m_frontLeftModule.getPosition(),
@@ -189,12 +181,14 @@ public class Drivetrain extends SubsystemBase {
 
     SwerveModuleState[] states =
         Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
+
     if (!isAuton) {
       states = freezeLogic(states);
     }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
+
     m_frontLeftModule.set(
         states[0].speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * 12.0,
         states[0].angle.getRadians());
@@ -208,23 +202,19 @@ public class Drivetrain extends SubsystemBase {
         states[3].speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * 12.0,
         states[3].angle.getRadians());
 
-    if (isAuton) {
-      swerveOdometry.update(getYaw(), positions);
-    } else {
-      swerveOdometry.update(
-          getYaw(),
-          new SwerveModulePosition[] {
-            m_frontLeftModule.getPosition(),
-            m_frontRightModule.getPosition(),
-            m_backLeftModule.getPosition(),
-            m_backRightModule.getPosition()
-          });
-    }
+    swerveOdometry.update(getYaw(), positions);
 
+    Pose2d currentPose = getPose();
+
+    fieldSim.setRobotPose(new Pose2d(currentPose.getX(), 8.0137 + currentPose.getY(), currentPose.getRotation()));
+    
     updateROSpose();
   }
 
-  
+  @Override
+  public void simulationPeriodic() {
+    
+  }
 
   private SwerveModuleState getState(SwerveModule module) {
     return new SwerveModuleState(module.getDriveVelocity(), new Rotation2d(module.getSteerAngle()));
@@ -308,7 +298,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return swerveOdometry.getPoseMeters();
+    double yaw = MathUtil.angleModulus(getYaw().getRadians());
+
+    Pose2d pose = new Pose2d(swerveOdometry.getPoseMeters().getTranslation(), new Rotation2d(yaw));
+
+    return pose;
   }
 
   public double[] getSwervePose() {

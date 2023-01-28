@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    compressor.enableDigital();
+    // compressor.enableDigital();
     m_robotContainer.setBlankDrivetrainCommand();
 
     this.m_autonomousCommand = m_robotContainer.getAutonManager();
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
 
     if (m_autonomousCommand != null) m_autonomousCommand.cancel();
 
-    compressor.enableDigital();
+    // compressor.enableDigital();
 
     m_robotContainer.setDrivetrainDefaultCommand();
   }

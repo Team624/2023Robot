@@ -4,10 +4,12 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
@@ -46,11 +48,11 @@ public class FollowPath extends CommandBase {
                     Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
                     Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
 
-    controller.setTolerance(
-        new Pose2d(
-            Constants.Autonomous.AUTONOMOUS_X_TOLERANCE,
-            Constants.Autonomous.AUTONOMOUS_Y_TOLERANCE,
-            Constants.Autonomous.AUTONOMOUS_ROTATION_TOLERANCE));
+    // controller.setTolerance(
+    //     new Pose2d(
+    //         Constants.Autonomous.AUTONOMOUS_X_TOLERANCE,
+    //         Constants.Autonomous.AUTONOMOUS_Y_TOLERANCE,
+    //         Constants.Autonomous.AUTONOMOUS_ROTATION_TOLERANCE));
 
     addRequirements(drive);
   }
@@ -61,17 +63,31 @@ public class FollowPath extends CommandBase {
     System.out.println("Starting path " + path.getPathId());
     updateNTFinishedPath(false);
 
+    timer = new Timer();
+
     timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Current: " + drivetrain.getPose().toString());
-
     double timeSeconds = timer.get();
 
+    double start = timer.get();
     Pose2d wantedPose = path.interpolate(timeSeconds);
+    double end = timer.get();
+    System.out.println("Interpolate time: " + (end - start));
+
+    start = timer.get();
+    Pose2d currentPose = drivetrain.getPose();
+
+    currentPose = new Pose2d(currentPose.getTranslation(), new Rotation2d(MathUtil.angleModulus(-currentPose.getRotation().getRadians())));
+
+    end = timer.get();
+
+    System.out.println("Get pose time: " + (end - start));
+
+    start = timer.get();
 
     ChassisSpeeds chassisSpeeds =
         controller.calculate(
@@ -80,19 +96,26 @@ public class FollowPath extends CommandBase {
             path.getVelocity(timeSeconds),
             wantedPose.getRotation());
 
+    end = timer.get();
+    System.out.println("Controller time: " + (end - start));
+
+    start = timer.get();
     drivetrain.drive(chassisSpeeds);
+    end = timer.get();
+    System.out.println("Drive time: " + (end - start));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
     updateNTFinishedPath(true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= path.getSeconds() && controller.atReference());
+    return (timer.get() >= path.getSeconds());
   }
 
   @Override

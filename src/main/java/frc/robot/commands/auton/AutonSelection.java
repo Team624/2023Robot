@@ -4,6 +4,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutonSelection extends CommandBase {
   private ShuffleboardTab autonTab;
   private GenericEntry autonChoiceGet;
+  private GenericEntry autonNameWidget;
 
   @Override
   public void initialize() {
@@ -19,6 +22,13 @@ public class AutonSelection extends CommandBase {
         autonTab
             .add("Auton ID", 0)
             .withPosition(0, 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
+
+    this.autonNameWidget = 
+        autonTab
+            .add("Name", "N/A")
+            .withPosition(0, 1)
             .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
 
@@ -32,7 +42,9 @@ public class AutonSelection extends CommandBase {
     double autonChoice = autonChoiceGet.getDouble(0.0);
     SmartDashboard.putNumber("/auto/select", autonChoice);
 
+    String autonName = SmartDashboard.getString("/pathTable/auton_name", "N/A");
     
+    autonNameWidget.setString(autonName);
   }
 
   @Override
