@@ -98,18 +98,14 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
     //         () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
 
-    // alignTag.whileTrue(new VisionAprilTags(m_drivetrain,
-    // m_limelight,
-    // () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-    // () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
-    alignTag2.onTrue(
+    alignTag.whileTrue(
         new VisionAprilTags(
             m_drivetrain,
             m_limelight,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
             () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
 
-    resetpose.whileTrue(new UpdatePose(m_drivetrain, m_limelight));
+    resetpose.onTrue(new UpdatePose(m_drivetrain, m_limelight));
 
     // balance.whileTrue(new Balance(m_drivetrain));
   }

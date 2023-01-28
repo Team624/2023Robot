@@ -125,7 +125,6 @@ public class Drivetrain extends SubsystemBase {
               translation.getX(), translation.getY(), rotation, getYaw());
 
     } else {
-
       m_chassisSpeeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
     }
   }
