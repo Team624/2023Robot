@@ -35,8 +35,8 @@ public class Balance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    
-    if (-angleThreshold < angle && angle < angleThreshold){
+
+    if (-angleThreshold < angle && angle < angleThreshold) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, false);
       return true;
     }

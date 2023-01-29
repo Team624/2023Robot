@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Balance;
-import frc.robot.commands.Drivetrain.AprilTagTheta;
 import frc.robot.commands.Drivetrain.BlankDrive;
+import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
-import frc.robot.commands.Drivetrain.VisionAprilTags;
+import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Drivetrain;
@@ -43,14 +42,17 @@ public class RobotContainer {
   private final JoystickButton alignTag =
       new JoystickButton(d_controller, XboxController.Button.kY.value);
 
-  private final JoystickButton alignTag2 =
-      new JoystickButton(d_controller, XboxController.Button.kB.value);
+  // private final JoystickButton alignTag2 =
+  //     new JoystickButton(d_controller, XboxController.Button.kB.value);
 
-  // private final JoystickButton resetpose =
+  private final JoystickButton resetpose =
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
+
+  // private final JoystickButton balance =
   //     new JoystickButton(d_controller, XboxController.Button.kX.value);
 
-  private final JoystickButton balance =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
+  private final JoystickButton alignment =
+      new JoystickButton(d_controller, XboxController.Button.kB.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -62,7 +64,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     // Configure the trigger bindings
     m_drivetrain.setDefaultCommand(
         new SwerveDrive(
@@ -91,21 +92,23 @@ public class RobotContainer {
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    alignTag.whileTrue(
-        new VisionAprilTags(
-            m_drivetrain,
-            m_limelight,
-            () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(rotationAxis)));
+    // alignTag.whileTrue(
+    //     new VisionAprilTags(
+    //         m_drivetrain,
+    //         m_limelight,
+    //         () -> -d_controller.getRawAxis(translationAxis),
+    //         () -> -d_controller.getRawAxis(rotationAxis)));
 
-    balance.whileTrue(new Balance(m_drivetrain));
+    // balance.whileTrue(new Balance(m_drivetrain));
+    resetpose.whileTrue(new UpdatePose(m_drivetrain, m_limelight));
+    alignment.whileTrue(new ConeAlign(m_drivetrain, m_limelight, true));
 
-    alignTag2.whileTrue(
-        new AprilTagTheta(
-            m_drivetrain,
-            m_limelight,
-            () -> -d_controller.getRawAxis(translationAxis),
-            () -> -d_controller.getRawAxis(strafeAxis)));
+    // alignTag2.whileTrue(
+    //     new AprilTagTheta(
+    //         m_drivetrain,
+    //         m_limelight,
+    //         () -> -d_controller.getRawAxis(translationAxis),
+    //         () -> -d_controller.getRawAxis(strafeAxis)));
   }
 
   /**
