@@ -4,17 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Drivetrain.AprilTagTheta;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
+import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
-import frc.robot.commands.Drivetrain.VisionAprilTags;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Drivetrain;
@@ -29,6 +32,7 @@ import frc.robot.subsystems.Limelight;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final XboxController d_controller = new XboxController(0);
+  private final GenericHID driverPOV = new GenericHID(0);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -40,13 +44,23 @@ public class RobotContainer {
       new JoystickButton(d_controller, XboxController.Button.kA.value);
 
   private final JoystickButton alignTag =
-      new JoystickButton(d_controller, XboxController.Button.kY.value);
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   private final JoystickButton alignTag2 =
+      new JoystickButton(d_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton alignTag3 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
 
+  private final JoystickButton alignTagTheta =
+      new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+
+  private final POVButton left = new POVButton(d_controller, 270);
+
+  private final POVButton right = new POVButton(d_controller, 90);
+
   private final JoystickButton resetpose =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
+      new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
   // private final JoystickButton balance =
   //     new JoystickButton(d_controller, XboxController.Button.kX.value);
@@ -98,14 +112,31 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
     //         () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
 
-    alignTag.whileTrue(
-        new VisionAprilTags(
+    // alignTag.onTrue(
+    //     new VisionAprilTags(
+    //         m_drivetrain,
+    //         m_limelight,
+    //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+    //         () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
+
+    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 0));
+
+    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 0));
+
+    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
+
+    left.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
+
+    right.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 1));
+
+    alignTagTheta.whileTrue(
+        new AprilTagTheta(
             m_drivetrain,
             m_limelight,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-            () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
+            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis))));
 
-    resetpose.onTrue(new UpdatePose(m_drivetrain, m_limelight));
+    resetpose.whileTrue(new UpdatePose(m_drivetrain, m_limelight));
 
     // balance.whileTrue(new Balance(m_drivetrain));
   }

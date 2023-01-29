@@ -78,9 +78,12 @@ public class AprilTagTheta extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("angle: " + m_limelight.alignment_values()[1]);
-    if (Math.abs(m_limelight.alignment_values()[1]) < 5) {
-      return true;
+
+    if (m_limelight.hasTarget()) {
+      System.out.println("angle: " + m_limelight.alignment_values()[1]);
+      if (Math.abs(m_limelight.alignment_values()[1]) < 3) {
+        return true;
+      }
     }
     return false;
   }

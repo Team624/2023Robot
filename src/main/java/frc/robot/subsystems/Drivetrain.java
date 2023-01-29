@@ -189,6 +189,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void updateROSpose() {
+
     SmartDashboard.putNumber("/pose/th", getYaw().getRadians());
     SmartDashboard.putNumber("/pose/x", swerveOdometry.getPoseMeters().getX());
     SmartDashboard.putNumber("/pose/y", swerveOdometry.getPoseMeters().getY());
