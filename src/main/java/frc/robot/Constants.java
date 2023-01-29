@@ -213,11 +213,11 @@ public final class Constants {
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = 0.4;
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 0.41; //0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
-    public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = 2.0;
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY = 2.0; //Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = 1.3; //2.0
 
     // Rotational tolerance for autonomous paths
     public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
