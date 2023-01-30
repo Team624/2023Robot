@@ -101,4 +101,32 @@ public final class Constants {
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
     }
   }
+
+
+  public static final class Intake {
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int intakeMotor=0;
+    public static final int intakeSolenoidID=0;
+  }
+
+  public static final class Arm {
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int armMotor=0;
+    
+  }
+
+  public static final class Claw {
+    public static final int clawSolenoidID=0;
+  }
+
+  public static final class Telescope {
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int armMotor=0;
+  }
 }
