@@ -105,7 +105,7 @@ public class VisionAprilTags extends CommandBase {
     System.out.println("distance: " + m_limelight.alignment_values()[0]);
     System.out.println("angle: " + m_limelight.alignment_values()[1]);
 
-    if (Math.abs(m_limelight.alignment_values()[0]) < 0.q) {
+    if (Math.abs(m_limelight.alignment_values()[0]) < 0.1) {
       return true;
     }
 
