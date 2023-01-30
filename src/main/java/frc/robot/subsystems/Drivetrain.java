@@ -224,7 +224,7 @@ public class Drivetrain extends SubsystemBase {
     double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(zeros);
     Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
-    // swerveOdometry.resetPosition(newPose, newRot);
+
     swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);
     ahrs.setAngleAdjustment(newRot.getDegrees());
   }

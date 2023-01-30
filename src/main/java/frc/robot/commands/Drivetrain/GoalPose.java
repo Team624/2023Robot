@@ -33,7 +33,7 @@ public class GoalPose extends CommandBase {
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(AngVel, 8);
+      new TrapezoidProfile.Constraints(AngVel, 3);
 
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
@@ -66,7 +66,10 @@ public class GoalPose extends CommandBase {
   public void initialize() {
 
     Pose2d pose = m_drivetrain.getPose();
+    
+    
     omegaController.reset(pose.getRotation().getRadians());
+
     xController.reset(pose.getX());
     yController.reset(pose.getY());
 
@@ -94,23 +97,19 @@ public class GoalPose extends CommandBase {
   @Override
   public void execute() {
 
-    double[] pose2d = m_drivetrain.getSwervePose();
+    Pose2d pose2d = m_drivetrain.getPose();
 
     if (m_node == 0) {
       goal = -3.58;
-      yController.setGoal(-3.58 + (22 / 39.37));
 
     } else if (m_node == 1) {
       goal = -5.277685;
 
     } else if (m_node == 2) {
       goal = -6.987;
-    }
-    else{
+    } else {
       goal = m_limelight.getYofID();
     }
-
-    
 
     if (m_right == 0) {
       yController.setGoal(goal - (22 / 39.37));
@@ -120,14 +119,13 @@ public class GoalPose extends CommandBase {
       yController.setGoal(goal);
     }
 
-    // xController.setGoal(pose2d[0]);
     omegaController.setGoal(0);
 
-    double yVel = yController.calculate(pose2d[1]);
+    double yVel = yController.calculate(pose2d.getY());
 
-    double thVel = omegaController.calculate(SmartDashboard.getNumber("/pose/th", 0.0));
+    double thVel = omegaController.calculate(pose2d.getRotation().getRadians());
 
-    m_drivetrain.drive(new Translation2d(0, yVel), 0, true);
+    m_drivetrain.drive(new Translation2d(0, yVel), thVel, true);
   }
 
   // Called once the command ends or is interrupted.
