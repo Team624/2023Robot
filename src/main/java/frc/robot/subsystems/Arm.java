@@ -5,15 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
@@ -32,57 +26,32 @@ public class Arm extends SubsystemBase {
   private double armIznew;
   private double armFFnew;
 
-  private CANSparkMax pivotMotor = new CANSparkMax(0, null);
-  private RelativeEncoder pivotEncoder;
 
-  private SparkMaxPIDController pivotPID;
-  private double pivotP;
-  private double pivotI;
-  private double pivotD;
-  private double pivotIz;
-  private double pivotFF;
-  private double pivotPnew;
-  private double pivotInew;
-  private double pivotDnew;
-  private double pivotIznew;
-  private double pivotFFnew;
-  
 
   /** Creates a new Arm. */
   public Arm() {
-    pivotMotor.setIdleMode(IdleMode.kBrake);
-    pivotEncoder=pivotMotor.getEncoder();
-    
+
     armMotor.setIdleMode(IdleMode.kBrake);
-    armEncoder=pivotMotor.getEncoder();
-
-
-
+    armEncoder = armMotor.getEncoder();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public void extend(double speed){armMotor.set(speed);}
-  public void extendTo(double setPoint){armPID.setReference(setPoint, CANSparkMax.ControlType.kPosition);}
-  public void movePivot(double speed){pivotMotor.set(speed);}
-  public void pivotTo(double setPoint){pivotPID.setReference(setPoint, CANSparkMax.ControlType.kPosition);}
 
-  public void stop(){
-    armMotor.stopMotor();
-    pivotMotor.stopMotor();
+  public void extend(double speed) {
+    armMotor.set(speed);
   }
-  public void resetArmEncoder(){
+
+  public void extendTo(double setPoint) {
+    armPID.setReference(setPoint, CANSparkMax.ControlType.kPosition);
+  }
+  public void stop() {
+    armMotor.stopMotor();
+  }
+
+  public void resetArmEncoder() {
     armEncoder.setPosition(0);
   }
-  public void resetPivotEncoder(){
-    pivotEncoder.setPosition(0);
-  }
-  
-  public void resetEncoders(){
-    resetArmEncoder();
-    resetPivotEncoder();
-  }
-
 }
