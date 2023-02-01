@@ -6,12 +6,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
-  private CANSparkMax armMotor = new CANSparkMax(0, null);
+  private CANSparkMax armMotor = new CANSparkMax(0, MotorType.kBrushless);
   private RelativeEncoder armEncoder;
 
   private SparkMaxPIDController armPID;
@@ -25,8 +26,6 @@ public class Arm extends SubsystemBase {
   private double armDnew;
   private double armIznew;
   private double armFFnew;
-
-
 
   /** Creates a new Arm. */
   public Arm() {
@@ -47,6 +46,7 @@ public class Arm extends SubsystemBase {
   public void extendTo(double setPoint) {
     armPID.setReference(setPoint, CANSparkMax.ControlType.kPosition);
   }
+
   public void stop() {
     armMotor.stopMotor();
   }

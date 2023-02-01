@@ -7,9 +7,14 @@ package frc.robot.commands.FullArm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Pivot;
+
 public class ToMidGoal extends CommandBase {
+  private final Arm arm;
+  private final Pivot pivot;
   /** Creates a new ToMidGoal. */
-  public ToMidGoal() {
+  public ToMidGoal(Arm arm, Pivot pivot) {
+    this.arm = arm;
+    this.pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

@@ -47,7 +47,6 @@ public class VisionAprilTags extends CommandBase {
     double thVelocity = 0;
     double yVelocity = 0;
 
-
     double skew_angle = m_limelight.alignment_values()[1];
 
     // thVelocity = getSkewPID(skew_angle);
@@ -57,8 +56,6 @@ public class VisionAprilTags extends CommandBase {
     } else {
       thVelocity = 0.5;
     }
-
-    
 
     // if (m_limelight.hasTarget()) {
     //   double skew_angle = m_limelight.alignment_values()[1];

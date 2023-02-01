@@ -4,14 +4,15 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pivot extends SubsystemBase {
-  private CANSparkMax pivotMotor = new CANSparkMax(0, null);
+  private CANSparkMax pivotMotor = new CANSparkMax(0, MotorType.kBrushless);
   private RelativeEncoder pivotEncoder;
 
   private SparkMaxPIDController pivotPID;
@@ -35,16 +36,20 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
   public void movePivot(double speed) {
     pivotMotor.set(speed);
   }
+
   public void pivotTo(double setPoint) {
     pivotPID.setReference(setPoint, CANSparkMax.ControlType.kPosition);
   }
+
   public void resetPivotEncoder() {
     pivotEncoder.setPosition(0);
   }
-  public void stop(){
+
+  public void stop() {
     pivotMotor.stopMotor();
   }
 }

@@ -8,15 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Pivot;
 
-
 public class ToBot extends CommandBase {
   private final Pivot pivot;
   private final Arm arm;
   /** Creates a new ToLowGoal. */
   public ToBot(Pivot pivot, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.pivot=pivot;
-    this.arm=arm;
+    this.pivot = pivot;
+    this.arm = arm;
   }
 
   // Called when the command is initially scheduled.

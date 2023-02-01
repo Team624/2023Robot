@@ -7,10 +7,15 @@ package frc.robot.commands.FullArm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Pivot;
+
 public class ToHighGoal extends CommandBase {
+  private final Arm arm;
+  private final Pivot pivot;
   /** Creates a new ToHighGoal. */
-  public ToHighGoal() {
+  public ToHighGoal(Arm arm, Pivot pivot) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.arm = arm;
+    this.pivot = pivot;
   }
 
   // Called when the command is initially scheduled.

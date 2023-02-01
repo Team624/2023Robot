@@ -2,22 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Arm;
+package frc.robot.commands.FullArm.Pivot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Pivot;
 
 public class ControlPivot extends CommandBase {
-  private final Arm arm;
+  private final Pivot pivot;
   private XboxController controller;
 
   /** Creates a new ControlPivot. */
-  public ControlPivot(Arm arm, XboxController xboxController) {
+  public ControlPivot(Pivot pivot, XboxController xboxController) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.arm=arm;
-    this.controller=xboxController;
-
+    this.pivot = pivot;
+    this.controller = xboxController;
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +25,10 @@ public class ControlPivot extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {arm.movePivot(controller.getLeftY());}
+  public void execute() {
+    pivot.movePivot(controller.getLeftY());
+    ;
+  }
 
   // Called once the command ends or is interrupted.
   @Override
