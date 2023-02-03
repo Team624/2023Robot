@@ -360,7 +360,7 @@ public class Drivetrain extends SubsystemBase {
   // }
 
   public Rotation2d getYaw() {
-    return Rotation2d.fromDegrees(-ahrs.getAngle());
+    return ahrs.getRotation2d();
   }
 
   private PIDController getSkewAprilPID() {

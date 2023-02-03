@@ -40,8 +40,6 @@ public class Path {
     if (t < 0) t = 0;
     if (t > 1) t = 1;
 
-    System.out.println("T: " + t);
-
     Translation2d translation = curve.interpolate(t);
 
     double errorA = endHeading.getRadians() - startHeading.getRadians();
@@ -50,8 +48,6 @@ public class Path {
         
     double heading_diff = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
     heading_diff = Math.abs(errorA) < Math.abs(heading_diff) ? errorA : heading_diff;
-
-    System.out.println("Heading diff: " + heading_diff);
 
     double rotation = MathUtil.angleModulus(startHeading.getRadians() + heading_diff * t);
 

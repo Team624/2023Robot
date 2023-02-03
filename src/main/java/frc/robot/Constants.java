@@ -222,6 +222,6 @@ public final class Constants {
     // Rotational tolerance for autonomous paths
     public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
     public static final double AUTONOMOUS_Y_TOLERANCE = 0.2;
-    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromDegrees(30);
+    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.5);
   }
 }

@@ -48,11 +48,11 @@ public class FollowPath extends CommandBase {
                     Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
                     Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
 
-    // controller.setTolerance(
-    //     new Pose2d(
-    //         Constants.Autonomous.AUTONOMOUS_X_TOLERANCE,
-    //         Constants.Autonomous.AUTONOMOUS_Y_TOLERANCE,
-    //         Constants.Autonomous.AUTONOMOUS_ROTATION_TOLERANCE));
+    controller.setTolerance(
+        new Pose2d(
+            Constants.Autonomous.AUTONOMOUS_X_TOLERANCE,
+            Constants.Autonomous.AUTONOMOUS_Y_TOLERANCE,
+            Constants.Autonomous.AUTONOMOUS_ROTATION_TOLERANCE));
 
     addRequirements(drive);
   }
@@ -73,36 +73,26 @@ public class FollowPath extends CommandBase {
   public void execute() {
     double timeSeconds = timer.get();
 
-    double start = timer.get();
     Pose2d wantedPose = path.interpolate(timeSeconds);
-    double end = timer.get();
-    System.out.println("Interpolate time: " + (end - start));
 
-    start = timer.get();
     Pose2d currentPose = drivetrain.getPose();
 
-    currentPose = new Pose2d(currentPose.getTranslation(), new Rotation2d(MathUtil.angleModulus(-currentPose.getRotation().getRadians())));
+    currentPose = new Pose2d(currentPose.getTranslation(), new Rotation2d(currentPose.getRotation().getRadians()));
 
-    end = timer.get();
+    System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
 
-    System.out.println("Get pose time: " + (end - start));
+    System.out.println("Current: " + currentPose.getRotation().getRadians());
 
-    start = timer.get();
+    System.out.println("Error: " + wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
 
     ChassisSpeeds chassisSpeeds =
         controller.calculate(
-            drivetrain.getPose(),
+            currentPose,
             wantedPose,
             path.getVelocity(timeSeconds),
             wantedPose.getRotation());
 
-    end = timer.get();
-    System.out.println("Controller time: " + (end - start));
-
-    start = timer.get();
     drivetrain.drive(chassisSpeeds);
-    end = timer.get();
-    System.out.println("Drive time: " + (end - start));
   }
 
   // Called once the command ends or is interrupted.
@@ -115,7 +105,7 @@ public class FollowPath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= path.getSeconds());
+    return (timer.get() >= path.getSeconds() && controller.atReference());
   }
 
   @Override
