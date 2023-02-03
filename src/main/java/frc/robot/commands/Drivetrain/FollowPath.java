@@ -4,25 +4,55 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.Path;
-import frc.robot.utility.PathPoint;
 
 public class FollowPath extends CommandBase {
   private final Drivetrain drivetrain;
+  private final Path path;
 
-  private Path path;
-  private int currentPointIndex = 0;
-  private PathPoint point;
+  private HolonomicDriveController controller;
+  private Timer timer;
 
   public FollowPath(Drivetrain drive, Path path) {
     this.drivetrain = drive;
     this.path = path;
-    this.point = path.getPoint(currentPointIndex);
+
+    this.controller =
+        new HolonomicDriveController(
+            new PIDController(
+                Constants.Autonomous.DRIVE_CONTROLLER_X_KP,
+                Constants.Autonomous.DRIVE_CONTROLLER_X_KI,
+                Constants.Autonomous.DRIVE_CONTROLLER_X_KD),
+            new PIDController(
+                Constants.Autonomous.DRIVE_CONTROLLER_Y_KP,
+                Constants.Autonomous.DRIVE_CONTROLLER_Y_KI,
+                Constants.Autonomous.DRIVE_CONTROLLER_Y_KD),
+            new ProfiledPIDController(
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
+                new TrapezoidProfile.Constraints(
+                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
+                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
+
+    controller.setTolerance(
+        new Pose2d(
+            Constants.Autonomous.AUTONOMOUS_X_TOLERANCE,
+            Constants.Autonomous.AUTONOMOUS_Y_TOLERANCE,
+            Constants.Autonomous.AUTONOMOUS_ROTATION_TOLERANCE));
 
     addRequirements(drive);
   }
@@ -31,43 +61,56 @@ public class FollowPath extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("Starting path " + path.getPathId());
-    updateNTPoint();
     updateNTFinishedPath(false);
+
+    timer = new Timer();
+
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (isWithinTolerance() && !nextPoint() || currentPointIndex >= path.getLength() - 1) return;
+    double timeSeconds = timer.get();
 
-    double[] errors = getErrors();
+    Pose2d wantedPose = path.interpolate(timeSeconds);
 
-    double vx = point.getVx() + errors[0];
-    double vy = point.getVy() + errors[1];
-    double vHeading = applyAutonRotationPID(point.getHeading());
+    Pose2d currentPose = drivetrain.getPose();
 
-    drivetrain.drive(new Translation2d(vx, vy), vHeading, true);
+    currentPose =
+        new Pose2d(
+            currentPose.getTranslation(), new Rotation2d(currentPose.getRotation().getRadians()));
+
+    System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
+
+    System.out.println("Current: " + currentPose.getRotation().getRadians());
+
+    System.out.println(
+        "Error: " + wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
+
+    ChassisSpeeds chassisSpeeds =
+        controller.calculate(
+            currentPose, wantedPose, path.getVelocity(timeSeconds), wantedPose.getRotation());
+
+    // drivetrain.drive(chassisSpeeds);
+    drivetrain.drive(
+        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
+        chassisSpeeds.omegaRadiansPerSecond,
+        false,
+        false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+
     updateNTFinishedPath(true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // System.out.println("Distance: " + getDistance());
-    // if (getDistance() > 1.0) {
-    //   // Error is too high. Emergency stop path.
-    //   System.err.println(
-    //       "EMERGENCY STOP PATH " + path.getPathId() + " AT POINT " + currentPointIndex);
-    //   drivetrain.stop();
-    //   return true;
-    // }
-
-    return (currentPointIndex >= path.getLength() - 1);
+    return (timer.get() >= path.getSeconds()); // && controller.atReference()
   }
 
   @Override
@@ -75,141 +118,9 @@ public class FollowPath extends CommandBase {
     return InterruptionBehavior.kCancelSelf;
   }
 
-  // Increments the current point if one exists.
-  // Returns whether there was another point.
-  private boolean nextPoint() {
-    if (currentPointIndex + 1 >= path.getLength()) return false;
-
-    currentPointIndex++;
-
-    updateNTPoint();
-
-    point = path.getPoint(currentPointIndex);
-
-    System.out.println("Starting point " + currentPointIndex);
-
-    return true;
-  }
-
-  // Updates NetworkTables with the current point.
-  private void updateNTPoint() {
-    SmartDashboard.getEntry("/pathTable/status/point").setNumber(currentPointIndex);
-  }
-
-  // Updates NetworkTables with the completion status of the path.
+  // Updates NetworkTables with the completion status of the path for ROS.
   private void updateNTFinishedPath(boolean finished) {
     SmartDashboard.getEntry("/pathTable/status/finishedPath")
         .setString(finished + " " + path.getPathId());
-  }
-
-  // Checks if the distance from the current point is within the tolerance
-  private boolean isWithinTolerance() {
-    return getDistance() <= point.getTolerance();
-  }
-
-  // Calculates the distance from the current point.
-  private double getDistance() {
-    double[] currentPos = drivetrain.getSwervePose();
-    double pointX = point.getX();
-    double pointY = point.getY();
-
-    double diffX = Math.abs(pointX - currentPos[0]);
-    double diffY = Math.abs(pointY - currentPos[1]);
-
-    double distance = Math.hypot(diffX, diffY);
-
-    System.out.println("this is distance" + distance);
-
-    return distance;
-  }
-
-  // Calculates the PID for durning to the given heading
-  private double applyAutonRotationPID(double heading) {
-    double wantedAngle = drivetrain.normalizeAngle(heading);
-
-    double errorA =
-        drivetrain.normalizeAngle(
-            wantedAngle - drivetrain.normalizeAngle(drivetrain.getYaw().getRadians()));
-    double errorB = errorA - (Math.PI * 2);
-    double errorC = errorA + (Math.PI * 2);
-
-    double wantedDeltaAngle = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
-    wantedDeltaAngle = Math.abs(wantedDeltaAngle) < Math.abs(errorA) ? wantedDeltaAngle : errorA;
-
-    double thVelocity = 0;
-
-    thVelocity =
-        drivetrain.autonPoint_pidPathRotation.calculate(
-            drivetrain.getYaw().getDegrees(),
-            drivetrain.getYaw().getDegrees() + wantedDeltaAngle * (180 / Math.PI));
-
-    return thVelocity;
-  }
-
-  // Returns the x and y distance from the nearest point on the line.
-  private double[] getErrors() {
-    Pose2d currentPose = drivetrain.getPose();
-    PathPoint nextPoint = path.getPoint(currentPointIndex + 1);
-
-    Translation2d nearestPoint =
-        getClosestPointOnLine(
-            point.getX(),
-            point.getY(),
-            nextPoint.getX(),
-            nextPoint.getY(),
-            currentPose.getX(),
-            currentPose.getY());
-
-    double[] result = {
-      nearestPoint.getX() - currentPose.getX(), nearestPoint.getY() - currentPose.getY()
-    };
-    return result;
-  }
-
-  // Returns the neareset point on a line defined by 2 point.
-  private Translation2d getClosestPointOnLine(
-      double point1X,
-      double point1Y,
-      double point2X,
-      double point2Y,
-      double point3X,
-      double point3Y) {
-    double perpSlope = -(point2X - point1X) / (point2Y - point1Y);
-
-    // Catch the case of the perpSlope being undefined
-    if (Double.isInfinite(perpSlope)) {
-      return new Translation2d(point3X, point1Y);
-    }
-
-    double point4X = point3X + 1;
-    double point4Y = point3Y + perpSlope;
-
-    double[] L1 = line(point1X, point1Y, point2X, point2Y);
-    double[] L2 = line(point3X, point3Y, point4X, point4Y);
-
-    double[] result = intersection(L1, L2);
-    return new Translation2d(result[0], result[1]);
-  }
-
-  // Extra stuff only used in getClosestPointOnLine()
-  private double[] intersection(double[] L1, double[] L2) {
-    double D = L1[0] * L2[1] - L1[1] * L2[0];
-    double Dx = L1[2] * L2[1] - L1[1] * L2[2];
-    double Dy = L1[0] * L2[2] - L1[2] * L2[0];
-
-    // Might return infinity if there is no intersection!
-    double x = Dx / D;
-    double y = Dy / D;
-    double[] result = {x, y};
-    return result;
-  }
-
-  // Extra stuff only used in getClosestPointOnLine()
-  private double[] line(double point1X, double point1Y, double point2X, double point2Y) {
-    double A = point1Y - point2Y;
-    double B = point2X - point1X;
-    double C = (point1X * point2Y) - (point2X * point1Y);
-    double[] result = {A, B, -C};
-    return (result);
   }
 }

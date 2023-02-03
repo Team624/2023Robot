@@ -5,10 +5,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
-import com.swervedrivespecialties.swervelib.MotorType;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,22 +14,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
-  private final SwerveModule m_frontLeftModule;
-
-  private final SwerveModule m_frontRightModule;
-  private final SwerveModule m_backLeftModule;
-  private final SwerveModule m_backRightModule;
-
   public SwerveDriveOdometry swerveOdometry;
+
+  private boolean m_isOpenLoop;
 
   public PIDController skewApril_pid;
   public PIDController autoBalance_pid;
@@ -52,63 +44,16 @@ public class Drivetrain extends SubsystemBase {
   private SwerveModuleState[] lstates =
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
 
+  public SwerveModule[] mSwerveMods;
+
   public Drivetrain() {
-
-    m_frontLeftModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                drivetrain_tab
-                    .getLayout("Front Left Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(0, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.Swerve.Mod0.FRONT_LEFT_MODULE_DRIVE_MOTOR)
-            .withSteerMotor(MotorType.FALCON, Constants.Swerve.Mod0.FRONT_LEFT_MODULE_STEER_MOTOR)
-            .withSteerEncoderPort(Constants.Swerve.Mod0.FRONT_LEFT_MODULE_STEER_ENCODER)
-            .withSteerOffset(Constants.Swerve.Mod0.FRONT_LEFT_MODULE_STEER_OFFSET)
-            .build();
-
-    m_frontRightModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                drivetrain_tab
-                    .getLayout("Front Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(2, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.Swerve.Mod1.FRONT_RIGHT_MODULE_DRIVE_MOTOR)
-            .withSteerMotor(MotorType.FALCON, Constants.Swerve.Mod1.FRONT_RIGHT_MODULE_STEER_MOTOR)
-            .withSteerEncoderPort(Constants.Swerve.Mod1.FRONT_RIGHT_MODULE_STEER_ENCODER)
-            .withSteerOffset(Constants.Swerve.Mod1.FRONT_RIGHT_MODULE_STEER_OFFSET)
-            .build();
-
-    m_backLeftModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                drivetrain_tab
-                    .getLayout("Back Left Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(4, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.Swerve.Mod2.BACK_LEFT_MODULE_DRIVE_MOTOR)
-            .withSteerMotor(MotorType.FALCON, Constants.Swerve.Mod2.BACK_LEFT_MODULE_STEER_MOTOR)
-            .withSteerEncoderPort(Constants.Swerve.Mod2.BACK_LEFT_MODULE_STEER_ENCODER)
-            .withSteerOffset(Constants.Swerve.Mod2.BACK_LEFT_MODULE_STEER_OFFSET)
-            .build();
-
-    m_backRightModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                drivetrain_tab
-                    .getLayout("Back Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(6, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.Swerve.Mod3.BACK_RIGHT_MODULE_DRIVE_MOTOR)
-            .withSteerMotor(MotorType.FALCON, Constants.Swerve.Mod3.BACK_RIGHT_MODULE_STEER_MOTOR)
-            .withSteerEncoderPort(Constants.Swerve.Mod3.BACK_RIGHT_MODULE_STEER_ENCODER)
-            .withSteerOffset(Constants.Swerve.Mod3.BACK_RIGHT_MODULE_STEER_OFFSET)
-            .build();
+    mSwerveMods =
+        new SwerveModule[] {
+          new SwerveModule(0, Constants.Swerve.Mod0.constants),
+          new SwerveModule(1, Constants.Swerve.Mod1.constants),
+          new SwerveModule(2, Constants.Swerve.Mod2.constants),
+          new SwerveModule(3, Constants.Swerve.Mod3.constants)
+        };
 
     swerveOdometry =
         new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
@@ -117,7 +62,8 @@ public class Drivetrain extends SubsystemBase {
     skewApril_pid = getSkewAprilPID();
   }
 
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+  public void drive(
+      Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     if (fieldRelative) {
 
       m_chassisSpeeds =
@@ -127,10 +73,15 @@ public class Drivetrain extends SubsystemBase {
     } else {
       m_chassisSpeeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
     }
+
+    m_isOpenLoop = isOpenLoop;
   }
 
   @Override
   public void periodic() {
+
+    SwerveModuleState[] swerveModuleStates =
+        Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
 
     SwerveModulePosition[] positions = getModulePositions();
 
@@ -138,22 +89,23 @@ public class Drivetrain extends SubsystemBase {
         Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
     if (!isAuton) {
       states = freezeLogic(states);
+
+      for (SwerveModule mod : mSwerveMods) {
+        SmartDashboard.putNumber(
+            "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
+        SmartDashboard.putNumber(
+            "Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
+        SmartDashboard.putNumber(
+            "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+      }
     }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         states, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
-    m_frontLeftModule.set(
-        states[0].speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * 12.0,
-        states[0].angle.getRadians());
-    m_frontRightModule.set(
-        states[1].speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * 12.0,
-        states[1].angle.getRadians());
-    m_backLeftModule.set(
-        states[2].speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * 12.0,
-        states[2].angle.getRadians());
-    m_backRightModule.set(
-        states[3].speedMetersPerSecond / Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND * 12.0,
-        states[3].angle.getRadians());
+
+    for (SwerveModule mod : mSwerveMods) {
+      mod.setDesiredState(swerveModuleStates[mod.moduleNumber], m_isOpenLoop);
+    }
 
     if (isAuton) {
       swerveOdometry.update(getYaw(), positions);
@@ -165,8 +117,13 @@ public class Drivetrain extends SubsystemBase {
     // autoBalance();
   }
 
-  private SwerveModuleState getState(SwerveModule module) {
-    return new SwerveModuleState(module.getDriveVelocity(), new Rotation2d(module.getSteerAngle()));
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND);
+
+    for (SwerveModule mod : mSwerveMods) {
+      mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+    }
   }
 
   private PIDController getRotationPathPID() {
@@ -206,16 +163,20 @@ public class Drivetrain extends SubsystemBase {
     isAuton = state;
   }
 
-  public SwerveModulePosition[] getModulePositions() {
+  public SwerveModuleState[] getModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (SwerveModule mod : mSwerveMods) {
+      states[mod.moduleNumber] = mod.getState();
+    }
+    return states;
+  }
 
-    SwerveModulePosition[] pos =
-        new SwerveModulePosition[] {
-          m_frontLeftModule.getPosition(),
-          m_frontRightModule.getPosition(),
-          m_backLeftModule.getPosition(),
-          m_backRightModule.getPosition()
-        };
-    return pos;
+  public SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+    for (SwerveModule mod : mSwerveMods) {
+      positions[mod.moduleNumber] = mod.getPosition();
+    }
+    return positions;
   }
 
   public void setPose() {
@@ -245,15 +206,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    swerveOdometry.resetPosition(
-        getYaw(),
-        new SwerveModulePosition[] {
-          m_frontLeftModule.getPosition(),
-          m_frontRightModule.getPosition(),
-          m_backLeftModule.getPosition(),
-          m_backRightModule.getPosition()
-        },
-        pose);
+    swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
   }
 
   public double normalizeAngle(double angle) {
@@ -276,7 +229,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void stop() {
-    this.drive(new Translation2d(0.0, 0.0), 0.0, false);
+    this.drive(new Translation2d(0.0, 0.0), 0.0, false, true);
   }
 
   public AHRS getAhrs() {

@@ -125,9 +125,9 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
 
-    left.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
+    left.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
 
-    right.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 1));
+    right.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 1));
 
     alignTagTheta.whileTrue(
         new AprilTagTheta(

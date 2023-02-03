@@ -65,13 +65,13 @@ public class AprilTagTheta extends CommandBase {
 
     System.out.println("this is the turning velocity  : " + thVelocity);
 
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true);
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new Translation2d(0, 0), 0, true);
+    m_drivetrain.drive(new Translation2d(0, 0), 0, true, false);
     System.out.println("interrupt");
   }
 

@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -38,7 +37,7 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(2.5, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(2, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
@@ -53,8 +52,8 @@ public class GoalPose extends CommandBase {
     this.m_node = node;
     this.m_right = right;
 
-    xController.setTolerance(0.05);
-    yController.setTolerance(0.05);
+    xController.setTolerance(0.01);
+    yController.setTolerance(0.01);
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -66,8 +65,7 @@ public class GoalPose extends CommandBase {
   public void initialize() {
 
     Pose2d pose = m_drivetrain.getPose();
-    
-    
+
     omegaController.reset(pose.getRotation().getRadians());
 
     xController.reset(pose.getX());
@@ -112,9 +110,9 @@ public class GoalPose extends CommandBase {
     }
 
     if (m_right == 0) {
-      yController.setGoal(goal - (22 / 39.37));
-    } else if (m_right == 1) {
       yController.setGoal(goal + (22 / 39.37));
+    } else if (m_right == 1) {
+      yController.setGoal(goal - (22 / 39.37));
     } else {
       yController.setGoal(goal);
     }
@@ -125,7 +123,22 @@ public class GoalPose extends CommandBase {
 
     double thVel = omegaController.calculate(pose2d.getRotation().getRadians());
 
-    m_drivetrain.drive(new Translation2d(0, yVel), thVel, true);
+    m_drivetrain.drive(new Translation2d(0, yVel), 0, true, true);
+
+    // if (yController.atGoal() && m_limelight.hasTarget() && m_limelight.alignment_values()[1] >
+    // 0.1) {
+
+    //   double horiz_distance = m_limelight.alignment_values()[0];
+    //   double yVelocity = 0.0;
+
+    //   if (horiz_distance < 0) {
+    //     yVelocity = -1;
+    //   } else {
+    //     yVelocity = 1;
+    //   }
+
+    //   m_drivetrain.drive(new Translation2d(0, yVelocity), 0, true);
+    // }
   }
 
   // Called once the command ends or is interrupted.
@@ -140,7 +153,6 @@ public class GoalPose extends CommandBase {
   public boolean isFinished() {
     System.out.println("y controllers " + yController.getPositionError());
     if (yController.atGoal()) {
-
       return true;
     }
 

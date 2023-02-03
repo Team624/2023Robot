@@ -75,13 +75,13 @@ public class VisionAprilTags extends CommandBase {
 
     System.out.println(thVelocity);
 
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true);
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new Translation2d(0, 0), 0, true);
+    m_drivetrain.drive(new Translation2d(0, 0), 0, true, true);
     System.out.println("interrupt");
   }
 
