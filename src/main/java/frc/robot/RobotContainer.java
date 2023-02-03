@@ -9,16 +9,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Drivetrain.VisionAprilTags;
+import frc.robot.commands.FullArm.Arm.ControlExtend;
+import frc.robot.commands.FullArm.Arm.IdleArm;
+import frc.robot.commands.FullArm.Pivot.ControlPivot;
+import frc.robot.commands.FullArm.Pivot.IdlePivot;
+import frc.robot.commands.FullArm.ToBot;
+import frc.robot.commands.FullArm.ToHighGoal;
+import frc.robot.commands.FullArm.ToLowGoal;
+import frc.robot.commands.FullArm.ToMidGoal;
+import frc.robot.commands.Grabber.CloseGrabber;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Pivot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,7 +42,20 @@ import frc.robot.subsystems.Limelight;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final XboxController d_controller = new XboxController(0);
+  public final XboxController m_Controller = new XboxController(1);
 
+  // manipulator controls
+  private final JoystickButton controlArm =
+      new JoystickButton(m_Controller, XboxController.Axis.kLeftY.value);
+  private final JoystickButton controlPivot =
+      new JoystickButton(m_Controller, XboxController.Axis.kRightY.value);
+  private final JoystickButton grabButton =
+      new JoystickButton(m_Controller, XboxController.Button.kLeftBumper.value);
+
+  private final POVButton goHighButton = new POVButton(m_Controller, 0);
+  private final POVButton goMidButton = new POVButton(m_Controller, 90);
+  private final POVButton goLowButton = new POVButton(m_Controller, 180);
+  private final POVButton goBotButton = new POVButton(m_Controller, 270);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -51,11 +77,16 @@ public class RobotContainer {
   // private final JoystickButton balance =
   //     new JoystickButton(d_controller, XboxController.Button.kX.value);
 
+  // Manipulator Controls
+
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Limelight m_limelight = new Limelight();
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
+  private final Arm m_arm = new Arm();
+  private final Pivot m_pivot = new Pivot();
+  private final Grabber m_grabber = new Grabber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -71,6 +102,8 @@ public class RobotContainer {
             () -> -modifyAxis((d_controller.getRawAxis(rotationAxis))),
             () -> robotCentric.getAsBoolean()));
 
+    m_pivot.setDefaultCommand(new IdlePivot(m_pivot));
+    m_arm.setDefaultCommand(new IdleArm(m_arm));
     configureBindings();
   }
 
@@ -108,6 +141,14 @@ public class RobotContainer {
     resetpose.onTrue(new UpdatePose(m_drivetrain, m_limelight));
 
     // balance.whileTrue(new Balance(m_drivetrain));
+
+    controlArm.whileTrue(new ControlExtend(m_arm, m_Controller));
+    controlPivot.whileTrue(new ControlPivot(m_pivot, m_Controller));
+    grabButton.whileTrue(new CloseGrabber(m_grabber));
+    goBotButton.onTrue(new ToBot(m_arm, m_pivot));
+    goHighButton.onTrue(new ToHighGoal(m_arm, m_pivot));
+    goMidButton.onTrue(new ToMidGoal(m_arm, m_pivot));
+    goLowButton.onTrue(new ToLowGoal(m_arm, m_pivot));
   }
 
   /**

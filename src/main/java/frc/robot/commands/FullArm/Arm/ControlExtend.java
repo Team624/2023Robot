@@ -26,7 +26,7 @@ public class ControlExtend extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.extend(controller.getRightY());
+    arm.extend(controller.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

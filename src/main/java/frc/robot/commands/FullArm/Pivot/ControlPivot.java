@@ -26,7 +26,7 @@ public class ControlPivot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.movePivot(controller.getLeftY());
+    pivot.movePivot(controller.getRightY());
     ;
   }
 

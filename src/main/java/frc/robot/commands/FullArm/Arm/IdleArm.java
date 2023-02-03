@@ -2,23 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Grabber;
+package frc.robot.commands.FullArm.Arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Arm;
 
-public class CloseGrabber extends CommandBase {
-  private final Grabber grabber;
-  /** Creates a new CloseGrabber. */
-  public CloseGrabber(Grabber grabber) {
-    this.grabber = grabber;
-    // Use addRequirements() here to declare subsystem dependencies.
+public class IdleArm extends CommandBase {
+  /** Creates a new IdleArm. */
+  private final Arm arm;
+
+  public IdleArm(Arm arm) {
+    this.arm = arm;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    grabber.close();
+    arm.stop();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -27,9 +27,7 @@ public class CloseGrabber extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    grabber.open();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

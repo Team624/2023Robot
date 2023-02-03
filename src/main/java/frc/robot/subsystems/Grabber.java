@@ -4,15 +4,14 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Grabber extends SubsystemBase {
   /** Creates a new Grabber. */
   private Solenoid grabSolenoid;
+
   private boolean isGrabbin;
 
   public Grabber() {
@@ -23,15 +22,18 @@ public class Grabber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public boolean getGrabbin(){
+
+  public boolean getGrabbin() {
     return isGrabbin;
   }
-  public void close(){
+
+  public void close() {
     grabSolenoid.set(true);
-    isGrabbin=true;
+    isGrabbin = true;
   }
-  public void open(){
+
+  public void open() {
     grabSolenoid.set(false);
-    isGrabbin=false;
+    isGrabbin = false;
   }
 }

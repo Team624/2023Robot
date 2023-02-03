@@ -12,7 +12,7 @@ public class ToBot extends CommandBase {
   private final Pivot pivot;
   private final Arm arm;
   /** Creates a new ToLowGoal. */
-  public ToBot(Pivot pivot, Arm arm) {
+  public ToBot(Arm arm, Pivot pivot) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.pivot = pivot;
     this.arm = arm;
