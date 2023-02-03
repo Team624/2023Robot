@@ -10,9 +10,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-  private CANSparkMax armMotor = new CANSparkMax(0, MotorType.kBrushless);
+  private CANSparkMax armMotor = new CANSparkMax(Constants.Arm.ARM_MOTOR, MotorType.kBrushless);
   private RelativeEncoder armEncoder;
 
   private SparkMaxPIDController armPID;

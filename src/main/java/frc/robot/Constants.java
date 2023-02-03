@@ -101,4 +101,18 @@ public final class Constants {
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(232.99);
     }
   }
+  public static final class Arm{
+    public static final int ARM_MOTOR=0;
+    public static final double P=0;
+    public static final double I=0;
+    public static final double D=0;
+    public static final double FF=0;
+  }
+  public static final class Pivot{
+    public static final int PIVOT_MOTOR=0;
+    public static final double P=0;
+    public static final double I=0;
+    public static final double D=0;
+    public static final double FF=0;
+  }
 }
