@@ -4,22 +4,20 @@
 
 package frc.robot.commands.Arm;
 
-import java.lang.ModuleLayer.Controller;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
 public class ControlArm extends CommandBase {
   /** Creates a new ControlArm. */
-
   private final Arm m_Arm;
+
   private final XboxController m_Controller;
-  
-  public ControlArm(Arm arm,XboxController controller) {
+
+  public ControlArm(Arm arm, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
-    this.m_Controller=controller;
+    this.m_Controller = controller;
     addRequirements(arm);
   }
 

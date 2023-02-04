@@ -9,7 +9,6 @@ import frc.robot.subsystems.Arm;
 
 public class IdleArm extends CommandBase {
   /** Creates a new IdleArm. */
-
   private final Arm m_Arm;
 
   public IdleArm(Arm arm) {

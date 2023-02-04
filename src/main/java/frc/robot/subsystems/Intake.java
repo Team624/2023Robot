@@ -5,11 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private CANSparkMax intakeMotor;
+
   private Solenoid intakeSolenoid;
 
   private RelativeEncoder intakeEncoder;
@@ -27,7 +26,7 @@ public class Intake extends SubsystemBase {
   private double D;
 
   public Intake() {
-    intakeMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor,MotorType.kBrushless);
+    intakeMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor, MotorType.kBrushless);
     intakeMotor.restoreFactoryDefaults();
     intakeEncoder = intakeMotor.getEncoder();
     intakePID = intakeMotor.getPIDController();
@@ -41,10 +40,9 @@ public class Intake extends SubsystemBase {
     intakePID.setD(D);
 
     intakePID.setOutputRange(-1, 1);
-    
 
-    intakeSolenoid = new Solenoid(30, PneumaticsModuleType.CTREPCM, frc.robot.Constants.Intake.intakeSolenoidID);
-
+    intakeSolenoid =
+        new Solenoid(30, PneumaticsModuleType.CTREPCM, frc.robot.Constants.Intake.intakeSolenoidID);
   }
 
   @Override
@@ -52,11 +50,11 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void runIntake(double speed){
+  public void runIntake(double speed) {
     intakeMotor.set(speed);
   }
 
-  public void stopIntake(){
+  public void stopIntake() {
     intakeMotor.stopMotor();
   }
 

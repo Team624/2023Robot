@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,15 +11,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Claw.IdleClaw;
 import frc.robot.commands.Drivetrain.AprilTagTheta;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
-import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
+import frc.robot.commands.Intake.DeployIntake;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
@@ -43,7 +41,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final XboxController d_controller = new XboxController(0);
   public final XboxController m_controller = new XboxController(1);
-  
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -79,17 +76,17 @@ public class RobotContainer {
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
+  // private final JoystickButton controlArm =
+  //     new JoystickButton(m_controller, XboxController.Axis.kLeftX.value);
 
-  private final JoystickButton controlArm = 
-      new JoystickButton(m_controller, XboxController.Axis.kLeftX.value);
-
-  private final JoystickButton controlTelescope = 
+  private final JoystickButton controlTelescope =
       new JoystickButton(m_controller, XboxController.Axis.kRightY.value);
 
-  private final JoystickButton setTelescope = 
+  private final JoystickButton setTelescope =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
-    
 
+  private final JoystickButton runIntake =
+      new JoystickButton(m_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -98,11 +95,6 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Telescope m_telescope = new Telescope();
   private final Claw m_claw = new Claw();
-
-  
-
-
-  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -117,7 +109,7 @@ public class RobotContainer {
             () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
             () -> -modifyAxis((d_controller.getRawAxis(rotationAxis))),
             () -> robotCentric.getAsBoolean()));
-      
+
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_intake.setDefaultCommand(new IdleIntake(m_intake));
@@ -142,6 +134,8 @@ public class RobotContainer {
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
+    runIntake.whileTrue(new DeployIntake(m_intake));
+
     // alignTag.whileTrue(
     //     new AlignwithTag(
     //         m_drivetrain,
@@ -157,16 +151,15 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
     //         () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
 
-    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 0));
+    // alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 0));
 
-    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 0));
+    // alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 0));
 
-    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
+    // alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
 
-    left.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
+    // left.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
 
-    right.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 1));
-
+    // right.whileTrue(new GoalPose(m_drivetrain, m_limelight, 3, 1));
 
     alignTagTheta.whileTrue(
         new AprilTagTheta(
@@ -179,7 +172,7 @@ public class RobotContainer {
 
     // balance.whileTrue(new Balance(m_drivetrain));
 
-    controlArm.whileTrue(new ControlArm(m_arm, m_controller));
+    // controlArm.whileTrue(new ControlArm(m_arm, m_controller));
     controlTelescope.whileTrue(new ControlTelescope(m_telescope, m_controller));
     setTelescope.whileTrue(new InstantCommand(() -> m_telescope.setTelescope(1000)));
   }

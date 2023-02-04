@@ -9,8 +9,8 @@ import frc.robot.subsystems.Telescope;
 
 public class IdleTelescope extends CommandBase {
   /** Creates a new IdleTelescope. */
-
   private final Telescope m_Telescope;
+
   public IdleTelescope(Telescope telescope) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Telescope = telescope;

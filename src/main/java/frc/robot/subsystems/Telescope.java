@@ -5,17 +5,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Telescope extends SubsystemBase {
   /** Creates a new Telescope. */
-  
-
   private CANSparkMax telescopeMotor;
+
   private RelativeEncoder telescopeEncoder;
 
   private SparkMaxPIDController telescopePID;
@@ -23,8 +21,9 @@ public class Telescope extends SubsystemBase {
   private double P;
   private double I;
   private double D;
+
   public Telescope() {
-    telescopeMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor,MotorType.kBrushless);
+    telescopeMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor, MotorType.kBrushless);
     telescopeMotor.restoreFactoryDefaults();
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();
@@ -44,22 +43,19 @@ public class Telescope extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    System.out.println("telescope encoder: "+telescopeEncoder.getPosition());
-    System.out.println("telescope velocity: "+telescopeEncoder.getVelocity());
-    
+    System.out.println("telescope encoder: " + telescopeEncoder.getPosition());
+    System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
   }
 
-  public void controlTelescope(double speed){
+  public void controlTelescope(double speed) {
     telescopeMotor.set(speed);
   }
 
-  public void stopTelescope(){
+  public void stopTelescope() {
     telescopeMotor.stopMotor();
   }
 
-  public void setTelescope(double position){
+  public void setTelescope(double position) {
     telescopeEncoder.setPosition(position);
   }
-
-  
 }

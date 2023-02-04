@@ -10,15 +10,15 @@ import frc.robot.subsystems.Telescope;
 
 public class ControlTelescope extends CommandBase {
   /** Creates a new ControlTelescope. */
-
   private final Telescope m_Telescope;
+
   private final XboxController m_Controller;
-  
-  public ControlTelescope(Telescope telescope,XboxController controller) {
+
+  public ControlTelescope(Telescope telescope, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
 
-    this.m_Telescope=telescope;
-    this.m_Controller=controller;
+    this.m_Telescope = telescope;
+    this.m_Controller = controller;
     addRequirements(telescope);
   }
 
