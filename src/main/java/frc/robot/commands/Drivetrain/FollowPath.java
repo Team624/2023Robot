@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -76,14 +77,15 @@ public class FollowPath extends CommandBase {
     Pose2d wantedPose = path.interpolate(timeSeconds);
 
     Pose2d currentPose = drivetrain.getPose();
-
-    currentPose =
-        new Pose2d(
-            currentPose.getTranslation(), new Rotation2d(currentPose.getRotation().getRadians()));
+    // currentPose = new Pose2d(currentPose.getTranslation(), new Rotation2d(MathUtil.inputModulus(currentPose.getRotation().getRadians(), 0, 2 * Math.PI)));
 
     System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
 
     System.out.println("Current: " + currentPose.getRotation().getRadians());
+
+    SmartDashboard.putNumber("Heading Error", wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
+
+    SmartDashboard.putNumber("Wanted Heading", wantedPose.getRotation().getRadians());
 
     System.out.println(
         "Error: " + wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
@@ -92,12 +94,7 @@ public class FollowPath extends CommandBase {
         controller.calculate(
             currentPose, wantedPose, path.getVelocity(timeSeconds), wantedPose.getRotation());
 
-    // drivetrain.drive(chassisSpeeds);
-    drivetrain.drive(
-        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
-        chassisSpeeds.omegaRadiansPerSecond,
-        false,
-        false);
+    drivetrain.drive(chassisSpeeds, false, false);
   }
 
   // Called once the command ends or is interrupted.

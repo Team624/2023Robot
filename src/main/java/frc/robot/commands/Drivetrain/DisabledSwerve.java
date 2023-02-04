@@ -27,7 +27,7 @@ public class DisabledSwerve extends CommandBase {
   @Override
   public void execute() {
 
-    m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0.01, true, false);
+    m_drivetrainSubsystem.stop();
   }
 
   // Called once the command ends or is interrupted.

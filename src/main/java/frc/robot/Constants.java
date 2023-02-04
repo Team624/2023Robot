@@ -79,7 +79,7 @@ public final class Constants {
     public static final double driveKD = 0.0;
     public static final double driveKF = 0.0;
 
-    public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+    public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
     /* Drivetrain Constants */
@@ -202,11 +202,11 @@ public final class Constants {
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = .2; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = .2685; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
-        2.0 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        3.0 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
 
     // Rotational tolerance for autonomous paths
