@@ -10,7 +10,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
@@ -75,15 +74,27 @@ public class FollowPath extends CommandBase {
     double timeSeconds = timer.get();
 
     Pose2d wantedPose = path.interpolate(timeSeconds);
+    wantedPose =
+        new Pose2d(
+            wantedPose.getTranslation(),
+            new Rotation2d(
+                MathUtil.inputModulus(wantedPose.getRotation().getRadians(), 0.0, 2 * Math.PI)));
 
     Pose2d currentPose = drivetrain.getPose();
-    // currentPose = new Pose2d(currentPose.getTranslation(), new Rotation2d(MathUtil.inputModulus(currentPose.getRotation().getRadians(), 0, 2 * Math.PI)));
+    currentPose =
+        new Pose2d(
+            currentPose.getTranslation(),
+            new Rotation2d(
+                MathUtil.inputModulus(drivetrain.getYaw().getRadians(), 0.0, 2 * Math.PI)));
+    // currentPose = new Pose2d(currentPose.getTranslation(), new
+    // Rotation2d(MathUtil.inputModulus(currentPose.getRotation().getRadians(), 0, 2 * Math.PI)));
 
     System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
 
     System.out.println("Current: " + currentPose.getRotation().getRadians());
 
-    SmartDashboard.putNumber("Heading Error", wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
+    SmartDashboard.putNumber(
+        "Heading Error", wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
 
     SmartDashboard.putNumber("Wanted Heading", wantedPose.getRotation().getRadians());
 

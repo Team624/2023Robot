@@ -55,7 +55,7 @@ public class Path {
     // heading_diff = Math.abs(errorA) < Math.abs(heading_diff) ? errorA : heading_diff;
 
     double rotation = MathUtil.angleModulus(endHeading.getRadians());
-    
+
     return new Pose2d(translation, new Rotation2d(rotation));
   }
 

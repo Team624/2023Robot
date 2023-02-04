@@ -62,8 +62,12 @@ public class Drivetrain extends SubsystemBase {
     drivetrain_tab.add(field).withSize(4, 3);
   }
 
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
-    drive(new ChassisSpeeds(translation.getX(), translation.getY(), rotation), fieldRelative, isOpenLoop);
+  public void drive(
+      Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    drive(
+        new ChassisSpeeds(translation.getX(), translation.getY(), rotation),
+        fieldRelative,
+        isOpenLoop);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds, boolean fieldRelative, boolean isOpenLoop) {
@@ -84,8 +88,7 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!isAuton)
-      m_states = freezeLogic(m_states);
+    if (!isAuton) m_states = freezeLogic(m_states);
 
     setModuleStates();
 
@@ -93,7 +96,6 @@ public class Drivetrain extends SubsystemBase {
 
     updateNT();
   }
-
 
   private void updateNT() {
     ChassisSpeeds currentChassisSpeeds = getChassisSpeeds(true);
@@ -121,7 +123,8 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("/pose/x", currentPose.getX());
     SmartDashboard.putNumber("/pose/y", currentPose.getY());
 
-    field.setRobotPose(new Pose2d(currentPose.getX(), 8.0137 + currentPose.getY(), currentPose.getRotation()));
+    field.setRobotPose(
+        new Pose2d(currentPose.getX(), 8.0137 + currentPose.getY(), getYaw()));
   }
 
   public void setModuleStates() {
@@ -134,16 +137,18 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public ChassisSpeeds getChassisSpeeds(boolean fieldRelative) {
-    ChassisSpeeds chassisSpeeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
-    
+    ChassisSpeeds chassisSpeeds =
+        Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
+
     if (!fieldRelative) return chassisSpeeds;
-    
+
     // Convert robot relative to field relative
-    return new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond * getYaw().getCos()
-                        - chassisSpeeds.vyMetersPerSecond * getYaw().getSin(),
-                chassisSpeeds.vyMetersPerSecond * getYaw().getCos()
-                        + chassisSpeeds.vxMetersPerSecond * getYaw().getSin(),
-                chassisSpeeds.omegaRadiansPerSecond);
+    return new ChassisSpeeds(
+        chassisSpeeds.vxMetersPerSecond * getYaw().getCos()
+            - chassisSpeeds.vyMetersPerSecond * getYaw().getSin(),
+        chassisSpeeds.vyMetersPerSecond * getYaw().getCos()
+            + chassisSpeeds.vxMetersPerSecond * getYaw().getSin(),
+        chassisSpeeds.omegaRadiansPerSecond);
   }
 
   private SwerveModuleState[] freezeLogic(SwerveModuleState[] current) {
@@ -189,9 +194,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void setPose() {
     zeroGyroscope();
-    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
+    double[] startPosition =
+        SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
     Rotation2d newRot = new Rotation2d(-startPosition[2]);
-    Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
+    Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot.times(-1));
 
     swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);
     ahrs.setAngleAdjustment(newRot.getDegrees());
