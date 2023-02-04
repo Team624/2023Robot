@@ -20,6 +20,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_autonSelectionCommand;
 
+  public static CTREConfigs ctreConfigs;
+
   private RobotContainer m_robotContainer;
 
   private Compressor compressor;
@@ -30,6 +32,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    ctreConfigs = new CTREConfigs();
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

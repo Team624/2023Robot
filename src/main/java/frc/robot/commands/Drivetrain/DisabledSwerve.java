@@ -26,10 +26,8 @@ public class DisabledSwerve extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_drivetrainSubsystem.drive(
-    //     ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, .01, m_drivetrainSubsystem.getYaw()));
 
-    m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0.01, true, true);
+    m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0.01, true, false);
   }
 
   // Called once the command ends or is interrupted.

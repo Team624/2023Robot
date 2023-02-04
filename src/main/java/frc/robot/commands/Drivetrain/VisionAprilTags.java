@@ -44,34 +44,38 @@ public class VisionAprilTags extends CommandBase {
   @Override
   public void execute() {
 
-    // double thVelocity = 0;
+    double thVelocity = 0;
     double yVelocity = 0;
-
-    // double skew_angle = m_limelight.alignment_values()[1];
 
     // thVelocity = getSkewPID(skew_angle);
 
-    // if (skew_angle < 0) {
-    //   thVelocity = -0.5;
-    // } else {
-    //   thVelocity = 0.5;
-    // }
+    if (m_limelight.hasTarget()) {
+      double skew_angle = m_limelight.alignment_values()[1];
 
-    double horiz_distance = m_limelight.alignment_values()[0];
+      if (skew_angle < 0) {
+        thVelocity = -0.5;
+      } else {
+        thVelocity = 0.5;
+      }
 
-    double xVelocity = m_translationXSupplier.getAsDouble();
-    double thVelocity = m_translationThSupplier.getAsDouble();
+      double horiz_distance = m_limelight.alignment_values()[0];
 
-    if (horiz_distance < 0) {
-      yVelocity = -0.4;
-    } else {
-      yVelocity = 0.4;
+      if (horiz_distance < 0) {
+        yVelocity = -0.8;
+      } else {
+        yVelocity = 0.8;
+      }
     }
 
-    xVelocity = filterX.calculate(xVelocity);
-    thVelocity = filterTh.calculate(thVelocity);
+    double xVelocity = m_translationXSupplier.getAsDouble();
+    // double thVelocity = m_translationThSupplier.getAsDouble();
 
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
+    xVelocity = filterX.calculate(xVelocity);
+    // thVelocity = filterTh.calculate(thVelocity);
+
+    System.out.println(thVelocity);
+
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -84,15 +88,21 @@ public class VisionAprilTags extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("distance: " + m_limelight.alignment_values()[0]);
-    // System.out.println("angle: " + m_limelight.alignment_values()[1]);
+    if (m_limelight.hasTarget()) {
+      System.out.println("distance: " + m_limelight.alignment_values()[0]);
+      System.out.println("angle: " + m_limelight.alignment_values()[1]);
 
-    if (Math.abs(m_limelight.alignment_values()[0])
-        < 0.05) // && Math.abs(m_limelight.alignment_values()[1]) < 5
-    {
-      return true;
+      if (Math.abs(m_limelight.alignment_values()[0]) < 0.1
+          && Math.abs(m_limelight.alignment_values()[1]) < 5) {
+        return true;
+      }
     }
 
     return false;
+  }
+
+  private double getSkewPID(double wantedDeltaAngle) {
+    return m_drivetrain.skewApril_pid.calculate(
+        m_drivetrain.getYaw().getDegrees(), m_drivetrain.getYaw().getDegrees() + wantedDeltaAngle);
   }
 }

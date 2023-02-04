@@ -13,10 +13,12 @@ public class Limelight extends SubsystemBase {
   private final NetworkTable networkTable;
   private final NetworkTableEntry botpose_network;
   private final NetworkTableEntry camtran_network;
+  private final NetworkTableEntry tv_network;
   private final NetworkTableEntry tid_network;
   private double x_coordinate;
   private double y_coordinate;
   private double angle;
+  private double tv;
   private double tid;
 
   private double[] botpose;
@@ -26,6 +28,7 @@ public class Limelight extends SubsystemBase {
     networkTable = NetworkTableInstance.getDefault().getTable("limelight");
     botpose_network = networkTable.getEntry("botpose");
     camtran_network = networkTable.getEntry("camtran");
+    tv_network = networkTable.getEntry("tv");
     tid_network = networkTable.getEntry("tid");
     id_json = new HashMap<Double, Double>();
     id_json.put(1.0, -2.93659);
@@ -39,11 +42,15 @@ public class Limelight extends SubsystemBase {
   }
 
   public boolean hasTarget() {
-    return tid >= 1 && tid <= 8;
+    return tv == 1;
   }
 
   public double getID() {
     return tid;
+  }
+
+  public double getYofID() {
+    return id_json.get(tid) - 4.01;
   }
 
   public double[] alignment_values() {
@@ -67,8 +74,8 @@ public class Limelight extends SubsystemBase {
     double[] botpose_data = botpose_network.getDoubleArray(new double[] {});
     botpose = botpose_data;
     if (botpose_data.length == 6) {
-      x_coordinate = botpose_data[0] + 8.27;
-      y_coordinate = botpose_data[1] - 4.01;
+      x_coordinate = botpose_data[0];
+      y_coordinate = botpose_data[1];
     } else {
       x_coordinate = 0;
       y_coordinate = 0;
@@ -79,6 +86,7 @@ public class Limelight extends SubsystemBase {
     } else {
       angle = 180;
     }
+    tv = tv_network.getDouble(0);
     tid = tid_network.getDouble(-1.0);
   }
 
@@ -99,8 +107,8 @@ public class Limelight extends SubsystemBase {
     // width = 8.02
     // length = 16.54
 
-    botpose[0] = getX();
-    botpose[1] = getY();
+    botpose[0] = getX() + 8.27;
+    botpose[1] = getY() - 4.01;
     return botpose;
   }
 
