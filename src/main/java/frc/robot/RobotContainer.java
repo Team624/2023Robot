@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drivetrain.AprilTagTheta;
 import frc.robot.commands.Drivetrain.BlankDrive;
+import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SwerveDrive;
@@ -104,26 +105,12 @@ public class RobotContainer {
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    // alignTag.whileTrue(
-    //     new AlignwithTag(
-    //         m_drivetrain,
-    //         m_limelight,
-    //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-    //         () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
-    //         () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
-
-    // alignTag.onTrue(
-    //     new VisionAprilTags(
-    //         m_drivetrain,
-    //         m_limelight,
-    //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-    //         () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
-
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 0));
 
     alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 0));
 
-    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
+    // alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
+    alignTag3.whileTrue(new ConeAlign(m_drivetrain, m_limelight));
 
     left.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
 

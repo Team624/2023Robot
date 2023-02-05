@@ -207,7 +207,8 @@ public final class Constants {
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
         2.0 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION = Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
+    public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION =
+        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
 
     // Rotational tolerance for autonomous paths
     public static final double AUTONOMOUS_X_TOLERANCE = 0.2;

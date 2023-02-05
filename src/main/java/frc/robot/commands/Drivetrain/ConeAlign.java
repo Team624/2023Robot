@@ -10,13 +10,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 
-public class GoalPose extends CommandBase {
-  /** Creates a new GoalPose. */
+public class ConeAlign extends CommandBase {
+
   private final Drivetrain m_drivetrain;
 
   private final Limelight m_limelight;
-  private final int m_node;
-  private final int m_right;
+  private final double distance = 22 / 39.37;
 
   public double goal;
 
@@ -37,13 +36,10 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
-  public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
+  public ConeAlign(Drivetrain drivetrain, Limelight limelight) {
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
-    this.m_node = node;
-    this.m_right = right;
-
     xController.setTolerance(0.01);
     yController.setTolerance(0.01);
     omegaController.setTolerance(Units.degreesToRadians(3));
@@ -67,32 +63,19 @@ public class GoalPose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    System.out.println("Currect: " + m_drivetrain.getPose().getY());
+    double yVel = 0;
     Pose2d pose2d = m_drivetrain.getPose();
-
-    if (m_node == 0) {
-      goal = -3.58;
-
-    } else if (m_node == 1) {
-      goal = -5.277685;
-
-    } else if (m_node == 2) {
-      goal = -6.987;
-    } else {
-      goal = m_limelight.getYofTag();
-    }
-
-    if (m_right == 0) {
-      yController.setGoal(goal + (22 / 39.37));
-    } else if (m_right == 1) {
-      yController.setGoal(goal - (22 / 39.37));
-    } else {
+    if (m_limelight.getYofTag() != 0) {
+      goal = m_limelight.getYofTag() + distance;
+      System.out.println(goal);
       yController.setGoal(goal);
+      yVel = yController.calculate(pose2d.getY());
+    } else {
+      yController.setGoal(m_drivetrain.getPose().getY());
     }
 
     omegaController.setGoal(0);
-
-    double yVel = yController.calculate(pose2d.getY());
 
     m_drivetrain.drive(new Translation2d(0, yVel), 0, true, true);
   }
@@ -104,10 +87,7 @@ public class GoalPose extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    System.out.println("y controllers " + yController.getPositionError());
-    if (yController.atGoal()) {
-      return true;
-    }
-    return false;
+    System.out.println("Position Error " + yController.getPositionError());
+    return yController.atGoal();
   }
 }
