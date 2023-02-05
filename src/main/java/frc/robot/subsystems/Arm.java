@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
@@ -24,9 +26,10 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
 
-    armMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor, MotorType.kBrushless);
+    armMotor = new CANSparkMax(frc.robot.Constants.Arm.armMotor, MotorType.kBrushless);
     armMotor.restoreFactoryDefaults();
     armEncoder = armMotor.getEncoder();
+    armMotor.setIdleMode(IdleMode.kBrake);
     armPID = armMotor.getPIDController();
 
     P = frc.robot.Constants.Arm.P;

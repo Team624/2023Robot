@@ -23,7 +23,7 @@ public class Telescope extends SubsystemBase {
   private double D;
 
   public Telescope() {
-    telescopeMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor, MotorType.kBrushless);
+    telescopeMotor = new CANSparkMax(0, MotorType.kBrushless);
     telescopeMotor.restoreFactoryDefaults();
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();

@@ -49,6 +49,10 @@ public class Limelight extends SubsystemBase {
     return tid;
   }
 
+  public double getYofID() {
+    return id_json.get(tid) - 4.01;
+  }
+
   public double[] alignment_values() {
     if (tid <= 8 && tid >= 1) {
       double distance = Math.abs(y_coordinate - id_json.get(tid));
