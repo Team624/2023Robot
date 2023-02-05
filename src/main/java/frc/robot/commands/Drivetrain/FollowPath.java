@@ -40,13 +40,13 @@ public class FollowPath extends CommandBase {
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KP,
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KI,
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KD),
-            new ProfiledPIDController(
-                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
-                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
-                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
-                new TrapezoidProfile.Constraints(
-                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
-                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
+                new ProfiledPIDController(
+                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
+                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
+                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
+                  new TrapezoidProfile.Constraints(
+                      Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
+                      Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
 
     controller.setTolerance(
         new Pose2d(
@@ -74,32 +74,22 @@ public class FollowPath extends CommandBase {
     double timeSeconds = timer.get();
 
     Pose2d wantedPose = path.interpolate(timeSeconds);
-    wantedPose =
-        new Pose2d(
-            wantedPose.getTranslation(),
-            new Rotation2d(
-                MathUtil.inputModulus(wantedPose.getRotation().getRadians(), 0.0, 2 * Math.PI)));
+    // wantedPose =
+    //     new Pose2d(
+    //         wantedPose.getTranslation(),
+    //         new Rotation2d(
+    //             MathUtil.inputModulus(wantedPose.getRotation().getRadians(), 0.0, 2 * Math.PI)));
 
     Pose2d currentPose = drivetrain.getPose();
-    currentPose =
-        new Pose2d(
-            currentPose.getTranslation(),
-            new Rotation2d(
-                MathUtil.inputModulus(drivetrain.getYaw().getRadians(), 0.0, 2 * Math.PI)));
-    // currentPose = new Pose2d(currentPose.getTranslation(), new
-    // Rotation2d(MathUtil.inputModulus(currentPose.getRotation().getRadians(), 0, 2 * Math.PI)));
+    // currentPose =
+    //     new Pose2d(
+    //         currentPose.getTranslation(),
+    //         new Rotation2d(
+    //             MathUtil.inputModulus(drivetrain.getYaw().getRadians(), 0.0, 2 * Math.PI)));
 
     System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
 
     System.out.println("Current: " + currentPose.getRotation().getRadians());
-
-    SmartDashboard.putNumber(
-        "Heading Error", wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
-
-    SmartDashboard.putNumber("Wanted Heading", wantedPose.getRotation().getRadians());
-
-    System.out.println(
-        "Error: " + wantedPose.getRotation().minus(currentPose.getRotation()).getRadians());
 
     ChassisSpeeds chassisSpeeds =
         controller.calculate(

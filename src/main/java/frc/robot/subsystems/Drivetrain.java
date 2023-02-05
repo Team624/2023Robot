@@ -77,6 +77,10 @@ public class Drivetrain extends SubsystemBase {
       m_chassisSpeeds = chassisSpeeds;
     }
 
+    System.out.println(m_chassisSpeeds.omegaRadiansPerSecond);
+
+    m_chassisSpeeds = new ChassisSpeeds(m_chassisSpeeds.vxMetersPerSecond, m_chassisSpeeds.vyMetersPerSecond, -m_chassisSpeeds.omegaRadiansPerSecond);
+
     m_isOpenLoop = isOpenLoop;
 
     m_states = Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
@@ -193,14 +197,14 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setPose() {
-    zeroGyroscope();
     double[] startPosition =
         SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
-    Rotation2d newRot = new Rotation2d(-startPosition[2]);
+    Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot.times(-1));
 
-    swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);
+    ahrs.reset();
     ahrs.setAngleAdjustment(newRot.getDegrees());
+    swerveOdometry.resetPosition(newRot.times(-1), getModulePositions(), newPose);
   }
 
   public void zeroGyroscope() {

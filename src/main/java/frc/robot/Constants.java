@@ -74,10 +74,10 @@ public final class Constants {
     public static final double angleKF = chosenModule.angleKF;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 0.05; // TODO: This must be tuned to specific robot
+    public static final double driveKP = 0.15; // TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
-    public static final double driveKF = 0.0;
+    public static final double driveKF = 0.01;
 
     public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
@@ -202,7 +202,7 @@ public final class Constants {
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = .2685; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = .85; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
