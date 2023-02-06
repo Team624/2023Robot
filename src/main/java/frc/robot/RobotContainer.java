@@ -119,13 +119,13 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
     //         () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
 
-    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 0));
+    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
 
-    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 0));
+    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
-    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
+    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    left.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
+    left.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 0));
 
     right.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 1));
 
