@@ -4,25 +4,18 @@
 
 package frc.robot.commands.Telescope;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.XboxController;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Telescope;
 
-public class ControlTelescope extends CommandBase {
-  /** Creates a new ControlTelescope. */
+public class SetTelescope extends CommandBase {
+  /** Creates a new SetTelescope. */
   private final Telescope m_Telescope;
-
-  private final XboxController m_Controller;
-
-  SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Telescope.kS, Constants.Telescope.kV, Constants.Telescope.kA);
-
-  public ControlTelescope(Telescope telescope, XboxController controller) {
+  private final double m_setPoint;
+  public SetTelescope(Telescope telescope,double setPoint) {
     // Use addRequirements() here to declare subsystem dependencies.
-
     this.m_Telescope = telescope;
-    this.m_Controller = controller;
+    this.m_setPoint = setPoint;
     addRequirements(telescope);
   }
 
@@ -33,17 +26,18 @@ public class ControlTelescope extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Telescope.controlTelescope(m_Controller.getRightY());
-    
+    m_Telescope.setTelescope(2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Telescope.stopTelescope();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_Telescope.getEncoder()- 2< 0.1;
   }
 }

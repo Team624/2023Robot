@@ -229,6 +229,11 @@ public final class Constants {
     public static final int I = 0;
     public static final int D = 0;
     public static final int armMotor = 3;
+
+    public static final double kS = 0.0;
+    public static final double kG = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
   }
 
   public static final class Claw {
@@ -240,5 +245,9 @@ public final class Constants {
     public static final int I = 0;
     public static final int D = 0;
     public static final int telescopemotor = 0;
+
+    public static final double kS = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
   }
 }
