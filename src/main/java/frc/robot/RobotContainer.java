@@ -38,15 +38,19 @@ public class RobotContainer {
   public final XboxController d_controller = new XboxController(0);
   public final XboxController m_controller = new XboxController(1);
 
+  /* Operator Controls */
+  private final int ControlArm = XboxController.Axis.kLeftX.value;
+  private final int controlTelescope = XboxController.Axis.kRightY.value;
+  private final JoystickButton setTelescope =
+      new JoystickButton(m_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton runIntake =
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
+
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-  /* Operator Controls */
-  private final int ControlArm = XboxController.Axis.kLeftX.value;
-  private final int controlTelescope = XboxController.Axis.kRightY.value;
-  private final boolean monkey = false;
 
   /* Driver Buttons */
   private final JoystickButton zeroGyro =
@@ -76,12 +80,6 @@ public class RobotContainer {
 
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
-
-  private final JoystickButton setTelescope =
-      new JoystickButton(m_controller, XboxController.Button.kY.value);
-
-  private final JoystickButton runIntake =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();

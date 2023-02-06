@@ -190,32 +190,6 @@ public final class Constants {
     }
   }
 
-  public static final class Intake {
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int intakeMotor = 6;
-    public static final int intakeSolenoidID = 0;
-  }
-
-  public static final class Arm {
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int armMotor = 3;
-  }
-
-  public static final class Claw {
-    public static final int clawSolenoidID = 0;
-  }
-
-  public static final class Telescope {
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int telescopemotor = 0;
-  }
-
   public static final class Autonomous {
     // PID Controler for x alignment
     public static final double DRIVE_CONTROLLER_X_KP = 3.0;
@@ -240,5 +214,31 @@ public final class Constants {
     public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
     public static final double AUTONOMOUS_Y_TOLERANCE = 0.2;
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.5);
+  }
+
+  public static final class Intake {
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int intakeMotor = 6;
+    public static final int intakeSolenoidID = 0;
+  }
+
+  public static final class Arm {
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int armMotor = 3;
+  }
+
+  public static final class Claw {
+    public static final int clawSolenoidID = 0;
+  }
+
+  public static final class Telescope {
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int telescopemotor = 0;
   }
 }
