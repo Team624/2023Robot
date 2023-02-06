@@ -4,12 +4,10 @@
 
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
@@ -40,13 +38,13 @@ public class FollowPath extends CommandBase {
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KP,
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KI,
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KD),
-                new ProfiledPIDController(
-                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
-                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
-                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
-                  new TrapezoidProfile.Constraints(
-                      Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
-                      Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
+            new ProfiledPIDController(
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
+                new TrapezoidProfile.Constraints(
+                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
+                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
 
     controller.setTolerance(
         new Pose2d(

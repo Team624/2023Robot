@@ -79,7 +79,11 @@ public class Drivetrain extends SubsystemBase {
 
     System.out.println(m_chassisSpeeds.omegaRadiansPerSecond);
 
-    m_chassisSpeeds = new ChassisSpeeds(m_chassisSpeeds.vxMetersPerSecond, m_chassisSpeeds.vyMetersPerSecond, -m_chassisSpeeds.omegaRadiansPerSecond);
+    m_chassisSpeeds =
+        new ChassisSpeeds(
+            m_chassisSpeeds.vxMetersPerSecond,
+            m_chassisSpeeds.vyMetersPerSecond,
+            -m_chassisSpeeds.omegaRadiansPerSecond);
 
     m_isOpenLoop = isOpenLoop;
 
@@ -127,8 +131,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("/pose/x", currentPose.getX());
     SmartDashboard.putNumber("/pose/y", currentPose.getY());
 
-    field.setRobotPose(
-        new Pose2d(currentPose.getX(), 8.0137 + currentPose.getY(), getYaw()));
+    field.setRobotPose(new Pose2d(currentPose.getX(), 8.0137 + currentPose.getY(), getYaw()));
   }
 
   public void setModuleStates() {
