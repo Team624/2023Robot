@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import java.util.ResourceBundle.Control;
-
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,15 +42,11 @@ public class RobotContainer {
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
-  
 
-
-/* Operator Controls */
+  /* Operator Controls */
   private final int ControlArm = XboxController.Axis.kLeftX.value;
   private final int controlTelescope = XboxController.Axis.kRightY.value;
   private final boolean monkey = false;
-  
-
 
   /* Driver Buttons */
   private final JoystickButton zeroGyro =
@@ -83,8 +76,6 @@ public class RobotContainer {
 
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
-
-  
 
   private final JoystickButton setTelescope =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
@@ -120,7 +111,6 @@ public class RobotContainer {
     // m_claw.setDefaultCommand(new IdleClaw());
 
     configureBindings();
-
   }
 
   /**
@@ -139,7 +129,7 @@ public class RobotContainer {
     // cancelling on release.
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    runIntake.whileTrue(new DeployIntake(m_intake,m_controller));
+    runIntake.whileTrue(new DeployIntake(m_intake, m_controller));
 
     // alignTag.whileTrue(
     //     new AlignwithTag(
@@ -177,14 +167,11 @@ public class RobotContainer {
 
     // balance.whileTrue(new Balance(m_drivetrain));
 
-    
-
-    
-    if(m_controller.getRawAxis(ControlArm)> .05 || m_controller.getRawAxis(ControlArm)<-.05){
+    if (m_controller.getRawAxis(ControlArm) > .05 || m_controller.getRawAxis(ControlArm) < -.05) {
       new ControlArm(m_arm, m_controller);
     }
 
-    if(m_controller.getRawAxis(ControlArm)< 0.05 && m_controller.getRawAxis(ControlArm)>-.05){
+    if (m_controller.getRawAxis(ControlArm) < 0.05 && m_controller.getRawAxis(ControlArm) > -.05) {
       new IdleArm(m_arm);
     }
 

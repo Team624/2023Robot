@@ -17,7 +17,7 @@ public class DeployIntake extends CommandBase {
   public DeployIntake(Intake intake, XboxController Controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Intake = intake;
-    this.m_Controller =Controller;
+    this.m_Controller = Controller;
     addRequirements(intake);
   }
 
@@ -30,7 +30,7 @@ public class DeployIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
     m_Intake.runIntake(1);
   }
 
