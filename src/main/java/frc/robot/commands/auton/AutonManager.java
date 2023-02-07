@@ -4,8 +4,6 @@
 
 package frc.robot.commands.auton;
 
-import java.util.Queue;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,10 +60,11 @@ public class AutonManager extends CommandBase {
   private boolean startNTPath() {
     if (currentFollowPathCommand != null && currentFollowPathCommand.isScheduled()) return false;
 
-    long[] indexes = SmartDashboard.getEntry("/pathTable/startPathIndex").getIntegerArray(new long[0]);
+    long[] indexes =
+        SmartDashboard.getEntry("/pathTable/startPathIndex").getIntegerArray(new long[0]);
 
     SequentialCommandGroup commandGroup = new SequentialCommandGroup();
-    
+
     for (long index : indexes) {
       int i = (int) index;
 
