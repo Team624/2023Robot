@@ -38,13 +38,13 @@ public class FollowPath extends CommandBase {
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KP,
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KI,
                 Constants.Autonomous.DRIVE_CONTROLLER_Y_KD),
-                new ProfiledPIDController(
-                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
-                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
-                  Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
-                  new TrapezoidProfile.Constraints(
-                      Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
-                      Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
+            new ProfiledPIDController(
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
+                Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD,
+                new TrapezoidProfile.Constraints(
+                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY,
+                    Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION)));
 
     controller.setTolerance(
         new Pose2d(
