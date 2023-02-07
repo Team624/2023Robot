@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -27,7 +26,7 @@ public class DisabledSwerve extends CommandBase {
   @Override
   public void execute() {
 
-    m_drivetrainSubsystem.drive(new Translation2d(0, 0), 0.01, true);
+    m_drivetrainSubsystem.stop();
   }
 
   // Called once the command ends or is interrupted.

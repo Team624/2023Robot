@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Pivot extends SubsystemBase {
-  private CANSparkMax pivotMotor = new CANSparkMax(Constants.Pivot.PIVOT_MOTOR, MotorType.kBrushless);
+  private CANSparkMax pivotMotor =
+      new CANSparkMax(Constants.Pivot.PIVOT_MOTOR, MotorType.kBrushless);
   private RelativeEncoder pivotEncoder;
 
   private SparkMaxPIDController pivotPID;

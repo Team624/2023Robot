@@ -176,6 +176,10 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
   }
 
+  public void setDisabledDrivetrainDefault() {
+    m_drivetrain.setDefaultCommand(new DisabledSwerve(m_drivetrain));
+  }
+
   public void setDrivetrainDefaultCommand() {
     Command c =
         new SwerveDrive(

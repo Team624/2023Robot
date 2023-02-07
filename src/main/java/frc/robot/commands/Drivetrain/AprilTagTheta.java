@@ -65,22 +65,25 @@ public class AprilTagTheta extends CommandBase {
 
     System.out.println("this is the turning velocity  : " + thVelocity);
 
-    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true);
+    m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new Translation2d(0, 0), 0, true);
+    m_drivetrain.drive(new Translation2d(0, 0), 0, true, false);
     System.out.println("interrupt");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("angle: " + m_limelight.alignment_values()[1]);
-    if (Math.abs(m_limelight.alignment_values()[1]) < 5) {
-      return true;
+
+    if (m_limelight.hasTarget()) {
+      System.out.println("angle: " + m_limelight.alignment_values()[1]);
+      if (Math.abs(m_limelight.alignment_values()[1]) < 3) {
+        return true;
+      }
     }
     return false;
   }

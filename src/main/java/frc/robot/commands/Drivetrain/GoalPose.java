@@ -19,6 +19,10 @@ public class GoalPose extends CommandBase {
   private final Drivetrain m_drivetrain;
 
   private final Limelight m_limelight;
+  private final int m_node;
+  private final int m_right;
+
+  public double goal;
 
   public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
   public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
@@ -28,23 +32,28 @@ public class GoalPose extends CommandBase {
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(AngVel, 8);
+      new TrapezoidProfile.Constraints(AngVel, 3);
 
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(3, 0, 0, Y_CONSTRAINTS);
+      new ProfiledPIDController(2, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
-  public GoalPose(Drivetrain drivetrain, Limelight limelight) {
+  public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
     // Use addRequirements() here to declare subsystem dependencies.
+
+    // right 1
+    // left 2
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
+    this.m_node = node;
+    this.m_right = right;
 
-    xController.setTolerance(0.2);
-    yController.setTolerance(0.2);
+    xController.setTolerance(0.01);
+    yController.setTolerance(0.01);
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -56,39 +65,84 @@ public class GoalPose extends CommandBase {
   public void initialize() {
 
     Pose2d pose = m_drivetrain.getPose();
+
     omegaController.reset(pose.getRotation().getRadians());
+
     xController.reset(pose.getX());
     yController.reset(pose.getY());
+
+    // 0 = left: -3.6031665
+    // 1 = middle: -5.25404
+    // 2 = right: -6.98812
+
+    // id_json.put(1.0, -2.93659);
+    // id_json.put(2.0, -1.26019);
+    // id_json.put(3.0, 0.41621);
+    // id_json.put(4.0, 2.74161);
+    // id_json.put(5.0, 2.74161);
+    // id_json.put(6.0, 0.41621);
+    // id_json.put(7.0, -1.26019);
+    // id_json.put(8.0, -2.93659);
+
+    // -4.01
+
+    // Tag 1: -6.983
+    // Tag 2 y value: -5.2995
+    // Tag 3: 3.61357
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double[] pose2d = m_drivetrain.getSwervePose();
-    xController.setGoal(pose2d[0] + 1.1);
-    yController.setGoal(pose2d[1] + 1.1);
-    omegaController.setGoal(m_drivetrain.getYaw().getDegrees() + 15);
 
-    System.out.println("monkey2" + pose2d[0]);
-    if (m_limelight.hasTarget()) {
-      double xVel = xController.calculate(pose2d[0]);
-      System.out.println(xVel + "monkey");
-      if (xController.atGoal()) {
-        xVel = 0.0;
-      }
-      double yVel = yController.calculate(pose2d[1]);
-      if (yController.atGoal()) {
-        yVel = 0.0;
-      }
-      // double thVel = omegaController.calculate(m_drivetrain.getYaw().getDegrees());
-      // if (omegaController.atGoal()) {
-      //   thVel = 0.0;
-      // }
-      m_drivetrain.drive(new Translation2d(xVel, yVel), 0, true);
+    Pose2d pose2d = m_drivetrain.getPose();
+
+    if (m_node == 0) {
+      goal = -3.58;
+
+    } else if (m_node == 1) {
+      goal = -5.277685;
+
+    } else if (m_node == 2) {
+      goal = -6.987;
+    } else {
+      goal = m_limelight.getYofID();
     }
+
+    if (m_right == 0) {
+      yController.setGoal(goal + (22 / 39.37));
+    } else if (m_right == 1) {
+      yController.setGoal(goal - (22 / 39.37));
+    } else {
+      yController.setGoal(goal);
+    }
+
+    omegaController.setGoal(0);
+
+    double yVel = yController.calculate(pose2d.getY());
+
+    double thVel = omegaController.calculate(pose2d.getRotation().getRadians());
+
+    m_drivetrain.drive(new Translation2d(0, yVel), 0, true, true);
+
+    // if (yController.atGoal() && m_limelight.hasTarget() && m_limelight.alignment_values()[1] >
+    // 0.1) {
+
+    //   double horiz_distance = m_limelight.alignment_values()[0];
+    //   double yVelocity = 0.0;
+
+    //   if (horiz_distance < 0) {
+    //     yVelocity = -1;
+    //   } else {
+    //     yVelocity = 1;
+    //   }
+
+    //   m_drivetrain.drive(new Translation2d(0, yVelocity), 0, true);
+    // }
   }
 
   // Called once the command ends or is interrupted.
+
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
@@ -97,6 +151,11 @@ public class GoalPose extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("y controllers " + yController.getPositionError());
+    if (yController.atGoal()) {
+      return true;
+    }
+
     return false;
   }
 }
