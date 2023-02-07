@@ -4,10 +4,14 @@
 
 package frc.robot.commands.auton;
 
+import java.util.Queue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.BezierCurve;
@@ -17,7 +21,7 @@ import frc.robot.utility.Path;
 public class AutonManager extends CommandBase {
   private Drivetrain drivetrain;
   private Path[] paths;
-  private FollowPath currentFollowPathCommand;
+  private Command currentFollowPathCommand;
   private int previousPath = -1;
 
   public AutonManager(Drivetrain drivetrain) {
@@ -39,9 +43,7 @@ public class AutonManager extends CommandBase {
   @Override
   public void execute() {
     // Stop the drivetrain if a new path was not started
-    if (!startNTPath()) {
-      drivetrain.stop();
-    }
+    startNTPath();
   }
 
   // Called once the command ends or is interrupted.
@@ -60,18 +62,24 @@ public class AutonManager extends CommandBase {
   private boolean startNTPath() {
     if (currentFollowPathCommand != null && currentFollowPathCommand.isScheduled()) return false;
 
-    int index = SmartDashboard.getEntry("/pathTable/startPathIndex").getNumber(-1).intValue();
+    long[] indexes = SmartDashboard.getEntry("/pathTable/startPathIndex").getIntegerArray(new long[0]);
 
-    if (index < 0 || index >= paths.length || index <= previousPath) return false;
+    SequentialCommandGroup commandGroup = new SequentialCommandGroup();
+    
+    for (long index : indexes) {
+      int i = (int) index;
 
-    FollowPath followPathCommand = new FollowPath(this.drivetrain, this.paths[index]);
+      if (i < 0 || i >= paths.length || i <= previousPath) return false;
 
-    currentFollowPathCommand = followPathCommand;
+      commandGroup.addCommands(new FollowPath(this.drivetrain, this.paths[i]));
 
-    previousPath = index;
+      previousPath = (int) index;
+    }
+
+    currentFollowPathCommand = commandGroup;
 
     // Use deadlineWith to stop when AutonManager stops.
-    followPathCommand.schedule();
+    commandGroup.schedule();
 
     SmartDashboard.getEntry("/pathTable/startPathIndex").setNumber(-1);
 

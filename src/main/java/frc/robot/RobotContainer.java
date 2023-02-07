@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drivetrain.AprilTagTheta;
-import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SwerveDrive;
@@ -162,8 +161,8 @@ public class RobotContainer {
     new DisabledSwerve(m_drivetrain);
   }
 
-  public void setBlankDrivetrainCommand() {
-    m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
+  public void setDisabledDrivetrainDefault() {
+    m_drivetrain.setDefaultCommand(new DisabledSwerve(m_drivetrain));
   }
 
   public void setDrivetrainDefaultCommand() {

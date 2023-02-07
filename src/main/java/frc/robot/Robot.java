@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 
     compressor.enableDigital();
 
-    m_robotContainer.setBlankDrivetrainCommand();
+    m_robotContainer.setDisabledDrivetrainDefault();
     this.m_autonomousCommand = m_robotContainer.getAutonManager();
 
     m_autonomousCommand.schedule();

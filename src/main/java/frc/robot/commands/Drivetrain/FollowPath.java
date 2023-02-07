@@ -4,12 +4,10 @@
 
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
@@ -54,6 +52,8 @@ public class FollowPath extends CommandBase {
             Constants.Autonomous.AUTONOMOUS_Y_TOLERANCE,
             Constants.Autonomous.AUTONOMOUS_ROTATION_TOLERANCE));
 
+    timer = new Timer();
+
     addRequirements(drive);
   }
 
@@ -62,8 +62,6 @@ public class FollowPath extends CommandBase {
   public void initialize() {
     System.out.println("Starting path " + path.getPathId());
     updateNTFinishedPath(false);
-
-    timer = new Timer();
 
     timer.start();
   }
@@ -74,18 +72,8 @@ public class FollowPath extends CommandBase {
     double timeSeconds = timer.get();
 
     Pose2d wantedPose = path.interpolate(timeSeconds);
-    // wantedPose =
-    //     new Pose2d(
-    //         wantedPose.getTranslation(),
-    //         new Rotation2d(
-    //             MathUtil.inputModulus(wantedPose.getRotation().getRadians(), 0.0, 2 * Math.PI)));
 
     Pose2d currentPose = drivetrain.getPose();
-    // currentPose =
-    //     new Pose2d(
-    //         currentPose.getTranslation(),
-    //         new Rotation2d(
-    //             MathUtil.inputModulus(drivetrain.getYaw().getRadians(), 0.0, 2 * Math.PI)));
 
     System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
 
@@ -101,7 +89,6 @@ public class FollowPath extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
     updateNTFinishedPath(true);
   }
 
