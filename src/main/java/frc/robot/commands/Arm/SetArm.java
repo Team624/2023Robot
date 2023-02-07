@@ -4,27 +4,19 @@
 
 package frc.robot.commands.Arm;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
-public class ControlArm extends CommandBase {
-  /** Creates a new ControlArm. */
+public class SetArm extends CommandBase {
+  /** Creates a new SetArm. */
   private final Arm m_Arm;
 
-  private final XboxController m_Controller;
-  private final int m_axis;
+  private final double m_setPoint;
 
-  ArmFeedforward armFeedforward =
-      new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV, Constants.Arm.kA);
-
-  public ControlArm(Arm arm, XboxController controller, int axis) {
+  public SetArm(Arm arm, double setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
-    this.m_Controller = controller;
-    this.m_axis = axis;
+    this.m_setPoint = setpoint;
     addRequirements(arm);
   }
 
@@ -35,15 +27,12 @@ public class ControlArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    m_Arm.controlArm(m_Controller.getLeftX());
+    m_Arm.setArm1(m_setPoint);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_Arm.stopArm();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

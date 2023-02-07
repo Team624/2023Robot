@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
     intakePID.setOutputRange(-1, 1);
 
     intakeSolenoid =
-        new Solenoid(30, PneumaticsModuleType.CTREPCM, frc.robot.Constants.Intake.intakeSolenoidID);
+        new Solenoid(PneumaticsModuleType.CTREPCM, frc.robot.Constants.Intake.intakeSolenoidID);
   }
 
   @Override

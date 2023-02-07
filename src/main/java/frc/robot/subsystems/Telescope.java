@@ -5,12 +5,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Telescope extends SubsystemBase {
@@ -49,8 +48,6 @@ public class Telescope extends SubsystemBase {
 
     System.out.println("telescope encoder: " + telescopeEncoder.getPosition());
     System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
-
-    
   }
 
   public void controlTelescope(double speed) {
@@ -69,7 +66,7 @@ public class Telescope extends SubsystemBase {
     telescopeEncoder.setPosition(0.0);
   }
 
-  public double getEncoder(){
+  public double getEncoder() {
     return telescopeEncoder.getPosition();
   }
 }

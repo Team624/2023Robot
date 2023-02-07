@@ -237,7 +237,7 @@ public final class Constants {
   }
 
   public static final class Claw {
-    public static final int clawSolenoidID = 0;
+    public static final int clawSolenoidID = 1;
   }
 
   public static final class Telescope {

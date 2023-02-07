@@ -5,16 +5,23 @@
 package frc.robot.commands.Claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Claw;
 
 public class IdleClaw extends CommandBase {
   /** Creates a new IdleClaw. */
-  public IdleClaw() {
+  private final Claw m_claw;
+
+  public IdleClaw(Claw claw) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.m_claw = claw;
+    addRequirements(claw);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_claw.retractSolenoids();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -4,14 +4,30 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Claw extends SubsystemBase {
   /** Creates a new Claw. */
-  public Claw() {}
+  private Solenoid clawSolenoid;
+
+  public Claw() {
+
+    clawSolenoid =
+        new Solenoid(PneumaticsModuleType.CTREPCM, frc.robot.Constants.Claw.clawSolenoidID);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void deploySolenoids() {
+    clawSolenoid.set(true);
+  }
+
+  public void retractSolenoids() {
+    clawSolenoid.set(false);
   }
 }

@@ -16,7 +16,9 @@ public class ControlTelescope extends CommandBase {
 
   private final XboxController m_Controller;
 
-  SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Telescope.kS, Constants.Telescope.kV, Constants.Telescope.kA);
+  SimpleMotorFeedforward feedforward =
+      new SimpleMotorFeedforward(
+          Constants.Telescope.kS, Constants.Telescope.kV, Constants.Telescope.kA);
 
   public ControlTelescope(Telescope telescope, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,7 +36,6 @@ public class ControlTelescope extends CommandBase {
   @Override
   public void execute() {
     m_Telescope.controlTelescope(m_Controller.getRightY());
-    
   }
 
   // Called once the command ends or is interrupted.
