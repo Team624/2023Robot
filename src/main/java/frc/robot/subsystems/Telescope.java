@@ -25,7 +25,7 @@ public class Telescope extends SubsystemBase {
   private double D;
 
   public Telescope() {
-    telescopeMotor = new CANSparkMax(0, MotorType.kBrushless);
+    telescopeMotor = new CANSparkMax(4, MotorType.kBrushless);
     telescopeMotor.restoreFactoryDefaults();
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();
@@ -46,8 +46,8 @@ public class Telescope extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    System.out.println("telescope encoder: " + telescopeEncoder.getPosition());
-    System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
+    // System.out.println("telescope encoder: " + telescopeEncoder.getPosition());
+    // System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
   }
 
   public void controlTelescope(double speed) {

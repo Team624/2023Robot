@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // schedule the autonomous command (example)
 
-    compressor.enableDigital();
+    // compressor.enableDigital();
 
     m_robotContainer.setBlankDrivetrainCommand();
     this.m_autonomousCommand = m_robotContainer.getAutonManager();
@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    compressor.enableDigital();
+    // compressor.enableDigital();
 
     m_robotContainer.setDrivetrainDefaultCommand();
   }

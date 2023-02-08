@@ -217,21 +217,21 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
+    public static final double P = 0;
+    public static final double I = 0;
+    public static final double D = 0;
     public static final int intakeMotor = 6;
     public static final int intakeSolenoidID = 0;
   }
 
   public static final class Arm {
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
+    public static final double P = 0.04;
+    public static final double I = 0;
+    public static final double D = 0;
     public static final int armMotor = 3;
 
-    public static final double kS = 0.0;
-    public static final double kG = 0.0;
+    public static final double kS = 0.01;
+    public static final double kG = 0.01;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
   }
@@ -241,10 +241,10 @@ public final class Constants {
   }
 
   public static final class Telescope {
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int telescopemotor = 0;
+    public static final double P = 0.01;
+    public static final double I = 0;
+    public static final double D = 0;
+    public static final int telescopemotor = 4;
 
     public static final double kS = 0.0;
     public static final double kV = 0.0;

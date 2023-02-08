@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
@@ -27,7 +28,8 @@ public class SetArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Arm.setArm1(m_setPoint);
+    Rotation2d setPoint2d = new Rotation2d(m_setPoint);
+    m_Arm.setArmCommand(m_setPoint, setPoint2d);
   }
 
   // Called once the command ends or is interrupted.

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
+import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Claw.IdleClaw;
 import frc.robot.commands.Claw.OpenClaw;
 import frc.robot.commands.Drivetrain.AprilTagTheta;
@@ -21,6 +22,8 @@ import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Intake.DeployIntake;
 import frc.robot.commands.Intake.IdleIntake;
+import frc.robot.commands.Telescope.ControlTelescope;
+import frc.robot.commands.Telescope.IdleTelescope;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -28,6 +31,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Telescope;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,7 +46,8 @@ public class RobotContainer {
 
   /* Operator Controls */
   private final int ControlArm = XboxController.Axis.kLeftX.value;
-  private final int controlTelescope = XboxController.Axis.kRightY.value;
+  private final JoystickButton holdtelescope =
+      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
   private final JoystickButton setTelescope =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
   private final JoystickButton holdArm =
@@ -97,7 +102,7 @@ public class RobotContainer {
   private final Limelight m_limelight = new Limelight();
   private final Arm m_arm = new Arm();
   private final Intake m_intake = new Intake();
-  // private final Telescope m_telescope = new Telescope();
+  private final Telescope m_telescope = new Telescope();
   private final Claw m_claw = new Claw();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -117,6 +122,7 @@ public class RobotContainer {
     // m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_intake.setDefaultCommand(new IdleIntake(m_intake));
     m_claw.setDefaultCommand(new IdleClaw(m_claw));
+    m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
 
     configureBindings();
   }
@@ -189,14 +195,16 @@ public class RobotContainer {
     // }
 
     holdArm.whileTrue(new ControlArm(m_arm, m_controller, ControlArm));
-    openClaw.whileTrue(new OpenClaw(m_claw));
 
-    // setArm.whileTrue(new SetArm(m_arm, 2));
+    setArm.onTrue(new SetArm(m_arm, -62));
 
     /** Telescope */
 
-    // controlTelescope.whileTrue(new ControlTelescope(m_telescope, m_controller));
+    holdtelescope.whileTrue(new ControlTelescope(m_telescope, m_controller));
     // setTelescope.whileTrue(new InstantCommand(() -> m_telescope.setTelescope(1000)));
+
+    /** Claw */
+    openClaw.whileTrue(new OpenClaw(m_claw));
   }
 
   /**

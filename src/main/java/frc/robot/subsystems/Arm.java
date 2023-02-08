@@ -4,14 +4,17 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -19,7 +22,7 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private CANSparkMax armMotor;
 
-  private TalonFX leftFlywheel;
+  private MotorController motor;
 
   private RelativeEncoder armEncoder;
 
@@ -27,7 +30,7 @@ public class Arm extends SubsystemBase {
 
   private PIDController armPID;
   ArmFeedforward feedforward =
-      new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV, Constants.Arm.kA);
+      new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV);
 
   private double P;
   private double I;
@@ -49,10 +52,6 @@ public class Arm extends SubsystemBase {
     armSparkmaxPID.setI(I);
     armSparkmaxPID.setD(D);
 
-    // armPID.setP(P);
-    // armPID.setI(I);
-    // armPID.setD(D);
-
     armSparkmaxPID.setOutputRange(-1, 1);
   }
 
@@ -60,28 +59,27 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("/Arm/Encoder", getArmEncoder());
   }
 
   public void controlArm(double speed) {
     armMotor.set(speed);
   }
 
+  public double getArmEncoder() {
+    return armEncoder.getPosition();
+  }
+
   public void stopArm() {
     armMotor.stopMotor();
   }
 
-  public void setArm1(double setpoint) {
+  public void setArmCommand(double setpoint, Rotation2d angle) {
+    // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
 
-    double VelocitySetPoint = 1.0;
+    // armMotor.setVoltage(feedforward.calculate(angle.getRadians(), 1));
 
-    // double ffOutput = feedforward.calculate(setpoint, VelocitySetPoint);
-
-    // double PIDOutput = armPID.calculate(armEncoder.getPosition(), setpoint);
-    // armMotor.setVoltage(ffOutput);
-    // armEncoder.setPosition(PIDOutput);
-    // armMotor.set(PIDOutput);
-
-    // armMotor.setVoltage(armPID.calculate(PIDOutput+ffOutput);
+    armMotor.getPIDController().setReference(angle.getRadians(),ControlType.kPosition,0,feedforward.calculate(angle.getRadians(), 0));
 
   }
 }
