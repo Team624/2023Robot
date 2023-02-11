@@ -110,7 +110,7 @@ public class RobotContainer {
     alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 0));
 
     // alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 0));
-    alignTag3.whileTrue(new ConeAlign(m_drivetrain, m_limelight));
+    alignTag3.onTrue(new ConeAlign(m_drivetrain, m_limelight));
 
     left.onTrue(new GoalPose(m_drivetrain, m_limelight, 3, 2));
 

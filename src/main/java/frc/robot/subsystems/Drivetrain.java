@@ -191,7 +191,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void zeroGyroscope() {
-    ahrs.setAngleAdjustment(180);
+    ahrs.setAngleAdjustment(0);
     ahrs.reset();
   }
 

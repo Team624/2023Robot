@@ -57,7 +57,7 @@ public class SwerveDrive extends CommandBase {
     m_drivetrain.drive(
         new Translation2d(translationVal, strafeVal)
             .times(Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
-        -rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+        rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
         !robotCentricSup.getAsBoolean(),
         true);
   }

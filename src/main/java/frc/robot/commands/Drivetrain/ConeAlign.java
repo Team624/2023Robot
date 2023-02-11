@@ -15,6 +15,7 @@ public class ConeAlign extends CommandBase {
   private final Drivetrain m_drivetrain;
 
   private final Limelight m_limelight;
+
   private final double distance = 22 / 39.37;
 
   public double goal;
@@ -32,14 +33,14 @@ public class ConeAlign extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(2, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(3.5, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(3, 0, 0, OMEGA_CONSTRAINTS);
 
   public ConeAlign(Drivetrain drivetrain, Limelight limelight) {
 
-    this.m_drivetrain = drivetrain;
-    this.m_limelight = limelight;
+    m_drivetrain = drivetrain;
+    m_limelight = limelight;
     xController.setTolerance(0.01);
     yController.setTolerance(0.01);
     omegaController.setTolerance(Units.degreesToRadians(3));
@@ -51,7 +52,7 @@ public class ConeAlign extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
     Pose2d pose = m_drivetrain.getPose();
 
     omegaController.reset(pose.getRotation().getRadians());
@@ -63,21 +64,21 @@ public class ConeAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Currect: " + m_drivetrain.getPose().getY());
     double yVel = 0;
-    Pose2d pose2d = m_drivetrain.getPose();
+    double rotSpeed = 0;
     if (m_limelight.getYofTag() != 0) {
-      goal = m_limelight.getYofTag() + distance;
-      System.out.println(goal);
+      goal = m_limelight.getYofTag() - distance;
       yController.setGoal(goal);
-      yVel = yController.calculate(pose2d.getY());
-    } else {
-      yController.setGoal(m_drivetrain.getPose().getY());
+      System.out.println("GOAL: " + goal);
+      double angle = m_limelight.alignment_values()[1];
+      System.out.println(m_drivetrain.getPose().getRotation().getDegrees());
+      omegaController.setGoal(-Math.PI);
+      rotSpeed = angle > 0 ? 1 : -1;
+      yVel = yController.calculate(m_drivetrain.getPose().getY());
+      rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     }
-
-    omegaController.setGoal(0);
-
-    m_drivetrain.drive(new Translation2d(0, yVel), 0, true, true);
+    System.out.println("Y VEL: " + yVel);
+    m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
   }
 
   @Override
@@ -87,7 +88,6 @@ public class ConeAlign extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    System.out.println("Position Error " + yController.getPositionError());
-    return yController.atGoal();
+    return Math.abs(m_drivetrain.getPose().getY() - goal) < .01 && omegaController.atGoal();
   }
 }
