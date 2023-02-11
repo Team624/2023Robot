@@ -1,8 +1,10 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-// Caden Cooley was here
+
 package frc.robot.commands.auton;
+
+import java.util.Queue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -60,11 +62,10 @@ public class AutonManager extends CommandBase {
   private boolean startNTPath() {
     if (currentFollowPathCommand != null && currentFollowPathCommand.isScheduled()) return false;
 
-    long[] indexes =
-        SmartDashboard.getEntry("/pathTable/startPathIndex").getIntegerArray(new long[0]);
+    long[] indexes = SmartDashboard.getEntry("/pathTable/startPathIndex").getIntegerArray(new long[0]);
 
     SequentialCommandGroup commandGroup = new SequentialCommandGroup();
-
+    
     for (long index : indexes) {
       int i = (int) index;
 
