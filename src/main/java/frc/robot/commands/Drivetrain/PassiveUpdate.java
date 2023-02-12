@@ -8,18 +8,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 
-public class UpdatePose extends CommandBase {
-  /** Creates a new UpdatePose. */
-  private final Limelight m_Limelight;
-
+public class PassiveUpdate extends CommandBase {
+  /** Creates a new PassiveUpdate. */
   private final Drivetrain m_Drivetrain;
 
-  public UpdatePose(Limelight Limelight, Drivetrain drivetrian) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Limelight = Limelight;
-    this.m_Drivetrain = drivetrian;
+  private final Limelight m_Limelight;
 
-    addRequirements(Limelight);
+  public PassiveUpdate(Drivetrain drivetrian, Limelight limelight) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.m_Drivetrain = drivetrian;
+    this.m_Limelight = limelight;
+
+    addRequirements(drivetrian);
   }
 
   // Called when the command is initially scheduled.
@@ -28,11 +28,7 @@ public class UpdatePose extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (m_Limelight.hasTarget() && m_Limelight.getX() < 5.0) {
-      m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose());
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

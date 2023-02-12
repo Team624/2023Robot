@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,6 +28,7 @@ public class Drivetrain extends SubsystemBase {
   public SwerveDriveOdometry swerveOdometry;
 
   private boolean m_isOpenLoop;
+  public boolean isCreepin = false;
 
   public PIDController skewApril_pid;
   public PIDController autoBalance_pid;
@@ -42,6 +44,8 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveModuleState[] m_states =
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+  public SwerveDrivePoseEstimator poseEstimator;
 
   public SwerveModule[] mSwerveMods;
 
@@ -60,6 +64,10 @@ public class Drivetrain extends SubsystemBase {
     skewApril_pid = getSkewAprilPID();
 
     drivetrain_tab.add(field).withSize(4, 3);
+
+    poseEstimator =
+        new SwerveDrivePoseEstimator(
+            Constants.Swerve.swerveKinematics, getYaw(), getModulePositions(), getPose());
   }
 
   public void drive(
@@ -93,6 +101,7 @@ public class Drivetrain extends SubsystemBase {
     setModuleStates();
 
     swerveOdometry.update(getYaw(), getModulePositions());
+    poseEstimator.update(getYaw(), getModulePositions());
 
     for (SwerveModule mod : mSwerveMods) {
       SmartDashboard.putNumber(
@@ -122,6 +131,11 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("/pose/th", getYaw().getRadians());
     SmartDashboard.putNumber("/pose/x", currentPose.getX());
     SmartDashboard.putNumber("/pose/y", currentPose.getY());
+
+    SmartDashboard.putNumber(
+        "/poseEstimator/poseTH", poseEstimator.getEstimatedPosition().getRotation().getRadians());
+    SmartDashboard.putNumber("/poseEstimator/poseX", poseEstimator.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("/poseEstimator/poseY", poseEstimator.getEstimatedPosition().getY());
 
     field.setRobotPose(new Pose2d(currentPose.getX(), 8.0137 + currentPose.getY(), getYaw()));
   }
@@ -203,7 +217,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void zeroGyroscope() {
-    ahrs.setAngleAdjustment(180);
+    ahrs.setAngleAdjustment(0);
     ahrs.reset();
   }
 
@@ -227,7 +241,15 @@ public class Drivetrain extends SubsystemBase {
     return ahrs;
   }
 
-  public double getRoll() {
-    return ahrs.getRoll();
+  public double getPitch() {
+    return ahrs.getPitch();
+  }
+
+  public void yesCreepMode() {
+    isCreepin = true;
+  }
+
+  public void noCreepMode() {
+    isCreepin = false;
   }
 }

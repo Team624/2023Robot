@@ -77,9 +77,16 @@ public class Arm extends SubsystemBase {
   public void setArmCommand(double setpoint, Rotation2d angle) {
     // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
 
-    // armMotor.setVoltage(feedforward.calculate(angle.getRadians(), 1));
+    armMotor
+        .getPIDController()
+        .setReference(
+            angle.getRadians(),
+            ControlType.kPosition,
+            0,
+            feedforward.calculate(angle.getRadians(), 0));
+  }
 
-    armMotor.getPIDController().setReference(angle.getRadians(),ControlType.kPosition,0,feedforward.calculate(angle.getRadians(), 0));
-
+  public void resetEncoder() {
+    armEncoder.setPosition(0.0);
   }
 }

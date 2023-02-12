@@ -94,19 +94,20 @@ public class GoalPose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double thVel = 0.0;
 
     Pose2d pose2d = m_drivetrain.getPose();
 
     if (m_node == 0) {
-      goal = -3.58;
+      goal = 0.41621 - 4.01;
 
     } else if (m_node == 1) {
-      goal = -5.277685;
+      goal = -1.26019 - 4.01;
 
     } else if (m_node == 2) {
-      goal = -6.987;
+      goal = -2.93659 - 4.01;
     } else {
-      goal = m_limelight.getYofID();
+      goal = m_limelight.getYofTag();
     }
 
     if (m_right == 0) {
@@ -117,13 +118,21 @@ public class GoalPose extends CommandBase {
       yController.setGoal(goal);
     }
 
-    omegaController.setGoal(0);
+    omegaController.setGoal(-Math.PI);
+    
 
     double yVel = yController.calculate(pose2d.getY());
 
-    double thVel = omegaController.calculate(pose2d.getRotation().getRadians());
+    if(m_limelight.hasTarget()){
+      double angle = m_limelight.alignment_values()[1];
+      thVel = angle > 0 ? 1 : -1;
+      thVel = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
+    }
+    
 
-    m_drivetrain.drive(new Translation2d(0, yVel), 0, true, true);
+    
+
+    m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
 
     // if (yController.atGoal() && m_limelight.hasTarget() && m_limelight.alignment_values()[1] >
     // 0.1) {

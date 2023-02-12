@@ -2,24 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Drivetrain;
+package frc.robot.commands.Wrist;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Wrist;
 
-public class UpdatePose extends CommandBase {
-  /** Creates a new UpdatePose. */
-  private final Limelight m_Limelight;
+public class ControlWrist extends CommandBase {
+  /** Creates a new ControlWrist. */
+  private final Wrist m_Wrist;
 
-  private final Drivetrain m_Drivetrain;
+  private final XboxController controller;
 
-  public UpdatePose(Limelight Limelight, Drivetrain drivetrian) {
+  public ControlWrist(Wrist wrist, XboxController mController) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Limelight = Limelight;
-    this.m_Drivetrain = drivetrian;
-
-    addRequirements(Limelight);
+    this.m_Wrist = wrist;
+    this.controller = mController;
+    addRequirements(wrist);
   }
 
   // Called when the command is initially scheduled.
@@ -29,8 +28,8 @@ public class UpdatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Limelight.hasTarget() && m_Limelight.getX() < 5.0) {
-      m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose());
+    if (Math.abs(controller.getRightY()) > 0.05) {
+      m_Wrist.moveWrist(controller.getRightY());
     }
   }
 

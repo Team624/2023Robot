@@ -47,6 +47,12 @@ public class SwerveDrive extends CommandBase {
     double strafeVal = strafeSup.getAsDouble();
     double rotationVal = rotationSup.getAsDouble();
 
+    if (m_drivetrain.isCreepin) {
+      translationVal *= 0.4;
+      strafeVal *= 0.4;
+      rotationVal *= 0.4;
+    }
+
     translationVal = filterX.calculate(translationVal);
     strafeVal = filterY.calculate(strafeVal);
 
