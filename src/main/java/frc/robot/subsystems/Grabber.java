@@ -15,7 +15,7 @@ public class Grabber extends SubsystemBase {
   private boolean isGrabbin;
 
   public Grabber() {
-    this.grabSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, 0);
+    this.grabSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
   }
 
   @Override

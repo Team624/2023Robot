@@ -39,6 +39,7 @@ public class ToBot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return ((pivot.getEncoder() <= 5 && pivot.getEncoder() > -5)
+        && (arm.getEncoder() < 5 && arm.getEncoder() > -5));
   }
 }

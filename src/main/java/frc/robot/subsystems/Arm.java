@@ -33,6 +33,17 @@ public class Arm extends SubsystemBase {
 
     armMotor.setIdleMode(IdleMode.kBrake);
     armEncoder = armMotor.getEncoder();
+    armPID = armMotor.getPIDController();
+
+    armP = frc.robot.Constants.Arm.P;
+    armI = frc.robot.Constants.Arm.I;
+    armD = frc.robot.Constants.Arm.D;
+
+    armPID.setP(armP);
+    armPID.setI(armI);
+    armPID.setD(armD);
+
+    armPID.setOutputRange(-1, 1);
   }
 
   @Override
@@ -54,5 +65,9 @@ public class Arm extends SubsystemBase {
 
   public void resetArmEncoder() {
     armEncoder.setPosition(0);
+  }
+
+  public double getEncoder() {
+    return armEncoder.getPosition();
   }
 }

@@ -21,13 +21,14 @@ public class ControlPivot extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
+  // 22 50 59
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     pivot.movePivot(controller.getRightY());
-    ;
+    System.out.println(pivot.getEncoder());
   }
 
   // Called once the command ends or is interrupted.

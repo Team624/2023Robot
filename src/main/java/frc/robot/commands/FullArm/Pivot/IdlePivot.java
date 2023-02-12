@@ -14,17 +14,18 @@ public class IdlePivot extends CommandBase {
   public IdlePivot(Pivot pivot) {
     this.pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(pivot);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    pivot.stop();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    pivot.stop();
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -32,6 +32,17 @@ public class Pivot extends SubsystemBase {
   public Pivot() {
     pivotMotor.setIdleMode(IdleMode.kBrake);
     pivotEncoder = pivotMotor.getEncoder();
+    pivotPID = pivotMotor.getPIDController();
+
+    P = frc.robot.Constants.Pivot.P;
+    I = frc.robot.Constants.Pivot.I;
+    D = frc.robot.Constants.Pivot.D;
+
+    pivotPID.setP(P);
+    pivotPID.setI(I);
+    pivotPID.setD(D);
+
+    pivotPID.setOutputRange(-1, 1);
   }
 
   @Override
@@ -53,5 +64,9 @@ public class Pivot extends SubsystemBase {
 
   public void stop() {
     pivotMotor.stopMotor();
+  }
+
+  public double getEncoder() {
+    return pivotEncoder.getPosition();
   }
 }

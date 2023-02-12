@@ -89,14 +89,14 @@ public final class Constants {
      *
      * <p>Should be measured from center to center.
      */
-    public static final double trackWidth = 0.466598; // TODO: This must be tuned to specific robot
+    public static final double trackWidth = 0.508; // TODO: This must be tuned to specific robot
 
     /**
      * The front-to-back distance between the drivetrain wheels.
      *
      * <p>Should be measured from center to center.
      */
-    public static final double wheelBase = 0.466598; // TODO: This must be tuned to specific robot
+    public static final double wheelBase = 0.61; // TODO: This must be tuned to specific robot
 
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
@@ -121,11 +121,11 @@ public final class Constants {
     public static final class Mod0 { // TODO: This must be tuned to specific robot
       public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
       public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 20;
-      public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 23;
+      public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
 
-      public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(66.26);
+      public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(247);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(195.54);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -137,13 +137,13 @@ public final class Constants {
 
     /* Front Right Module - Module 1 */
     public static final class Mod1 { // TODO: This must be tuned to specific robot
-      public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 19;
-      public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 18;
-      public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 22;
+      public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 15;
+      public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 14;
+      public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 24;
 
-      public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(97.64);
+      public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(279.57);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-0.659);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -155,13 +155,13 @@ public final class Constants {
 
     /* Back Left Module - Module 2 */
     public static final class Mod2 { // TODO: This must be tuned to specific robot
-      public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 9;
-      public static final int BACK_LEFT_MODULE_STEER_MOTOR = 8;
-      public static final int BACK_LEFT_MODULE_STEER_ENCODER = 24;
+      public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
+      public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
+      public static final int BACK_LEFT_MODULE_STEER_ENCODER = 23;
 
-      public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(286.16);
+      public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(108.6);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(158.23);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -173,13 +173,13 @@ public final class Constants {
 
     /* Back Right Module - Module 3 */
     public static final class Mod3 { // TODO: This must be tuned to specific robot
-      public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 11;
-      public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 10;
-      public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
+      public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
+      public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 12;
+      public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 22;
 
-      public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(232.99);
+      public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(53);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(25.83);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -191,8 +191,8 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final int ARM_MOTOR = 0;
-    public static final double P = 0;
+    public static final int ARM_MOTOR = 4;
+    public static final double P = 0.01;
     public static final double I = 0;
     public static final double D = 0;
     public static final double FF = 0;
@@ -200,7 +200,7 @@ public final class Constants {
 
   public static final class Pivot {
     public static final int PIVOT_MOTOR = 3;
-    public static final double P = 0;
+    public static final double P = 0.04;
     public static final double I = 0;
     public static final double D = 0;
     public static final double FF = 0;

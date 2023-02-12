@@ -13,17 +13,18 @@ public class IdleArm extends CommandBase {
 
   public IdleArm(Arm arm) {
     this.arm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    arm.stop();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    arm.stop();
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -46,9 +46,7 @@ public class RobotContainer {
 
   // manipulator controls
   private final JoystickButton controlArm =
-      new JoystickButton(m_Controller, XboxController.Axis.kLeftY.value);
-  private final JoystickButton controlPivot =
-      new JoystickButton(m_Controller, XboxController.Axis.kRightY.value);
+      new JoystickButton(m_Controller, XboxController.Button.kRightBumper.value);
   private final JoystickButton grabButton =
       new JoystickButton(m_Controller, XboxController.Button.kLeftBumper.value);
 
@@ -143,7 +141,7 @@ public class RobotContainer {
     // balance.whileTrue(new Balance(m_drivetrain));
 
     controlArm.whileTrue(new ControlExtend(m_arm, m_Controller));
-    controlPivot.whileTrue(new ControlPivot(m_pivot, m_Controller));
+    controlArm.whileTrue(new ControlPivot(m_pivot, m_Controller));
     grabButton.whileTrue(new CloseGrabber(m_grabber));
     goBotButton.onTrue(new ToBot(m_arm, m_pivot));
     goHighButton.onTrue(new ToHighGoal(m_arm, m_pivot));
