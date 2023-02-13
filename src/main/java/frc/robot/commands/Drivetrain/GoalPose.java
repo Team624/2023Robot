@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -38,6 +42,10 @@ public class GoalPose extends CommandBase {
       new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
   public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
+    // Use addRequirements() here to declare subsystem dependencies.
+
+    // right 1
+    // left 2
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
@@ -62,22 +70,42 @@ public class GoalPose extends CommandBase {
 
     xController.reset(pose.getX());
     yController.reset(pose.getY());
+
+    // 0 = left: -3.6031665
+    // 1 = middle: -5.25404
+    // 2 = right: -6.98812
+
+    // id_json.put(1.0, -2.93659);
+    // id_json.put(2.0, -1.26019);
+    // id_json.put(3.0, 0.41621);
+    // id_json.put(4.0, 2.74161);
+    // id_json.put(5.0, 2.74161);
+    // id_json.put(6.0, 0.41621);
+    // id_json.put(7.0, -1.26019);
+    // id_json.put(8.0, -2.93659);
+
+    // -4.01
+
+    // Tag 1: -6.983
+    // Tag 2 y value: -5.2995
+    // Tag 3: 3.61357
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double thVel = 0.0;
 
     Pose2d pose2d = m_drivetrain.getPose();
 
     if (m_node == 0) {
-      goal = -3.58;
+      goal = 0.41621 - 4.01;
 
     } else if (m_node == 1) {
-      goal = -5.277685;
+      goal = -1.26019 - 4.01;
 
     } else if (m_node == 2) {
-      goal = -6.987;
+      goal = -2.93659 - 4.01;
     } else {
       goal = m_limelight.getYofTag();
     }
@@ -90,24 +118,53 @@ public class GoalPose extends CommandBase {
       yController.setGoal(goal);
     }
 
-    omegaController.setGoal(0);
+    omegaController.setGoal(-Math.PI);
+    
 
     double yVel = yController.calculate(pose2d.getY());
 
-    m_drivetrain.drive(new Translation2d(0, yVel), 0, true, true);
+    if(m_limelight.hasTarget()){
+      double angle = m_limelight.alignment_values()[1];
+      thVel = angle > 0 ? 1 : -1;
+      thVel = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
+    }
+    
+
+    
+
+    m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
+
+    // if (yController.atGoal() && m_limelight.hasTarget() && m_limelight.alignment_values()[1] >
+    // 0.1) {
+
+    //   double horiz_distance = m_limelight.alignment_values()[0];
+    //   double yVelocity = 0.0;
+
+    //   if (horiz_distance < 0) {
+    //     yVelocity = -1;
+    //   } else {
+    //     yVelocity = 1;
+    //   }
+
+    //   m_drivetrain.drive(new Translation2d(0, yVelocity), 0, true);
+    // }
   }
+
+  // Called once the command ends or is interrupted.
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
   }
 
+  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     System.out.println("y controllers " + yController.getPositionError());
     if (yController.atGoal()) {
       return true;
     }
+
     return false;
   }
 }

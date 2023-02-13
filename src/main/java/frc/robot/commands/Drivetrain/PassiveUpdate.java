@@ -6,16 +6,20 @@ package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 
-public class DisabledSwerve extends CommandBase {
-  /** Creates a new DisabledSwerve. */
-  private final Drivetrain m_drivetrainSubsystem;
+public class PassiveUpdate extends CommandBase {
+  /** Creates a new PassiveUpdate. */
+  private final Drivetrain m_Drivetrain;
 
-  public DisabledSwerve(Drivetrain drivetrain) {
+  private final Limelight m_Limelight;
+
+  public PassiveUpdate(Drivetrain drivetrian, Limelight limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.m_Drivetrain = drivetrian;
+    this.m_Limelight = limelight;
 
-    m_drivetrainSubsystem = drivetrain;
-    addRequirements(m_drivetrainSubsystem);
+    addRequirements(drivetrian);
   }
 
   // Called when the command is initially scheduled.
@@ -24,10 +28,7 @@ public class DisabledSwerve extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    m_drivetrainSubsystem.stop();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

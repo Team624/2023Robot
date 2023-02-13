@@ -33,14 +33,17 @@ public class ConeAlign extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(3.5, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(3, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(3, 0, 0, OMEGA_CONSTRAINTS);
 
-  public ConeAlign(Drivetrain drivetrain, Limelight limelight) {
+  private final boolean m_right;
+
+  public ConeAlign(Drivetrain drivetrain, Limelight limelight, Boolean right) {
 
     m_drivetrain = drivetrain;
     m_limelight = limelight;
+    this.m_right = right;
     xController.setTolerance(0.01);
     yController.setTolerance(0.01);
     omegaController.setTolerance(Units.degreesToRadians(3));
@@ -67,7 +70,12 @@ public class ConeAlign extends CommandBase {
     double yVel = 0;
     double rotSpeed = 0;
     if (m_limelight.getYofTag() != 0) {
-      goal = m_limelight.getYofTag() - distance;
+      if (m_right) {
+        goal = m_limelight.getYofTag() - distance;
+      } else {
+        goal = m_limelight.getYofTag() + distance;
+      }
+
       yController.setGoal(goal);
       System.out.println("GOAL: " + goal);
       double angle = m_limelight.alignment_values()[1];

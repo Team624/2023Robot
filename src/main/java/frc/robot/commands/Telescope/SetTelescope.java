@@ -2,20 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Drivetrain;
+package frc.robot.commands.Telescope;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Telescope;
 
-public class DisabledSwerve extends CommandBase {
-  /** Creates a new DisabledSwerve. */
-  private final Drivetrain m_drivetrainSubsystem;
+public class SetTelescope extends CommandBase {
+  /** Creates a new SetTelescope. */
+  private final Telescope m_Telescope;
 
-  public DisabledSwerve(Drivetrain drivetrain) {
+  private final double m_setPoint;
+
+  public SetTelescope(Telescope telescope, double setPoint) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    m_drivetrainSubsystem = drivetrain;
-    addRequirements(m_drivetrainSubsystem);
+    this.m_Telescope = telescope;
+    this.m_setPoint = setPoint;
+    addRequirements(telescope);
   }
 
   // Called when the command is initially scheduled.
@@ -25,17 +27,18 @@ public class DisabledSwerve extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    m_drivetrainSubsystem.stop();
+    m_Telescope.setTelescope(2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Telescope.stopTelescope();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_Telescope.getEncoder() - 2 < 0.1;
   }
 }

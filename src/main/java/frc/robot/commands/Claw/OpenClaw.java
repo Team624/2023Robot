@@ -2,36 +2,35 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Drivetrain;
+package frc.robot.commands.Claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Claw;
 
-public class DisabledSwerve extends CommandBase {
-  /** Creates a new DisabledSwerve. */
-  private final Drivetrain m_drivetrainSubsystem;
+public class OpenClaw extends CommandBase {
+  /** Creates a new OpenClaw. */
+  private final Claw m_claw;
 
-  public DisabledSwerve(Drivetrain drivetrain) {
+  public OpenClaw(Claw claw) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    m_drivetrainSubsystem = drivetrain;
-    addRequirements(m_drivetrainSubsystem);
+    this.m_claw = claw;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_claw.deploySolenoids();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    m_drivetrainSubsystem.stop();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_claw.retractSolenoids();
+  }
 
   // Returns true when the command should end.
   @Override

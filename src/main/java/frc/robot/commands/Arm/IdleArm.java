@@ -2,32 +2,30 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Drivetrain;
+package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Arm;
 
-public class DisabledSwerve extends CommandBase {
-  /** Creates a new DisabledSwerve. */
-  private final Drivetrain m_drivetrainSubsystem;
+public class IdleArm extends CommandBase {
+  /** Creates a new IdleArm. */
+  private final Arm m_Arm;
 
-  public DisabledSwerve(Drivetrain drivetrain) {
+  public IdleArm(Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    m_drivetrainSubsystem = drivetrain;
-    addRequirements(m_drivetrainSubsystem);
+    this.m_Arm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Arm.stopArm();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    m_drivetrainSubsystem.stop();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

@@ -47,16 +47,16 @@ public class Path {
 
     Translation2d translation = curve.interpolate(t);
 
-    double errorA = endHeading.getRadians() - startHeading.getRadians();
-    double errorB = errorA - (Math.PI * 2);
-    double errorC = errorA + (Math.PI * 2);
+    // double errorA = endHeading.getRadians() - startHeading.getRadians();
+    // double errorB = errorA - (Math.PI * 2);
+    // double errorC = errorA + (Math.PI * 2);
 
-    double heading_diff = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
-    heading_diff = Math.abs(errorA) < Math.abs(heading_diff) ? errorA : heading_diff;
+    // double heading_diff = Math.abs(errorB) < Math.abs(errorC) ? errorB : errorC;
+    // heading_diff = Math.abs(errorA) < Math.abs(heading_diff) ? errorA : heading_diff;
 
-    double rotation = MathUtil.angleModulus(startHeading.getRadians() + heading_diff * t);
+    double rotation = MathUtil.angleModulus(endHeading.getRadians());
 
-    return new Pose2d(translation, Rotation2d.fromRadians(rotation));
+    return new Pose2d(translation, new Rotation2d(rotation));
   }
 
   public double getVelocity(double seconds) {
