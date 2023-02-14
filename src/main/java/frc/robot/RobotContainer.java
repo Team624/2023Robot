@@ -71,15 +71,42 @@ public class RobotContainer {
   private final JoystickButton openClaw =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
 
+  CommandXboxController m_controllerCommand = new CommandXboxController(1);
+
+  public final XboxController m_controller = new XboxController(1);
+
+  /* Operator Controls */
+  private final JoystickButton holdtelescope =
+      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
+  // private final JoystickButton setTelescope =
+  //     new JoystickButton(m_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton holdArm =
+      new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
+
+  private final JoystickButton setArmTop =
+      new JoystickButton(m_controller, XboxController.Button.kA.value);
+
+  private final JoystickButton setArmMid =
+      new JoystickButton(m_controller, XboxController.Button.kB.value);
+
+  // private final JoystickButton setarmBot =
+  //     new JoystickButton(m_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton resetArmEncoder =
+      new JoystickButton(m_controller, XboxController.Button.kX.value);
+
+  private final JoystickButton openClaw =
+      new JoystickButton(m_controller, XboxController.Button.kY.value);
+
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-  /* Driver Buttons */
+  private final int armAxis = XboxController.Axis.kLeftY.value;
 
-  // private final JoystickButton runIntake =
-  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
+  /* Driver Buttons */
 
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
@@ -105,6 +132,9 @@ public class RobotContainer {
 
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+
+  private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.05);
+  private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.05);
 
   // private final JoystickButton balance =
   //     new JoystickButton(d_controller, XboxController.Button.kX.value);
@@ -180,7 +210,7 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    left.whileTrue(new SubstationAlign(m_drivetrain, !false));
+    left.whileTrue(new ConeAlign(m_drivetrain, m_limelight, false));
 
     right.whileTrue(new ConeAlign(m_drivetrain, m_limelight, true));
 
@@ -200,18 +230,9 @@ public class RobotContainer {
     // runIntake.whileTrue(new DeployIntake(m_intake, m_controller));
 
     /** Arm */
+    armMove.whileTrue(new ControlArm(m_arm, m_controller, armAxis));
 
-    // if (m_controller.getRawAxis(ControlArm) > .05 || m_controller.getRawAxis(ControlArm) < -.05)
-    // {
-    //   new ControlArm(m_arm, m_controller);
-    // }
-
-    // if (m_controller.getRawAxis(ControlArm) < 0.05 && m_controller.getRawAxis(ControlArm) > -.05)
-    // {
-    //   new IdleArm(m_arm);
-    // }
-
-    holdArm.whileTrue(new ControlArm(m_arm, m_controller, ControlArm));
+    armMove2.whileTrue(new ControlArm(m_arm, m_controller, armAxis));
 
     setArmTop.onTrue(new SetArm(m_arm, 69));
 

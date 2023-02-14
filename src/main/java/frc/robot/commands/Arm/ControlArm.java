@@ -35,11 +35,10 @@ public class ControlArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Math.abs(m_Controller.getLeftY()) > 0.05) {
+    
       m_Arm.controlArm(-m_Controller.getLeftY());
-    } else {
-      m_Arm.stopArm();
-    }
+    
+    
   }
 
   // Called once the command ends or is interrupted.

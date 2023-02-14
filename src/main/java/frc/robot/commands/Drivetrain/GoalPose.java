@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,7 +38,7 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(2, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(1.8, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
@@ -66,7 +67,7 @@ public class GoalPose extends CommandBase {
 
     Pose2d pose = m_drivetrain.getPose();
 
-    omegaController.reset(pose.getRotation().getRadians());
+    omegaController.reset(MathUtil.angleModulus(pose.getRotation().getRadians()));
 
     xController.reset(pose.getX());
     yController.reset(pose.getY());
@@ -125,8 +126,9 @@ public class GoalPose extends CommandBase {
     if (m_limelight.hasTarget()) {
       double angle = m_limelight.alignment_values()[1];
       thVel = angle > 0 ? 1 : -1;
-      thVel = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
+      
     }
+    thVel = omegaController.calculate(MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
 
     m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
 
@@ -157,7 +159,7 @@ public class GoalPose extends CommandBase {
   @Override
   public boolean isFinished() {
     System.out.println("y controllers " + yController.getPositionError());
-    if (yController.atGoal()) {
+    if (yController.atGoal() && omegaController.atGoal()) {
       return true;
     }
 
