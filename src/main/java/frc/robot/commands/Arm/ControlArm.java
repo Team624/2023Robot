@@ -37,8 +37,7 @@ public class ControlArm extends CommandBase {
   public void execute() {
     if (Math.abs(m_Controller.getLeftY()) > 0.05) {
       m_Arm.controlArm(-m_Controller.getLeftY());
-    }
-    else{
+    } else {
       m_Arm.stopArm();
     }
   }

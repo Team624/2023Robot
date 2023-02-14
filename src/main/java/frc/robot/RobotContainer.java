@@ -20,6 +20,7 @@ import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Intake.IdleIntake;
@@ -135,7 +136,7 @@ public class RobotContainer {
     m_wrist.setDefaultCommand(new IdleClaw(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
 
-    m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    // m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
     configureBindings();
   }
@@ -179,7 +180,7 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    left.whileTrue(new ConeAlign(m_drivetrain, m_limelight, false));
+    left.whileTrue(new SubstationAlign(m_drivetrain, !false));
 
     right.whileTrue(new ConeAlign(m_drivetrain, m_limelight, true));
 
@@ -190,7 +191,7 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
     //         () -> -modifyAxis(d_controller.getRawAxis(strafeAxis))));
 
-    // resetpose.whileTrue(new UpdatePose(m_limelight));
+    resetpose.whileTrue(new UpdatePose(m_limelight, m_drivetrain));
 
     creepMode.whileTrue(new InstantCommand(() -> m_drivetrain.yesCreepMode()));
     creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));

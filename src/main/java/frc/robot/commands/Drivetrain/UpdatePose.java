@@ -29,7 +29,7 @@ public class UpdatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Limelight.hasTarget() && m_Limelight.getX() < 5.0) {
+    if (m_Limelight.hasTarget()) {
       m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose());
     }
   }
