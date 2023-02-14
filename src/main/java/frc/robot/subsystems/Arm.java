@@ -86,18 +86,6 @@ public class Arm extends SubsystemBase {
             feedforward.calculate(angle.getRadians(), 0));
   }
 
-  public void setArmZero() {
-    // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
-
-    armMotor
-        .getPIDController()
-        .setReference(
-            0.0,
-            ControlType.kPosition,
-            0,
-            feedforward.calculate(0.0, 0));
-  }
-
   public void resetEncoder() {
     armEncoder.setPosition(0.0);
   }

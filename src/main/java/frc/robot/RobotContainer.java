@@ -20,6 +20,7 @@ import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Intake.IdleIntake;
@@ -43,6 +44,32 @@ import frc.robot.subsystems.Telescope;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final XboxController d_controller = new XboxController(0);
+  public final XboxController m_controller = new XboxController(1);
+
+  /* Operator Controls */
+  private final int ControlArm = XboxController.Axis.kLeftX.value;
+  private final JoystickButton holdtelescope =
+      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
+  // private final JoystickButton setTelescope =
+  //     new JoystickButton(m_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton holdArm =
+      new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
+
+  private final JoystickButton setArmTop =
+      new JoystickButton(m_controller, XboxController.Button.kA.value);
+
+  private final JoystickButton setArmMid =
+      new JoystickButton(m_controller, XboxController.Button.kB.value);
+
+  // private final JoystickButton setarmBot =
+  //     new JoystickButton(m_controller, XboxController.Button.kY.value);
+
+  private final JoystickButton resetArmEncoder =
+      new JoystickButton(m_controller, XboxController.Button.kX.value);
+
+  private final JoystickButton openClaw =
+      new JoystickButton(m_controller, XboxController.Button.kY.value);
 
   CommandXboxController m_controllerCommand = new CommandXboxController(1);
 
@@ -139,7 +166,7 @@ public class RobotContainer {
     m_wrist.setDefaultCommand(new IdleClaw(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
 
-    m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    // m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
     configureBindings();
   }
@@ -194,7 +221,7 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
     //         () -> -modifyAxis(d_controller.getRawAxis(strafeAxis))));
 
-    // resetpose.whileTrue(new UpdatePose(m_limelight));
+    resetpose.whileTrue(new UpdatePose(m_limelight, m_drivetrain));
 
     creepMode.whileTrue(new InstantCommand(() -> m_drivetrain.yesCreepMode()));
     creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));
