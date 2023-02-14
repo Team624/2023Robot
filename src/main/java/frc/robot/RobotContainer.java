@@ -43,10 +43,12 @@ import frc.robot.subsystems.Telescope;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final XboxController d_controller = new XboxController(0);
+
+  CommandXboxController m_controllerCommand = new CommandXboxController(1);
+
   public final XboxController m_controller = new XboxController(1);
 
   /* Operator Controls */
-  private final int ControlArm = XboxController.Axis.kLeftX.value;
   private final JoystickButton holdtelescope =
       new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
   // private final JoystickButton setTelescope =
@@ -75,10 +77,9 @@ public class RobotContainer {
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-  /* Driver Buttons */
+  private final int armAxis = XboxController.Axis.kLeftY.value;
 
-  // private final JoystickButton runIntake =
-  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
+  /* Driver Buttons */
 
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
@@ -104,6 +105,9 @@ public class RobotContainer {
 
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+
+  private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.05);
+  private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.05);
 
   // private final JoystickButton balance =
   //     new JoystickButton(d_controller, XboxController.Button.kX.value);
@@ -199,18 +203,9 @@ public class RobotContainer {
     // runIntake.whileTrue(new DeployIntake(m_intake, m_controller));
 
     /** Arm */
+    armMove.whileTrue(new ControlArm(m_arm, m_controller, armAxis));
 
-    // if (m_controller.getRawAxis(ControlArm) > .05 || m_controller.getRawAxis(ControlArm) < -.05)
-    // {
-    //   new ControlArm(m_arm, m_controller);
-    // }
-
-    // if (m_controller.getRawAxis(ControlArm) < 0.05 && m_controller.getRawAxis(ControlArm) > -.05)
-    // {
-    //   new IdleArm(m_arm);
-    // }
-
-    holdArm.whileTrue(new ControlArm(m_arm, m_controller, ControlArm));
+    armMove2.whileTrue(new ControlArm(m_arm, m_controller, armAxis));
 
     setArmTop.onTrue(new SetArm(m_arm, 69));
 
