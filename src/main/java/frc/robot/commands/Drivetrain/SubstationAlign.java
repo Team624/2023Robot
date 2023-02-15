@@ -16,7 +16,7 @@ public class SubstationAlign extends CommandBase {
 
   private final Drivetrain m_drivetrain;
 
-  private double distance = 90.77 / 39.37 - .58 / 2;
+  private double distance = 2.68 - .58 / 2;
 
   public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
   public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;

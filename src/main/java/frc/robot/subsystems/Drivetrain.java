@@ -179,10 +179,11 @@ public class Drivetrain extends SubsystemBase {
     return current;
   }
 
-  public void updatePoseLimelight(Pose2d newpose2d) {
-    // Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
+  public void updatePoseLimelight(double[] pose) {
+    Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
     // System.out.println(newPose);
-    swerveOdometry.resetPosition(getYaw(), getModulePositions(), newpose2d);
+    swerveOdometry.resetPosition(getYaw(), getModulePositions(), newPose);
+    System.out.println("BRO THINKS HE RESET THE ODOMETRY " + newPose);
   }
 
   public void setAuton(boolean state) {
@@ -219,6 +220,8 @@ public class Drivetrain extends SubsystemBase {
   public void zeroGyroscope() {
     ahrs.setAngleAdjustment(0);
     ahrs.reset();
+    swerveOdometry.resetPosition(
+        new Rotation2d(0), getModulePositions(), swerveOdometry.getPoseMeters());
   }
 
   public Pose2d getPose() {

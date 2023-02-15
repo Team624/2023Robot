@@ -14,26 +14,21 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.Claw.IdleClaw;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
-import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
-import frc.robot.subsystems.Wrist;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -126,10 +121,10 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Limelight m_limelight = new Limelight();
   private final Arm m_arm = new Arm();
-  private final Intake m_intake = new Intake();
-  private final Wrist m_wrist = new Wrist();
+  // private final Intake m_intake = new Intake();
+  // private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
-  private final Claw m_claw = new Claw();
+  // private final Claw m_claw = new Claw();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -146,8 +141,8 @@ public class RobotContainer {
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     // m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
-    m_intake.setDefaultCommand(new IdleIntake(m_intake));
-    m_wrist.setDefaultCommand(new IdleClaw(m_claw));
+    // m_intake.setDefaultCommand(new IdleIntake(m_intake));
+    // m_wrist.setDefaultCommand(new IdleClaw(m_claw));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
 
     // m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
@@ -173,8 +168,8 @@ public class RobotContainer {
 
     // balance.onTrue(new Balance(m_drivetrain));
 
-    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
-
+    // alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
+    alignTag.whileTrue(new SubstationAlign(m_drivetrain, true));
     alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
@@ -212,9 +207,9 @@ public class RobotContainer {
     resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
 
     /** Wrist */
-    wristMove.whileTrue(new ControlWrist(m_wrist, m_controller));
-    wristMove2.whileTrue(new ControlWrist(m_wrist, m_controller));
-    resetWristEncoder.onTrue(new InstantCommand(() -> m_wrist.zeroWrist()));
+    // wristMove.whileTrue(new ControlWrist(m_wrist, m_controller));
+    // wristMove2.whileTrue(new ControlWrist(m_wrist, m_controller));
+    // resetWristEncoder.onTrue(new InstantCommand(() -> m_wrist.zeroWrist()));
 
     // openClaw.whileTrue(new OpenClaw(m_claw));
   }
