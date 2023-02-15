@@ -108,4 +108,8 @@ public class Limelight extends SubsystemBase {
     if (!hasTarget()) return 0;
     return id_json.get(getID());
   }
+
+  public double getBotPoseAngle() {
+    return botpose[5];
+  }
 }

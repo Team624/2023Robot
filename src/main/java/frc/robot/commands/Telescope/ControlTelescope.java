@@ -35,7 +35,7 @@ public class ControlTelescope extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Telescope.controlTelescope(m_Controller.getRightY());
+    m_Telescope.controlTelescope(m_Controller.getRightX());
   }
 
   // Called once the command ends or is interrupted.

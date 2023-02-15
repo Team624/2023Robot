@@ -69,7 +69,9 @@ public class SubstationAlign extends CommandBase {
     yController.setGoal(-1.26839);
     double yVel = yController.calculate(m_drivetrain.getPose().getY());
     double xVel = xController.calculate(m_drivetrain.getPose().getX());
-    double rotSpeed = omegaController.calculate(MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
+    double rotSpeed =
+        omegaController.calculate(
+            MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
     m_drivetrain.drive(new Translation2d(xVel, yVel), rotSpeed, true, true);
   }
 

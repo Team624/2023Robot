@@ -22,8 +22,6 @@ public class Balance extends CommandBase {
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
 
-  private final ProfiledPIDController xController =
-      new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   boolean ground;
 
   public Balance(Drivetrain drivetrain) {

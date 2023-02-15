@@ -22,13 +22,10 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private CANSparkMax armMotor;
 
-  private MotorController motor;
-
   private RelativeEncoder armEncoder;
 
   private SparkMaxPIDController armSparkmaxPID;
 
-  private PIDController armPID;
   ArmFeedforward feedforward =
       new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV);
 

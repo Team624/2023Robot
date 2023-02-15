@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Telescope extends SubsystemBase {
@@ -47,6 +48,8 @@ public class Telescope extends SubsystemBase {
 
     // System.out.println("telescope encoder: " + telescopeEncoder.getPosition());
     // System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
+
+    SmartDashboard.putNumber("/Telescope/Encoder", getTelescopeEncoder());
   }
 
   public void controlTelescope(double speed) {
@@ -65,7 +68,7 @@ public class Telescope extends SubsystemBase {
     telescopeEncoder.setPosition(0.0);
   }
 
-  public double getEncoder() {
+  public double getTelescopeEncoder() {
     return telescopeEncoder.getPosition();
   }
 }

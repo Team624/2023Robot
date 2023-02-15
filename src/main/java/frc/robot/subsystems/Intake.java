@@ -8,42 +8,40 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private CANSparkMax intakeMotor;
 
-  private Solenoid intakeSolenoid;
-
   private RelativeEncoder intakeEncoder;
-  private SparkMaxPIDController intakePID;
 
-  private double P;
-  private double I;
-  private double D;
+  private SparkMaxPIDController intakePidController;
+
+  private double IntakeP;
+  private double IntakeI;
+  private double IntakeD;
 
   public Intake() {
-    intakeMotor = new CANSparkMax(frc.robot.Constants.Intake.intakeMotor, MotorType.kBrushless);
+
+    intakeMotor = new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless);
+
     intakeMotor.restoreFactoryDefaults();
+
     intakeEncoder = intakeMotor.getEncoder();
-    // intakeMotor.setIdleMode(IdleMode.kBrake);
-    intakePID = intakeMotor.getPIDController();
 
-    P = frc.robot.Constants.Intake.P;
-    I = frc.robot.Constants.Intake.I;
-    D = frc.robot.Constants.Intake.D;
+    intakePidController = intakeMotor.getPIDController();
 
-    intakePID.setP(P);
-    intakePID.setI(I);
-    intakePID.setD(D);
+    IntakeP = frc.robot.Constants.Intake.P;
+    IntakeI = frc.robot.Constants.Intake.I;
+    IntakeD = frc.robot.Constants.Intake.D;
 
-    intakePID.setOutputRange(-1, 1);
+    intakePidController.setP(IntakeP);
+    intakePidController.setI(IntakeI);
+    intakePidController.setD(IntakeD);
 
-    intakeSolenoid =
-        new Solenoid(PneumaticsModuleType.CTREPCM, frc.robot.Constants.Intake.intakeSolenoidID);
+    intakePidController.setOutputRange(-1, 1);
   }
 
   @Override
@@ -55,15 +53,9 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
+
+
   public void stopIntake() {
     intakeMotor.stopMotor();
-  }
-
-  public void deploySolenoids() {
-    intakeSolenoid.set(true);
-  }
-
-  public void retractSolenoids() {
-    intakeSolenoid.set(false);
   }
 }

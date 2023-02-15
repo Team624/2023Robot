@@ -126,9 +126,10 @@ public class GoalPose extends CommandBase {
     if (m_limelight.hasTarget()) {
       double angle = m_limelight.alignment_values()[1];
       thVel = angle > 0 ? 1 : -1;
-      
     }
-    thVel = omegaController.calculate(MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
+    thVel =
+        omegaController.calculate(
+            MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
 
     m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
 
