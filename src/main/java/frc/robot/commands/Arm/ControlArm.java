@@ -29,7 +29,8 @@ public class ControlArm extends CommandBase {
   @Override
   public void execute() {
 
-    m_Arm.controlArm(-m_Controller.getLeftY());
+    m_Arm.controlArmRight(-m_Controller.getLeftY());
+    m_Arm.controlArmLeft(-m_Controller.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

@@ -119,13 +119,13 @@ public final class Constants {
 
     /* Front Left Module - Module 0 */
     public static final class Mod0 { // TODO: This must be tuned to specific robot
-      public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
-      public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 20;
-      public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
+      public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 19;
+      public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 18;
+      public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 24;
 
       public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(195.54);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -137,13 +137,13 @@ public final class Constants {
 
     /* Front Right Module - Module 1 */
     public static final class Mod1 { // TODO: This must be tuned to specific robot
-      public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 15;
-      public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 14;
-      public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 24;
+      public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 11;
+      public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 10;
+      public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 23;
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-0.659);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -157,11 +157,11 @@ public final class Constants {
     public static final class Mod2 { // TODO: This must be tuned to specific robot
       public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
       public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
-      public static final int BACK_LEFT_MODULE_STEER_ENCODER = 23;
+      public static final int BACK_LEFT_MODULE_STEER_ENCODER = 21;
 
       public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(158.23);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -173,13 +173,13 @@ public final class Constants {
 
     /* Back Right Module - Module 3 */
     public static final class Mod3 { // TODO: This must be tuned to specific robot
-      public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
-      public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 12;
+      public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 9;
+      public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
       public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 22;
 
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(25.83);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -220,15 +220,20 @@ public final class Constants {
     public static final double P = 0;
     public static final double I = 0;
     public static final double D = 0;
-    public static final int intakeMotor = 6;
+    public static final int intakeMotor = 0;
     public static final int intakeSolenoidID = 0;
   }
 
   public static final class Arm {
-    public static final double P = 0.04;
-    public static final double I = 0;
-    public static final double D = 0;
-    public static final int armMotor = 3;
+    public static final double RkP = 0.04;
+    public static final double RkI = 0;
+    public static final double RkD = 0;
+    public static final int armMotorRight = 6;
+
+    public static final double LkP = 0.04;
+    public static final double LkI = 0;
+    public static final double LkD = 0;
+    public static final int armMotorLeft = 17;
 
     public static final double kS = 0.01;
     public static final double kG = 0.3;
@@ -244,7 +249,7 @@ public final class Constants {
     public static final double P = 0.01;
     public static final double I = 0;
     public static final double D = 0;
-    public static final int telescopemotor = 4;
+    public static final int telescopemotor = 5;
 
     public static final double kS = 0.0;
     public static final double kV = 0.0;

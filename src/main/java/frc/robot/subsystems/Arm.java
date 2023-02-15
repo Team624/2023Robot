@@ -11,70 +11,111 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
-  private CANSparkMax armMotor;
+  private CANSparkMax armMotorRight;
 
-  private RelativeEncoder armEncoder;
+  private CANSparkMax armMotorLeft;
 
-  private SparkMaxPIDController armSparkmaxPID;
+  private RelativeEncoder armEncoderLeft;
+  private RelativeEncoder armEncoderRight;
+
+  private SparkMaxPIDController armSparkmaxPIDLeft;
+  private SparkMaxPIDController armSparkmaxPIDRight;
 
   ArmFeedforward feedforward =
       new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV);
 
-  private double P;
-  private double I;
-  private double D;
+  private double RkP;
+  private double RkI;
+  private double RkD;
+
+  private double LkP;
+  private double LkI;
+  private double LkD;
 
   public Arm() {
 
-    armMotor = new CANSparkMax(frc.robot.Constants.Arm.armMotor, MotorType.kBrushless);
-    armMotor.restoreFactoryDefaults();
-    armEncoder = armMotor.getEncoder();
-    armMotor.setIdleMode(IdleMode.kBrake);
-    armSparkmaxPID = armMotor.getPIDController();
+    armMotorRight = new CANSparkMax(frc.robot.Constants.Arm.armMotorRight, MotorType.kBrushless);
+    armMotorRight.restoreFactoryDefaults();
+    armEncoderRight = armMotorRight.getEncoder();
+    armMotorRight.setIdleMode(IdleMode.kBrake);
+    armSparkmaxPIDRight = armMotorRight.getPIDController();
 
-    P = frc.robot.Constants.Arm.P;
-    I = frc.robot.Constants.Arm.I;
-    D = frc.robot.Constants.Arm.D;
+    RkP = frc.robot.Constants.Arm.RkP;
+    RkI = frc.robot.Constants.Arm.RkI;
+    RkD = frc.robot.Constants.Arm.RkD;
 
-    armSparkmaxPID.setP(P);
-    armSparkmaxPID.setI(I);
-    armSparkmaxPID.setD(D);
+    armSparkmaxPIDRight.setP(RkP);
+    armSparkmaxPIDRight.setI(RkI);
+    armSparkmaxPIDRight.setD(RkD);
 
-    armSparkmaxPID.setOutputRange(-1, 1);
+    armSparkmaxPIDRight.setOutputRange(-1, 1);
+
+    armMotorLeft = new CANSparkMax(frc.robot.Constants.Arm.armMotorLeft, MotorType.kBrushless);
+    armMotorLeft.restoreFactoryDefaults();
+    armEncoderLeft = armMotorLeft.getEncoder();
+    armMotorLeft.setIdleMode(IdleMode.kBrake);
+    armMotorLeft.setInverted(true);
+    armSparkmaxPIDLeft = armMotorLeft.getPIDController();
+
+    LkP = frc.robot.Constants.Arm.LkP;
+    LkI = frc.robot.Constants.Arm.LkI;
+    LkD = frc.robot.Constants.Arm.LkD;
+
+    armSparkmaxPIDLeft.setP(LkP);
+    armSparkmaxPIDLeft.setI(LkI);
+    armSparkmaxPIDLeft.setD(LkD);
+
+    armSparkmaxPIDLeft.setOutputRange(-1, 1);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("/Arm/Encoder", getArmEncoder());
+    SmartDashboard.putNumber("/Arm/Encoder/Left", getArmEncoderRight());
+    SmartDashboard.putNumber("/Arm/Encoder/Right", getArmEncoderLeft());
   }
 
-  public void controlArm(double speed) {
-    armMotor.set(speed);
+  public void controlArmRight(double speed) {
+    armMotorRight.set(speed);
   }
 
-  public double getArmEncoder() {
-    return armEncoder.getPosition();
+  public void controlArmLeft(double speed) {
+    armMotorLeft.set(speed);
+  }
+
+  public double getArmEncoderRight() {
+    return armEncoderRight.getPosition();
+  }
+
+  public double getArmEncoderLeft() {
+    return armEncoderLeft.getPosition();
   }
 
   public void stopArm() {
-    armMotor.stopMotor();
+    armMotorRight.stopMotor();
+    armMotorLeft.stopMotor();
   }
 
   public void setArmCommand(double setpoint, Rotation2d angle) {
     // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
 
-    armMotor
+    armMotorRight
+        .getPIDController()
+        .setReference(
+            angle.getRadians(),
+            ControlType.kPosition,
+            0,
+            feedforward.calculate(angle.getRadians(), 0));
+
+    armMotorLeft
         .getPIDController()
         .setReference(
             angle.getRadians(),
@@ -84,6 +125,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void resetEncoder() {
-    armEncoder.setPosition(0.0);
+    armEncoderRight.setPosition(0.0);
+    armEncoderLeft.setPosition(0.0);
   }
 }

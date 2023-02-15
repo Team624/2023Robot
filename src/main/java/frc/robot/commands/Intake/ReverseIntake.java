@@ -10,6 +10,7 @@ import frc.robot.subsystems.Intake;
 public class ReverseIntake extends CommandBase {
   /** Creates a new ReverseIntake. */
   private final Intake m_intake;
+
   public ReverseIntake(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.\
     this.m_intake = intake;
