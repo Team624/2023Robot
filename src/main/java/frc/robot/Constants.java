@@ -123,9 +123,8 @@ public final class Constants {
       public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 20;
       public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 23;
 
-      public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(66.26);
-
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(247);
+      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(246.18 - 180);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(66.0059);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -141,9 +140,9 @@ public final class Constants {
       public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 18;
       public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 22;
 
-      public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(97.64);
+      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(278.09 - 180);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(279.57);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(97.6465);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -159,9 +158,8 @@ public final class Constants {
       public static final int BACK_LEFT_MODULE_STEER_MOTOR = 8;
       public static final int BACK_LEFT_MODULE_STEER_ENCODER = 24;
 
-      public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(286.16);
-
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(108.6);
+      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(105.91 + 180);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(286.2598);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -177,9 +175,9 @@ public final class Constants {
       public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 10;
       public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
 
-      public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(232.99);
+      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(53.53 + 180);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(53);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(232.9102);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -192,17 +190,17 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 3.0;
+    public static final double DRIVE_CONTROLLER_X_KP = 1.0;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 3.0;
+    public static final double DRIVE_CONTROLLER_Y_KP = 1.0;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = .85; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.0; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
@@ -211,8 +209,8 @@ public final class Constants {
         Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
 
     // Rotational tolerance for autonomous paths
-    public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
-    public static final double AUTONOMOUS_Y_TOLERANCE = 0.2;
+    public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
+    public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.5);
   }
 }

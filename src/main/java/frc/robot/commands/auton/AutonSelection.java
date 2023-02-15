@@ -12,6 +12,7 @@ public class AutonSelection extends CommandBase {
   private ShuffleboardTab autonTab;
   private GenericEntry autonChoiceGet;
   private GenericEntry autonNameWidget;
+  private GenericEntry shouldBalanceGet;
 
   @Override
   public void initialize() {
@@ -30,15 +31,26 @@ public class AutonSelection extends CommandBase {
             .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
 
+    this.shouldBalanceGet = 
+      autonTab
+        .add("Balance?", true)
+        .withPosition(1, 0)
+        .withWidget(BuiltInWidgets.kToggleSwitch)
+        .getEntry();
+
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
 
     System.out.println("Started disabled command");
   }
 
+
   @Override
   public void execute() {
     double autonChoice = autonChoiceGet.getDouble(0.0);
+    boolean shouldBalance = shouldBalanceGet.getBoolean(true);
+
     SmartDashboard.putNumber("/auto/select", autonChoice);
+    SmartDashboard.putBoolean("/auto/balance/should_balance", shouldBalance);
 
     String autonName = SmartDashboard.getString("/pathTable/auton_name", "N/A");
 

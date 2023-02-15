@@ -71,17 +71,23 @@ public class FollowPath extends CommandBase {
   public void execute() {
     double timeSeconds = timer.get();
 
-    Pose2d wantedPose = path.interpolate(timeSeconds);
-
     Pose2d currentPose = drivetrain.getPose();
 
-    System.out.println("Wanted: " + wantedPose.getRotation().getRadians());
+    var state = path.getState(timeSeconds);
 
-    System.out.println("Current: " + currentPose.getRotation().getRadians());
+    System.out.println(
+        timeSeconds
+            + "s = ("
+            + state.pose.getX()
+            + ", "
+            + state.pose.getY()
+            + ") at "
+            + state.velocity
+            + "m/s");
 
     ChassisSpeeds chassisSpeeds =
         controller.calculate(
-            currentPose, wantedPose, path.getVelocity(timeSeconds), wantedPose.getRotation());
+            currentPose, state.pose, state.velocity, state.wantedHeading);
 
     drivetrain.drive(chassisSpeeds, false, false);
   }
@@ -95,7 +101,7 @@ public class FollowPath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= path.getSeconds()); // && controller.atReference()
+    return (timer.get() >= path.getSeconds() && controller.atReference()); // && controller.atReference()
   }
 
   @Override

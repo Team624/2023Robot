@@ -21,8 +21,8 @@ public class SwerveDrive extends CommandBase {
   private DoubleSupplier rotationSup;
   private BooleanSupplier robotCentricSup;
 
-  private SlewRateLimiter filterX = new SlewRateLimiter(7);
-  private SlewRateLimiter filterY = new SlewRateLimiter(7);
+  private SlewRateLimiter filterX = new SlewRateLimiter(10);
+  private SlewRateLimiter filterY = new SlewRateLimiter(10);
 
   public SwerveDrive(
       Drivetrain s_Swerve,
@@ -58,8 +58,8 @@ public class SwerveDrive extends CommandBase {
         new Translation2d(translationVal, strafeVal)
             .times(Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
         rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        !robotCentricSup.getAsBoolean(),
-        false);
+        true,
+        true);
   }
 
   // Called once the command ends or is interrupted.

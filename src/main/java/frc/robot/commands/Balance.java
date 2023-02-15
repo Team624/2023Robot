@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -20,7 +21,9 @@ public class Balance extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    setNTState(false);
+  }
 
   @Override
   public void execute() {
@@ -38,8 +41,13 @@ public class Balance extends CommandBase {
 
     if (-angleThreshold < angle && angle < angleThreshold) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, false);
+      setNTState(true);
       return true;
     }
     return false;
+  }
+
+  private void setNTState(boolean state) {
+    SmartDashboard.getEntry("/auto/balance/state").setBoolean(state);
   }
 }
