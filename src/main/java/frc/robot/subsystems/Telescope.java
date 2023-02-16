@@ -6,11 +6,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Telescope extends SubsystemBase {
   /** Creates a new Telescope. */
@@ -25,11 +27,11 @@ public class Telescope extends SubsystemBase {
   private double D;
 
   public Telescope() {
-    telescopeMotor = new CANSparkMax(5, MotorType.kBrushless);
+    telescopeMotor = new CANSparkMax(Constants.Telescope.telescopemotor, MotorType.kBrushless);
     telescopeMotor.restoreFactoryDefaults();
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();
-    // telescopeMotor.setIdleMode(IdleMode.kBrake);
+    telescopeMotor.setIdleMode(IdleMode.kBrake);
 
     P = frc.robot.Constants.Telescope.P;
     I = frc.robot.Constants.Telescope.I;

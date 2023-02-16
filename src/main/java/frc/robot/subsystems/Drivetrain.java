@@ -179,10 +179,9 @@ public class Drivetrain extends SubsystemBase {
     return current;
   }
 
-  public void updatePoseLimelight(Pose2d newpose2d) {
-    // Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
-    // System.out.println(newPose);
-    swerveOdometry.resetPosition(getYaw(), getModulePositions(), newpose2d);
+  public void updatePoseLimelight(double[] pose) {
+    Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
+    swerveOdometry.resetPosition(getYaw(), getModulePositions(), newPose);
   }
 
   public void setAuton(boolean state) {

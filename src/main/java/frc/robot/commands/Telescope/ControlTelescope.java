@@ -36,6 +36,9 @@ public class ControlTelescope extends CommandBase {
   @Override
   public void execute() {
     m_Telescope.controlTelescope(m_Controller.getRightX());
+    // i love your mom 
+    // but mostly kaylas mom out of them all 
+    // hi kaylas mom pls give me one chance 
   }
 
   // Called once the command ends or is interrupted.

@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -38,6 +39,8 @@ public class Arm extends SubsystemBase {
   private double LkP;
   private double LkI;
   private double LkD;
+
+  private MotorControllerGroup Armgroup;
 
   public Arm() {
 
@@ -73,14 +76,16 @@ public class Arm extends SubsystemBase {
     armSparkmaxPIDLeft.setD(LkD);
 
     armSparkmaxPIDLeft.setOutputRange(-1, 1);
+
+    Armgroup = new MotorControllerGroup(armMotorRight, armMotorLeft);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("/Arm/Encoder/Left", getArmEncoderRight());
-    SmartDashboard.putNumber("/Arm/Encoder/Right", getArmEncoderLeft());
+    SmartDashboard.putNumber("/Arm/Encoder/Right", getArmEncoderRight());
+    SmartDashboard.putNumber("/Arm/Encoder/Left", getArmEncoderLeft());
   }
 
   public void controlArmRight(double speed) {
@@ -89,6 +94,10 @@ public class Arm extends SubsystemBase {
 
   public void controlArmLeft(double speed) {
     armMotorLeft.set(speed);
+  }
+
+  public void controlArm(double speed) {
+    Armgroup.set(speed);
   }
 
   public double getArmEncoderRight() {
@@ -107,21 +116,11 @@ public class Arm extends SubsystemBase {
   public void setArmCommand(double setpoint, Rotation2d angle) {
     // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
 
-    armMotorRight
-        .getPIDController()
-        .setReference(
-            angle.getRadians(),
-            ControlType.kPosition,
-            0,
-            feedforward.calculate(angle.getRadians(), 0));
+    armSparkmaxPIDRight.setReference(
+        angle.getRadians(), ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
 
-    armMotorLeft
-        .getPIDController()
-        .setReference(
-            angle.getRadians(),
-            ControlType.kPosition,
-            0,
-            feedforward.calculate(angle.getRadians(), 0));
+    armSparkmaxPIDLeft.setReference(
+        angle.getRadians(), ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
   }
 
   public void resetEncoder() {
