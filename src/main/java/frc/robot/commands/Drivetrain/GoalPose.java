@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,21 +25,21 @@ public class GoalPose extends CommandBase {
   public double goal;
 
   public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
-  public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+  public static final double AngVel = 2*Math.PI;
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(AngVel, 3);
+      new TrapezoidProfile.Constraints(AngVel,Math.pow(AngVel,2));
 
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(1.8, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(6.5, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(5, 0, 0, OMEGA_CONSTRAINTS);
 
   public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -53,8 +52,8 @@ public class GoalPose extends CommandBase {
     this.m_node = node;
     this.m_right = right;
 
-    xController.setTolerance(0.01);
-    yController.setTolerance(0.01);
+    xController.setTolerance(0.02);
+    yController.setTolerance(0.02);
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -67,7 +66,7 @@ public class GoalPose extends CommandBase {
 
     Pose2d pose = m_drivetrain.getPose();
 
-    omegaController.reset(MathUtil.angleModulus(pose.getRotation().getRadians()));
+    omegaController.reset((pose.getRotation().getRadians()));
 
     xController.reset(pose.getX());
     yController.reset(pose.getY());
@@ -127,9 +126,7 @@ public class GoalPose extends CommandBase {
       double angle = m_limelight.alignment_values()[1];
       thVel = angle > 0 ? 1 : -1;
     }
-    thVel =
-        omegaController.calculate(
-            MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
+    thVel = omegaController.calculate((m_drivetrain.getPose().getRotation().getRadians()));
 
     m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
 

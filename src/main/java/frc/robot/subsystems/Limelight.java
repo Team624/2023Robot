@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -36,6 +37,8 @@ public class Limelight extends SubsystemBase {
     id_json.put(6.0, -3.59379);
     id_json.put(7.0, -5.2701);
     id_json.put(8.0, -6.94659);
+    
+    CameraServer.startAutomaticCapture("camera name", "deploy/Pipeline-Name-5"); //Change camera name
   }
 
   public boolean hasTarget() {
@@ -111,5 +114,27 @@ public class Limelight extends SubsystemBase {
 
   public double getBotPoseAngle() {
     return botpose[5];
+  }
+
+  public double getDistance(){
+    double x_april_tag = 0;
+    double id = getID();
+    if(id>8 || id<1){
+      return -1;
+    }
+    else if(id<4){
+      x_april_tag = 7.24310;
+    }
+    else if (id>5){
+      x_april_tag=-7.24310;
+    }
+    else if(id==5){
+      x_april_tag=-7.90832;
+    }
+    else if(id==4){
+      x_april_tag=7.90832;
+    }
+    x_april_tag+= + 8.27;
+    return Math.sqrt(Math.pow(x_april_tag-getX(), 2)+Math.pow(getYofTag()-getY(), .5));
   }
 }

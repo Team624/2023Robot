@@ -18,7 +18,6 @@ import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
-import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Telescope.ControlTelescope;
@@ -168,15 +167,15 @@ public class RobotContainer {
 
     // balance.onTrue(new Balance(m_drivetrain));
 
-    // alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
-    alignTag.whileTrue(new SubstationAlign(m_drivetrain, true));
-    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
+    alignTag.onTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
+    // alignTag.whileTrue(new SubstationAlign(m_drivetrain, true));
+    alignTag2.onTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
-    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
+    alignTag3.onTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    left.whileTrue(new ConeAlign(m_drivetrain, m_limelight, false));
+    left.onTrue(new ConeAlign(m_drivetrain, m_limelight, false));
 
-    right.whileTrue(new ConeAlign(m_drivetrain, m_limelight, true));
+    right.onTrue(new ConeAlign(m_drivetrain, m_limelight, true));
 
     resetpose.whileTrue(new UpdatePose(m_limelight, m_drivetrain));
 
