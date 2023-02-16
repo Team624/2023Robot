@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Balance;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.BezierCurve;
@@ -66,7 +66,11 @@ public class AutonManager extends CommandBase {
     boolean startBalance = SmartDashboard.getEntry("/auto/balance/set").getBoolean(false);
 
     if (startBalance) {
+      currentFollowPathCommand.end(true);
+      
       currentBalanceCommand = new Balance(drivetrain);
+      currentBalanceCommand.schedule();
+      
       System.out.println("Starting balance!!!");
     }
 

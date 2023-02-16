@@ -229,4 +229,8 @@ public class Drivetrain extends SubsystemBase {
   public double getRoll() {
     return ahrs.getRoll();
   }
+
+  public double getPitch() {
+    return ahrs.getPitch();
+  }
 }

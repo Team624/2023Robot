@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drivetrain.AprilTagTheta;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SwerveDrive;
@@ -42,8 +43,8 @@ public class RobotContainer {
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
 
-  private final JoystickButton alignTag =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
+  // private final JoystickButton alignTag =
+  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   private final JoystickButton alignTag2 =
       new JoystickButton(d_controller, XboxController.Button.kY.value);
@@ -61,8 +62,8 @@ public class RobotContainer {
   private final JoystickButton resetpose =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-  // private final JoystickButton balance =
-  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
+  private final JoystickButton balance =
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -118,7 +119,7 @@ public class RobotContainer {
     //         () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
     //         () -> -modifyAxis(d_controller.getRawAxis(rotationAxis))));
 
-    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
+    // alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
 
     alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
@@ -137,7 +138,7 @@ public class RobotContainer {
 
     resetpose.whileTrue(new UpdatePose(m_drivetrain, m_limelight));
 
-    // balance.whileTrue(new Balance(m_drivetrain));
+    balance.whileTrue(new Balance(m_drivetrain));
   }
 
   /**
