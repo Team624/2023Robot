@@ -15,7 +15,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
 
 public class GoalPose extends CommandBase {
-  /** Creates a new GoalPose. */
   private final Drivetrain m_drivetrain;
 
   private final Limelight m_limelight;
@@ -25,14 +24,14 @@ public class GoalPose extends CommandBase {
   public double goal;
 
   public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
-  public static final double AngVel = 2*Math.PI;
+  public static final double AngVel = 2 * Math.PI;
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(AngVel,Math.pow(AngVel,2));
+      new TrapezoidProfile.Constraints(AngVel, Math.pow(AngVel, 2));
 
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
@@ -127,40 +126,19 @@ public class GoalPose extends CommandBase {
       thVel = angle > 0 ? 1 : -1;
     }
     thVel = omegaController.calculate((m_drivetrain.getPose().getRotation().getRadians()));
-
+    UpdatePose.keepRunning=false;
     m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
-
-    // if (yController.atGoal() && m_limelight.hasTarget() && m_limelight.alignment_values()[1] >
-    // 0.1) {
-
-    //   double horiz_distance = m_limelight.alignment_values()[0];
-    //   double yVelocity = 0.0;
-
-    //   if (horiz_distance < 0) {
-    //     yVelocity = -1;
-    //   } else {
-    //     yVelocity = 1;
-    //   }
-
-    //   m_drivetrain.drive(new Translation2d(0, yVelocity), 0, true);
-    // }
   }
-
-  // Called once the command ends or is interrupted.
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
+    UpdatePose.keepRunning=true;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("y controllers " + yController.getPositionError());
-    if (yController.atGoal() && omegaController.atGoal()) {
-      return true;
-    }
-
-    return false;
+    return yController.atGoal() && omegaController.atGoal();
   }
 }

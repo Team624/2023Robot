@@ -43,9 +43,9 @@ public class ConeAlign extends CommandBase {
 
     m_drivetrain = drivetrain;
     m_limelight = limelight;
-    this.m_right = right;
-    xController.setTolerance(0.01);
-    yController.setTolerance(0.01);
+    m_right = right;
+    xController.setTolerance(0.02);
+    yController.setTolerance(0.05);
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -75,27 +75,25 @@ public class ConeAlign extends CommandBase {
       } else {
         goal = m_limelight.getYofTag() + distance;
       }
-
       yController.setGoal(goal);
-      System.out.println("GOAL: " + goal);
       double angle = m_limelight.alignment_values()[1];
-      System.out.println(m_drivetrain.getPose().getRotation().getDegrees());
       omegaController.setGoal(-Math.PI);
       rotSpeed = angle > 0 ? 1 : -1;
       yVel = yController.calculate(m_drivetrain.getPose().getY());
       rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     }
-    System.out.println("Y VEL: " + yVel);
+    UpdatePose.keepRunning=false;
     m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
+    UpdatePose.keepRunning=true;
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_drivetrain.getPose().getY() - goal) < .01 && omegaController.atGoal();
+    return yController.atGoal() && omegaController.atGoal();
   }
 }

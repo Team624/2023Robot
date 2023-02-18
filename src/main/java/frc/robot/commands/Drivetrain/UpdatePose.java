@@ -14,6 +14,8 @@ public class UpdatePose extends CommandBase {
 
   private final Drivetrain m_Drivetrain;
 
+  public static boolean keepRunning = true;
+
   public UpdatePose(Limelight Limelight, Drivetrain drivetrian) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Limelight = Limelight;
@@ -29,12 +31,10 @@ public class UpdatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Limelight.hasTarget()) {
-      // Translation2d newTranslation =
-      //     new Translation2d(m_Limelight.getBotPose()[0], m_Limelight.getBotPose()[1]);
-      // Rotation2d newRotation = new Rotation2d(m_Limelight.getBotPoseAngle());
-      // Pose2d newPose2d = new Pose2d(newTranslation, newRotation);
-      m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose());
+    if (m_Limelight.hasTarget() && keepRunning) {
+      if (m_Limelight.getTA() > .3){
+        m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose(), m_Limelight.getLatency());
+      }
     }
   }
 

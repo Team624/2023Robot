@@ -144,7 +144,7 @@ public class RobotContainer {
     // m_wrist.setDefaultCommand(new IdleClaw(m_claw));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
 
-    // m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
     configureBindings();
   }
@@ -182,10 +182,6 @@ public class RobotContainer {
     creepMode.whileTrue(new InstantCommand(() -> m_drivetrain.yesCreepMode()));
     creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));
 
-    /** Intake */
-    // runIntake.whileTrue(new DeployIntake(m_intake, m_controller));
-
-    /** Arm */
     armMove.whileTrue(new ControlArm(m_arm, m_controller));
 
     armMove2.whileTrue(new ControlArm(m_arm, m_controller));

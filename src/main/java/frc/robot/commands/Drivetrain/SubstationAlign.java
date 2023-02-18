@@ -59,10 +59,8 @@ public class SubstationAlign extends CommandBase {
   @Override
   public void execute() {
     if (red_alliance) {
-      System.out.println("X goal: " + distance);
       xController.setGoal(distance);
     } else {
-      System.out.println("X goal: " + (16.54 - distance));
       xController.setGoal(16.54 - distance);
     }
     omegaController.setGoal(-Math.PI / 2);
@@ -72,12 +70,14 @@ public class SubstationAlign extends CommandBase {
     double rotSpeed =
         omegaController.calculate(
             MathUtil.angleModulus(m_drivetrain.getPose().getRotation().getRadians()));
+    UpdatePose.keepRunning = false;
     m_drivetrain.drive(new Translation2d(xVel, yVel), rotSpeed, true, true);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
+    UpdatePose.keepRunning = true;
   }
 
   @Override
