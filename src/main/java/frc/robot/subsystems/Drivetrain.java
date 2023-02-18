@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -26,6 +28,8 @@ import frc.robot.SwerveModule;
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
   public SwerveDriveOdometry swerveOdometry;
+
+  public double alliance;
 
   private boolean m_isOpenLoop;
   public boolean isCreepin = false;
@@ -250,5 +254,13 @@ public class Drivetrain extends SubsystemBase {
 
   public void noCreepMode() {
     isCreepin = false;
+  }
+
+  public void updateAlliance() {
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+      alliance = 1;
+    } else {
+      alliance = 2;
+    }
   }
 }

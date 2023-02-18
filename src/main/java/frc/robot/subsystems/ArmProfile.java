@@ -5,21 +5,24 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Constants;
 
-public class Arm extends SubsystemBase {
-  /** Creates a new Arm. */
+public class ArmProfile extends TrapezoidProfileSubsystem {
+  /** Creates a new ArmProfile. */
   private CANSparkMax armMotorRight;
 
   private CANSparkMax armMotorLeft;
@@ -31,7 +34,7 @@ public class Arm extends SubsystemBase {
   private SparkMaxPIDController armSparkmaxPIDRight;
 
   ArmFeedforward feedforward =
-      new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV);
+      new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV,Constants.Arm.kA);
 
   private double RkP;
   private double RkI;
@@ -44,8 +47,15 @@ public class Arm extends SubsystemBase {
   private MotorControllerGroup Armgroup;
 
   private DutyCycleEncoder boreEncoder;
+  public ArmProfile() {
+    
+    super(
+        // The constraints for the generated profiles
+        new TrapezoidProfile.Constraints(1, 3),
+        // The initial position of the mechanism
+        0.0);
 
-  public Arm() {
+       
 
     armMotorRight = new CANSparkMax(frc.robot.Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.restoreFactoryDefaults();
@@ -73,6 +83,7 @@ public class Arm extends SubsystemBase {
     LkP = frc.robot.Constants.Arm.LkP;
     LkI = frc.robot.Constants.Arm.LkI;
     LkD = frc.robot.Constants.Arm.LkD;
+    
 
     armSparkmaxPIDLeft.setP(LkP);
     armSparkmaxPIDLeft.setI(LkI);
@@ -86,15 +97,15 @@ public class Arm extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  protected void useState(TrapezoidProfile.State setpoint) {
+    // Use the computed profile state here.
+    double ArmFeedforward = feedforward.calculate(setpoint.position, 0);
+    armSparkmaxPIDLeft.setReference(setpoint.position, ControlType.kPosition,0,ArmFeedforward / 12.0);
+    armSparkmaxPIDRight.setReference(setpoint.position, ControlType.kPosition,0,ArmFeedforward / 12.0);
+  }
 
-    SmartDashboard.putNumber("/Arm/Encoder/Right", getArmEncoderRight());
-    SmartDashboard.putNumber("/Arm/Encoder/Left", getArmEncoderLeft());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/get", boreEncoder.get());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", boreEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", boreEncoder.getDistance());
-
+  public Command setArmCommand(double setpoint) {
+    return Commands.runOnce(() -> setGoal(setpoint), this);
   }
 
   public void controlArmRight(double speed) {

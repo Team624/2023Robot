@@ -143,7 +143,7 @@ public final class Constants {
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(170.332);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -179,7 +179,7 @@ public final class Constants {
 
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(248.81835);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -225,24 +225,20 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final double RkP = 0.04;
-    public static final double RkI = 0;
-    public static final double RkD = 0;
+    public static final double RkP = 0.007;
+    public static final double RkI = 0.0;
+    public static final double RkD = 0.001;
     public static final int armMotorRight = 6;
 
-    public static final double LkP = 0.04;
-    public static final double LkI = 0;
-    public static final double LkD = 0;
+    public static final double LkP = 0.007;
+    public static final double LkI = 0.0;
+    public static final double LkD = 0.001;
     public static final int armMotorLeft = 17;
 
     public static final double kS = 0.01;
-    public static final double kG = 0.3;
+    public static final double kG = 0.025;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
-  }
-
-  public static final class Claw {
-    public static final int clawSolenoidID = 1;
   }
 
   public static final class Telescope {
