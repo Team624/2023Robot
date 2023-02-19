@@ -126,14 +126,14 @@ public class GoalPose extends CommandBase {
       thVel = angle > 0 ? 1 : -1;
     }
     thVel = omegaController.calculate((m_drivetrain.getPose().getRotation().getRadians()));
-    UpdatePose.keepRunning=false;
+    UpdatePose.keepRunning = false;
     m_drivetrain.drive(new Translation2d(0, yVel), thVel, true, true);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
-    UpdatePose.keepRunning=true;
+    UpdatePose.keepRunning = true;
   }
 
   // Returns true when the command should end.

@@ -69,7 +69,7 @@ public class ConeAlign extends CommandBase {
   public void execute() {
     double yVel = 0;
     double rotSpeed = 0;
-    if (m_limelight.getYofTag() != 0) {
+    if (m_limelight.getYofTag() != 0 && m_limelight.getTA() > .3) {
       if (m_right) {
         goal = m_limelight.getYofTag() - distance;
       } else {
@@ -82,18 +82,20 @@ public class ConeAlign extends CommandBase {
       yVel = yController.calculate(m_drivetrain.getPose().getY());
       rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     }
-    UpdatePose.keepRunning=false;
+    UpdatePose.keepRunning = false;
     m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
-    UpdatePose.keepRunning=true;
+    UpdatePose.keepRunning = true;
   }
 
   @Override
   public boolean isFinished() {
-    return yController.atGoal() && omegaController.atGoal();
+    System.out.println(m_drivetrain.getPose().getY());
+    System.out.println("GOAL " + goal);
+    return Math.abs(m_drivetrain.getPose().getY() - goal) < .04 && omegaController.atGoal();
   }
 }

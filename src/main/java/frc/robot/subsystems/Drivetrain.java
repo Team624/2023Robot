@@ -100,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!isAuton) m_states = freezeLogic(m_states);
+    // if (!isAuton) m_states = freezeLogic(m_states);
 
     setModuleStates();
     poseEstimator.update(getYaw(), getModulePositions());

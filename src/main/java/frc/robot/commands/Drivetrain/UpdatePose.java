@@ -32,7 +32,7 @@ public class UpdatePose extends CommandBase {
   @Override
   public void execute() {
     if (m_Limelight.hasTarget() && keepRunning) {
-      if (m_Limelight.getTA() > .3){
+      if (m_Limelight.getTA() > .3) {
         m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose(), m_Limelight.getLatency());
       }
     }
