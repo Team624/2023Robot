@@ -108,6 +108,12 @@ public class Drivetrain extends SubsystemBase {
     poseEstimator.update(getYaw(), getModulePositions());
 
     for (SwerveModule mod : mSwerveMods) {
+      if(Math.abs(mod.getCanCoder().getDegrees()- mod.getPosition().angle.getDegrees()) >5){
+        System.out.println("CANCoder off");
+        System.out.println("CanCoder: "+ mod.getCanCoder().getDegrees());
+        System.out.println("Integrated: "+mod.getPosition().angle.getDegrees());
+      }
+
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber(
@@ -115,6 +121,8 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
+
+    
 
     updateNT();
   }

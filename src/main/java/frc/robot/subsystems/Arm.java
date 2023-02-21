@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -83,6 +84,8 @@ public class Arm extends SubsystemBase {
     Armgroup = new MotorControllerGroup(armMotorRight, armMotorLeft);
 
     boreEncoder = new DutyCycleEncoder(0);
+
+    // armMotorLeft.follow(armMotorRight, true);
   }
 
   @Override
@@ -94,14 +97,14 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("/Arm/BoreEncoder/get", boreEncoder.get());
     SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", boreEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", boreEncoder.getDistance());
-
   }
 
   public void controlArmRight(double speed) {
     armMotorRight.set(speed);
   }
-  public double getBoreEncoder(){
-    return boreEncoder.get();
+
+  public double getBoreEncoder() {
+    return boreEncoder.getAbsolutePosition();
   }
 
   public void zeroBoreEncoder() {
@@ -113,7 +116,9 @@ public class Arm extends SubsystemBase {
   }
 
   public void controlArm(double speed) {
-    Armgroup.set(speed);
+
+    armMotorRight.set(speed);
+    armMotorLeft.set(speed);
   }
 
   public double getArmEncoderRight() {
@@ -129,18 +134,48 @@ public class Arm extends SubsystemBase {
     armMotorLeft.stopMotor();
   }
 
-  public void setArmCommand(double velocity, Rotation2d angle) {
-  
-    armMotorLeft.setVoltage(velocity+feedforward.calculate(angle.getRadians(), 0));
-    armMotorRight.setVoltage(velocity+feedforward.calculate(angle.getRadians(), 0));
+  public void setArmCommand(double setpoint) {
 
-  
+    // armMotorLeft.setVoltage(velocity + feedforward.calculate(angle.getRadians(), 0));
+    // armMotorRight.setVoltage(velocity + feedforward.calculate(angle.getRadians(), 0));
+    Rotation2d angle = new Rotation2d(setpoint);
 
-    // armSparkmaxPIDRight.setReference(
-    //   velocity, ControlType.kVelocity, 0, feedforward.calculate(angle.getRadians(), 0));
+    armSparkmaxPIDRight.setReference(
+        setpoint,
+        ControlType.kPosition,
+        0,
+        feedforward.calculate(angle.getRadians(), 0));
 
-    // armSparkmaxPIDLeft.setReference(
-    //   velocity, ControlType.kVelocity, 0, feedforward.calculate(angle.getRadians(), 0));
+    armSparkmaxPIDLeft.setReference(
+        setpoint,
+        ControlType.kPosition,
+        0,
+        feedforward.calculate(angle.getRadians(), 0)
+        );
+
+  }
+
+  public void ArmProfile(TrapezoidProfile.State setpoint) {
+    System.out.println(setpoint.position);
+    Rotation2d setpoint2d = new Rotation2d(setpoint.position);
+
+    armSparkmaxPIDLeft.setReference(
+        setpoint.position,
+        ControlType.kPosition,
+        0,
+        feedforward.calculate(setpoint2d.getRadians(), 0));
+
+    armSparkmaxPIDRight.setReference(
+        setpoint.position,
+        ControlType.kPosition,
+        0,
+        feedforward.calculate(setpoint2d.getRadians(), 0));
+
+    // armMotorLeft.setVoltage(setpoint.position + feedforward.calculate(setpoint2d.getRadians(),
+    // 0));
+    // armMotorRight.setVoltage(setpoint.position + feedforward.calculate(setpoint2d.getRadians(),
+    // 0));
+
   }
 
   public void resetEncoder() {

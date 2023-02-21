@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -21,15 +20,22 @@ import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
+import frc.robot.commands.Intake.IdleIntake;
+import frc.robot.commands.Intake.ReverseIntake;
+import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
+import frc.robot.commands.Telescope.SetTelescope;
+import frc.robot.commands.Wrist.ControlWrist;
+import frc.robot.commands.Wrist.IdleWrist;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.ArmProfile;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
+import frc.robot.subsystems.Wrist;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,8 +56,8 @@ public class RobotContainer {
   private final int telescopeAxis = XboxController.Axis.kRightX.value;
   private final int wristAxis = XboxController.Axis.kRightY.value;
 
-  private final JoystickButton ArmTelescopeWrist =
-      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
+  // private final JoystickButton ArmTelescopeWrist =
+  //     new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
 
   /* Intake */
 
@@ -72,10 +78,12 @@ public class RobotContainer {
 
   private final POVButton setArmBot = new POVButton(m_controller, 180);
 
-  private final POVButton setArmZero = new POVButton(m_controller, 270);
+  // private final POVButton setArmZero = new POVButton(m_controller, 270);
 
-  private final JoystickButton resetArmEncoder =
-      new JoystickButton(m_controller, XboxController.Button.kX.value);
+  private final POVButton setTelescopeMID = new POVButton(m_controller, 270);
+
+  // private final JoystickButton resetArmEncoder =
+  //     new JoystickButton(m_controller, XboxController.Button.kX.value);
 
   /* Telescope */
 
@@ -84,9 +92,6 @@ public class RobotContainer {
 
   private final JoystickButton resetTelescopeEncoder =
       new JoystickButton(m_controller, XboxController.Button.kA.value);
-
-  // private final JoystickButton setTelescope =
-  //     new JoystickButton(m_controller, XboxController.Button.kB.value);
 
   /* Wrist */
 
@@ -130,9 +135,9 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Limelight m_limelight = new Limelight();
   private final Arm m_arm = new Arm();
-  private final ArmProfile m_ArmProfile = new ArmProfile();
-  // private final Intake m_intake = new Intake();
-  // private final Wrist m_wrist = new Wrist();
+  // private final ArmProfile m_ArmProfile = new ArmProfile();
+  private final Intake m_intake = new Intake();
+  private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -150,11 +155,11 @@ public class RobotContainer {
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
-    // m_intake.setDefaultCommand(new IdleIntake(m_intake));
-    // m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
+    m_intake.setDefaultCommand(new IdleIntake(m_intake));
+    m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
 
-    // m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
     configureBindings();
   }
@@ -173,6 +178,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
     // balance.onTrue(new Balance(m_drivetrain));
@@ -193,8 +199,8 @@ public class RobotContainer {
     creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));
 
     /** Intake */
-    // runIntake.whileTrue(new RunIntake(m_intake));
-    // reverseIntake.whileTrue(new ReverseIntake(m_intake));
+    runIntake.whileTrue(new RunIntake(m_intake));
+    reverseIntake.whileTrue(new ReverseIntake(m_intake));
 
     /** Arm */
     // ArmTelescopeWrist.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist));
@@ -204,26 +210,25 @@ public class RobotContainer {
     armMove2.whileTrue(new ControlArm(m_arm, m_controller));
 
     // setArmTop.onTrue(new SetArm(m_arm, 69));
-    setArmTop.onTrue(m_ArmProfile.setArmCommand(69));
-    
+    // setArmTop.onTrue(new ArmSetpoint(m_arm, 0.1));
 
-    // setArmMid.onTrue(new SetArm(m_arm, 62));
+    setArmMid.whileTrue(new SetArm(m_arm, 0.15));
 
     // setArmBot.onTrue(new SetArm(m_arm, 40));
 
-    resetArmEncoder.onTrue(new InstantCommand(() -> m_arm.resetEncoder()));
+    // resetArmEncoder.onTrue(new InstantCommand(() -> m_arm.zeroBoreEncoder()));
 
-    setArmZero.onTrue(new SetArm(m_arm, 0.0));
+    // setArmZero.onTrue(new SetArm(m_arm, 0.0));
 
     /** Telescope */
     telescopeMove.whileTrue(new ControlTelescope(m_telescope, m_controller));
     telescopeMove2.whileTrue(new ControlTelescope(m_telescope, m_controller));
     resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
-    // setTelescope.onTrue(new SetTelescope(m_telescope, 20));
+    setTelescopeMID.onTrue(new SetTelescope(m_telescope, 20));
 
     /** Wrist */
-    // wristMove.whileTrue(new ControlWrist(m_wrist, m_controller));
-    // wristMove2.whileTrue(new ControlWrist(m_wrist, m_controller));
+    wristMove.whileTrue(new ControlWrist(m_wrist, m_controller));
+    wristMove2.whileTrue(new ControlWrist(m_wrist, m_controller));
     // resetWristEncoder.onTrue(new InstantCommand(() -> m_wrist.zeroWrist()));
   }
 
