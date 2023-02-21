@@ -4,8 +4,10 @@
 
 package frc.robot.commands.Drivetrain;
 
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
@@ -33,10 +35,12 @@ public class UpdatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     if (m_Limelight.hasTarget() && keepRunning) {
         if(!((m_Limelight.getID()==4 && DriverStation.getAlliance()==Alliance.Red)||(m_Limelight.getID()==5 && DriverStation.getAlliance()==Alliance.Blue))){
           m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose(), m_Limelight.getLatency());
         }
+
     }
   }
 

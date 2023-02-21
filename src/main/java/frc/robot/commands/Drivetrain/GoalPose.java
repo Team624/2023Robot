@@ -51,8 +51,11 @@ public class GoalPose extends CommandBase {
     this.m_node = node;
     this.m_right = right;
 
+
     xController.setTolerance(0.02);
     yController.setTolerance(0.02);
+
+
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
