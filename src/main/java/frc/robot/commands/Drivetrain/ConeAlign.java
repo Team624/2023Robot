@@ -33,7 +33,7 @@ public class ConeAlign extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(1.8, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(6, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(3, 0, 0, OMEGA_CONSTRAINTS);
 
@@ -43,9 +43,9 @@ public class ConeAlign extends CommandBase {
 
     m_drivetrain = drivetrain;
     m_limelight = limelight;
-    this.m_right = right;
-    xController.setTolerance(0.01);
-    yController.setTolerance(0.01);
+    m_right = right;
+    xController.setTolerance(0.02);
+    yController.setTolerance(0.05);
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -69,33 +69,33 @@ public class ConeAlign extends CommandBase {
   public void execute() {
     double yVel = 0;
     double rotSpeed = 0;
-    if (m_limelight.getYofTag() != 0) {
+    if (m_limelight.getYofTag() != 0 && m_limelight.getTA() > .3) {
       if (m_right) {
         goal = m_limelight.getYofTag() - distance;
       } else {
         goal = m_limelight.getYofTag() + distance;
       }
-
       yController.setGoal(goal);
-      System.out.println("GOAL: " + goal);
       double angle = m_limelight.alignment_values()[1];
-      System.out.println(m_drivetrain.getPose().getRotation().getDegrees());
       omegaController.setGoal(-Math.PI);
       rotSpeed = angle > 0 ? 1 : -1;
       yVel = yController.calculate(m_drivetrain.getPose().getY());
       rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     }
-    System.out.println("Y VEL: " + yVel);
+    UpdatePose.keepRunning = false;
     m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
+    UpdatePose.keepRunning = true;
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_drivetrain.getPose().getY() - goal) < .01 && omegaController.atGoal();
+    System.out.println(m_drivetrain.getPose().getY());
+    System.out.println("GOAL " + goal);
+    return Math.abs(m_drivetrain.getPose().getY() - goal) < .04 && omegaController.atGoal();
   }
 }

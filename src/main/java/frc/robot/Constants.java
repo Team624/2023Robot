@@ -89,14 +89,14 @@ public final class Constants {
      *
      * <p>Should be measured from center to center.
      */
-    public static final double trackWidth = 0.508; // TODO: This must be tuned to specific robot
+    public static final double trackWidth = 0.4953; // TODO: This must be tuned to specific robot
 
     /**
      * The front-to-back distance between the drivetrain wheels.
      *
      * <p>Should be measured from center to center.
      */
-    public static final double wheelBase = 0.61; // TODO: This must be tuned to specific robot
+    public static final double wheelBase = 0.5886; // TODO: This must be tuned to specific robot
 
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
@@ -125,6 +125,7 @@ public final class Constants {
 
       public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
+
       public static final Rotation2d angleOffset = Rotation2d.fromDegrees(317.197);
 
       public static final SwerveModuleConstants constants =
@@ -142,6 +143,7 @@ public final class Constants {
       public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 23;
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+
 
       public static final Rotation2d angleOffset = Rotation2d.fromDegrees(169.365);
 
@@ -161,7 +163,9 @@ public final class Constants {
 
       public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
+
       public static final Rotation2d angleOffset = Rotation2d.fromDegrees(268.41);
+
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -180,6 +184,7 @@ public final class Constants {
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
       public static final Rotation2d angleOffset = Rotation2d.fromDegrees(258.31);
+
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(

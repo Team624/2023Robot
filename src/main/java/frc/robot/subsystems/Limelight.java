@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -14,6 +15,10 @@ public class Limelight extends SubsystemBase {
   private final NetworkTableEntry botpose_network;
   private final NetworkTableEntry camtran_network;
   private final NetworkTableEntry tid_network;
+  private final NetworkTableEntry latency_network;
+  private final NetworkTableEntry ta_network;
+  private double ta;
+  private double tl;
   private double x_coordinate;
   private double y_coordinate;
   private double angle;
@@ -24,6 +29,8 @@ public class Limelight extends SubsystemBase {
 
   public Limelight() {
     networkTable = NetworkTableInstance.getDefault().getTable("limelight");
+    latency_network = networkTable.getEntry("tl");
+    ta_network = networkTable.getEntry("ta");
     botpose_network = networkTable.getEntry("botpose");
     camtran_network = networkTable.getEntry("camtran");
     tid_network = networkTable.getEntry("tid");
@@ -36,6 +43,9 @@ public class Limelight extends SubsystemBase {
     id_json.put(6.0, -3.59379);
     id_json.put(7.0, -5.2701);
     id_json.put(8.0, -6.94659);
+
+    CameraServer.startAutomaticCapture(
+        "camera name", "deploy/Pipeline-Name-5"); // Change camera name
   }
 
   public boolean hasTarget() {
@@ -66,12 +76,15 @@ public class Limelight extends SubsystemBase {
   public void periodic() {
     double[] botpose_data = botpose_network.getDoubleArray(new double[] {});
     botpose = botpose_data;
-    if (botpose_data.length == 6) {
+    if (botpose_data.length == 7) {
       x_coordinate = botpose_data[0] + 8.27;
       y_coordinate = botpose_data[1] - 4.01;
+      tl = botpose[6];
+      
     } else {
       x_coordinate = 0;
       y_coordinate = 0;
+      tl=0;
     }
     double[] camtran = camtran_network.getDoubleArray(new double[] {});
     if (camtran.length == 6) {
@@ -79,11 +92,21 @@ public class Limelight extends SubsystemBase {
     } else {
       angle = 180;
     }
+    tl = (tl + 11) / 1000.0;
     tid = tid_network.getDouble(-1.0);
+    ta = ta_network.getDouble(0);
+  }
+
+  public double getTA() {
+    return ta;
   }
 
   public double getX() {
     return x_coordinate;
+  }
+
+  public double getLatency() {
+    return tl;
   }
 
   public double getY() {
@@ -108,4 +131,31 @@ public class Limelight extends SubsystemBase {
     if (!hasTarget()) return 0;
     return id_json.get(getID());
   }
+
+
+  public double getBotPoseAngle() {
+    return botpose[5];
+  }
+
+  public double getDistance() {
+    double x_april_tag = 0;
+    double id = getID();
+    if (id == 0) {
+      return 624;
+    }
+    if (id > 8 || id < 1) {
+      return -1;
+    } else if (id < 4) {
+      x_april_tag = 7.24310;
+    } else if (id > 5) {
+      x_april_tag = -7.24310;
+    } else if (id == 5) {
+      x_april_tag = -7.90832;
+    } else if (id == 4) {
+      x_april_tag = 7.90832;
+    }
+    x_april_tag += 8.27;
+    return Math.sqrt(Math.pow(x_april_tag - getX(), 2) + Math.pow(getYofTag() - getY(), 2));
+  }
+
 }
