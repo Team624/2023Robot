@@ -73,12 +73,15 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setWristCommand(double setpoint, Rotation2d angle) {
+    // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
 
-    wristPidController.setReference(
-        angle.getRadians(),
-        ControlType.kPosition,
-        0,
-        wristfeedforward.calculate(angle.getRadians(), 0));
+    wristMotor
+        .getPIDController()
+        .setReference(
+            angle.getRadians(),
+            ControlType.kPosition,
+            0,
+            wristfeedforward.calculate(angle.getRadians(), 0));
   }
 
   public double getWristEncoder() {

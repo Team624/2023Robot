@@ -80,11 +80,11 @@ public class Limelight extends SubsystemBase {
       x_coordinate = botpose_data[0] + 8.27;
       y_coordinate = botpose_data[1] - 4.01;
       tl = botpose[6];
-      
+
     } else {
       x_coordinate = 0;
       y_coordinate = 0;
-      tl=0;
+      tl = 0;
     }
     double[] camtran = camtran_network.getDoubleArray(new double[] {});
     if (camtran.length == 6) {
@@ -132,7 +132,6 @@ public class Limelight extends SubsystemBase {
     return id_json.get(getID());
   }
 
-
   public double getBotPoseAngle() {
     return botpose[5];
   }
@@ -157,5 +156,4 @@ public class Limelight extends SubsystemBase {
     x_april_tag += 8.27;
     return Math.sqrt(Math.pow(x_april_tag - getX(), 2) + Math.pow(getYofTag() - getY(), 2));
   }
-
 }

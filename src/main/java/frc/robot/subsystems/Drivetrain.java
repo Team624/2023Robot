@@ -15,8 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -28,8 +26,6 @@ import frc.robot.SwerveModule;
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
   public SwerveDriveOdometry swerveOdometry;
-
-  public double alliance;
 
   private boolean m_isOpenLoop;
   public boolean isCreepin = false;
@@ -110,12 +106,6 @@ public class Drivetrain extends SubsystemBase {
     poseEstimator.update(getYaw(), getModulePositions());
 
     for (SwerveModule mod : mSwerveMods) {
-      if(Math.abs(mod.getCanCoder().getDegrees()- mod.getPosition().angle.getDegrees()) >5){
-        System.out.println("CANCoder off");
-        System.out.println("CanCoder: "+ mod.getCanCoder().getDegrees());
-        System.out.println("Integrated: "+mod.getPosition().angle.getDegrees());
-      }
-
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
       SmartDashboard.putNumber(
@@ -123,8 +113,6 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
-
-    
 
     updateNT();
   }
@@ -195,13 +183,11 @@ public class Drivetrain extends SubsystemBase {
     return current;
   }
 
-
   public void updatePoseLimelight(double[] pose, double latency) {
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
     poseEstimator.resetPosition(getYaw(), getModulePositions(), newPose);
     System.out.println("ODOMETRY WAS RESET");
     System.out.println(newPose.toString());
-
   }
 
   public void setAuton(boolean state) {
@@ -270,13 +256,5 @@ public class Drivetrain extends SubsystemBase {
 
   public void noCreepMode() {
     isCreepin = false;
-  }
-
-  public void updateAlliance() {
-    if (DriverStation.getAlliance() == Alliance.Blue) {
-      alliance = 1;
-    } else {
-      alliance = 2;
-    }
   }
 }
