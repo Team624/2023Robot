@@ -18,7 +18,7 @@ public class SubstationAlign extends CommandBase {
 
   private double distance = 2.68 - .58 / 2;
 
-  public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
+  public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND/2;
   public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
@@ -29,18 +29,17 @@ public class SubstationAlign extends CommandBase {
       new TrapezoidProfile.Constraints(AngVel, 3);
 
   private final ProfiledPIDController xController =
-      new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
+      new ProfiledPIDController(6, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(3, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(6, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(3, 0, 0, OMEGA_CONSTRAINTS);
 
-  public SubstationAlign(Drivetrain drivetrain, Boolean red_alliance) {
+  public SubstationAlign(Drivetrain drivetrain, boolean red_alliance) {
     this.red_alliance = red_alliance;
     m_drivetrain = drivetrain;
-    this.red_alliance = red_alliance;
-    xController.setTolerance(0.02);
-    yController.setTolerance(0.02);
+    xController.setTolerance(0.05);
+    yController.setTolerance(0.03);
     omegaController.setTolerance(Units.degreesToRadians(3));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(drivetrain);

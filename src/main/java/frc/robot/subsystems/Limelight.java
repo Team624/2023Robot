@@ -76,12 +76,15 @@ public class Limelight extends SubsystemBase {
   public void periodic() {
     double[] botpose_data = botpose_network.getDoubleArray(new double[] {});
     botpose = botpose_data;
-    if (botpose_data.length == 6) {
+    if (botpose_data.length == 7) {
       x_coordinate = botpose_data[0] + 8.27;
       y_coordinate = botpose_data[1] - 4.01;
+      tl = botpose[6];
+      
     } else {
       x_coordinate = 0;
       y_coordinate = 0;
+      tl=0;
     }
     double[] camtran = camtran_network.getDoubleArray(new double[] {});
     if (camtran.length == 6) {
@@ -89,7 +92,7 @@ public class Limelight extends SubsystemBase {
     } else {
       angle = 180;
     }
-    tl = (latency_network.getDouble(0) + 11) / 1000;
+    tl = (tl + 11) / 1000.0;
     tid = tid_network.getDouble(-1.0);
     ta = ta_network.getDouble(0);
   }

@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,6 +20,7 @@ import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Telescope.ControlTelescope;
@@ -129,7 +132,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     // Configure the trigger bindings
     m_drivetrain.setDefaultCommand(
         new SwerveDrive(
@@ -168,7 +170,8 @@ public class RobotContainer {
     // balance.onTrue(new Balance(m_drivetrain));
 
     alignTag.onTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
-    // alignTag.whileTrue(new SubstationAlign(m_drivetrain, true));
+    //uncomment this
+    //alignTag.onTrue(new SubstationAlign(m_drivetrain, DriverStation.getAlliance()==Alliance.Red));
     alignTag2.onTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
     alignTag3.onTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));

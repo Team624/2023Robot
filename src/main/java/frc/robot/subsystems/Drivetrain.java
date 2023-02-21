@@ -187,6 +187,7 @@ public class Drivetrain extends SubsystemBase {
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
     poseEstimator.resetPosition(getYaw(), getModulePositions(), newPose);
     System.out.println("ODOMETRY WAS RESET");
+    System.out.println(newPose.toString());
   }
 
   public void setAuton(boolean state) {
