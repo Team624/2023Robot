@@ -20,9 +20,9 @@ public class ArmProfile extends TrapezoidProfileCommand {
             // The motion profile constraints
             new TrapezoidProfile.Constraints(1, 1.1),
             // Goal state
-            new TrapezoidProfile.State(setPoint,0),
+            new TrapezoidProfile.State(setPoint, 0),
             // Initial state
-            new TrapezoidProfile.State(m_Arm.getBoreEncoder(),0)),
+            new TrapezoidProfile.State(m_Arm.getBoreEncoder(), 0)),
         state -> {
           // Use current trajectory state here
           m_Arm.ArmProfile(state);

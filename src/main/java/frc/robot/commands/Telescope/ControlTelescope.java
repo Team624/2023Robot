@@ -36,21 +36,18 @@ public class ControlTelescope extends CommandBase {
   @Override
   public void execute() {
 
-    // if (m_Telescope.getTelescopeEncoder() > 34.9) {
-    //   if (m_Controller.getRightX() > 0) {
-    //     System.out.println("controller value: " + m_Controller.getRightX());
-    //     m_Telescope.stopTelescope();
-    //   } else {
-    //     m_Telescope.controlTelescope(m_Controller.getRightX());
-    //   }
-    // } else if (m_Telescope.getTelescopeEncoder() < 0.001) {
-    //   if (m_Controller.getRightX() < 0) {
-    //     m_Telescope.stopTelescope();
-    //   } else {
-    //     m_Telescope.controlTelescope(m_Controller.getRightX());
-    //   }
-    // }
-    m_Telescope.controlTelescope(m_Controller.getRightX());
+    if (m_Telescope.getTelescopeEncoder() > 0.01 && m_Telescope.getTelescopeEncoder() < 35) {
+      m_Telescope.controlTelescope(m_Controller.getRightX());
+    } else if (m_Telescope.getTelescopeEncoder() < 0.01) {
+      if (m_Controller.getRightX() > 0) {
+        m_Telescope.controlTelescope(m_Controller.getRightX());
+      }
+
+    } else if (m_Telescope.getTelescopeEncoder() > 35) {
+      if (m_Controller.getRightX() < 0) {
+        m_Telescope.controlTelescope(m_Controller.getRightX());
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.

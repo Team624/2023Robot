@@ -12,11 +12,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
-
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -99,6 +97,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("/Arm/BoreEncoder/get", boreEncoder.get());
     SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", boreEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", boreEncoder.getDistance());
+    boreEncoder.setPositionOffset(0.23);
   }
 
   public void controlArmRight(double speed) {
@@ -143,18 +142,10 @@ public class Arm extends SubsystemBase {
     Rotation2d angle = new Rotation2d(setpoint);
 
     armSparkmaxPIDRight.setReference(
-        setpoint,
-        ControlType.kPosition,
-        0,
-        feedforward.calculate(angle.getRadians(), 0));
+        setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
 
     armSparkmaxPIDLeft.setReference(
-        setpoint,
-        ControlType.kPosition,
-        0,
-        feedforward.calculate(angle.getRadians(), 0)
-        );
-
+        setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
   }
 
   public void ArmProfile(TrapezoidProfile.State setpoint) {
@@ -165,19 +156,13 @@ public class Arm extends SubsystemBase {
         setpoint.position,
         ControlType.kPosition,
         0,
-        feedforward.calculate(setpoint2d.getRadians(), 0));
+        feedforward.calculate(setpoint2d.getRadians(), 0.0));
 
     armSparkmaxPIDRight.setReference(
         setpoint.position,
         ControlType.kPosition,
         0,
-        feedforward.calculate(setpoint2d.getRadians(), 0));
-
-    // armMotorLeft.setVoltage(setpoint.position + feedforward.calculate(setpoint2d.getRadians(),
-    // 0));
-    // armMotorRight.setVoltage(setpoint.position + feedforward.calculate(setpoint2d.getRadians(),
-    // 0));
-
+        feedforward.calculate(setpoint2d.getRadians(), 0.0));
   }
 
   public void resetEncoder() {

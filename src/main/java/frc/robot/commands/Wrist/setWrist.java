@@ -8,13 +8,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Wrist;
 
-public class setWrist extends CommandBase {
+public class SetWrist extends CommandBase {
   /** Creates a new setWrist. */
   private final Wrist m_Wrist;
 
   private final double m_setPoint;
 
-  public setWrist(Wrist wrist, double setpoint) {
+  public SetWrist(Wrist wrist, double setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Wrist = wrist;
     this.m_setPoint = setpoint;
@@ -34,7 +34,9 @@ public class setWrist extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Wrist.stopWrist();
+  }
 
   // Returns true when the command should end.
   @Override

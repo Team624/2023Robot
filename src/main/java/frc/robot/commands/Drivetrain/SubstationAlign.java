@@ -18,7 +18,7 @@ public class SubstationAlign extends CommandBase {
 
   private double distance = 2.68 - .58 / 2;
 
-  public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND/2;
+  public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND / 2;
   public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =

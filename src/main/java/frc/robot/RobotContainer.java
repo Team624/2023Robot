@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -15,30 +13,27 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
-import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
-
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
-
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
+import frc.robot.subsystems.Wrist;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -83,11 +78,6 @@ public class RobotContainer {
 
   // private final POVButton setArmZero = new POVButton(m_controller, 270);
 
-  private final POVButton setTelescopeMID = new POVButton(m_controller, 270);
-
-  // private final JoystickButton resetArmEncoder =
-  //     new JoystickButton(m_controller, XboxController.Button.kX.value);
-
   /* Telescope */
 
   private final Trigger telescopeMove = m_controllerCommand.axisLessThan(telescopeAxis, -0.05);
@@ -101,8 +91,8 @@ public class RobotContainer {
   private final Trigger wristMove = m_controllerCommand.axisLessThan(wristAxis, -0.05);
   private final Trigger wristMove2 = m_controllerCommand.axisGreaterThan(wristAxis, 0.05);
 
-  // private final JoystickButton resetWristEncoder =
-  //     new JoystickButton(m_controller, XboxController.Button.kY.value);
+  private final JoystickButton resetWristEncoder =
+      new JoystickButton(m_controller, XboxController.Button.kY.value);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -139,11 +129,9 @@ public class RobotContainer {
   private final Limelight m_limelight = new Limelight();
   private final Arm m_arm = new Arm();
 
-  // private final ArmProfile m_ArmProfile = new ArmProfile();
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
-
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -189,18 +177,17 @@ public class RobotContainer {
 
     // balance.onTrue(new Balance(m_drivetrain));
 
-    alignTag.onTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
-    //uncomment this
-    //alignTag.onTrue(new SubstationAlign(m_drivetrain, DriverStation.getAlliance()==Alliance.Red));
-    alignTag2.onTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
+    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
+    // uncomment this
+    // alignTag.onTrue(new SubstationAlign(m_drivetrain,
+    // DriverStation.getAlliance()==Alliance.Red));
+    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
-    alignTag3.onTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
+    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    left.onTrue(new ConeAlign(m_drivetrain, m_limelight, false));
+    left.whileTrue(new ConeAlign(m_drivetrain, m_limelight, false));
 
-    right.onTrue(new ConeAlign(m_drivetrain, m_limelight, true));
-
-    resetpose.whileTrue(new UpdatePose(m_limelight, m_drivetrain));
+    right.whileTrue(new ConeAlign(m_drivetrain, m_limelight, true));
 
     creepMode.whileTrue(new InstantCommand(() -> m_drivetrain.yesCreepMode()));
     creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));
@@ -216,14 +203,20 @@ public class RobotContainer {
 
     armMove2.whileTrue(new ControlArm(m_arm, m_controller));
 
-    // setArmTop.onTrue(new SetArm(m_arm, 69));
-    // setArmTop.onTrue(new ArmSetpoint(m_arm, 0.1));
+    // setArmTop.onTrue(
+    //     new TrapezoidProfileCommand(
+    //         new TrapezoidProfile(
+    //             new TrapezoidProfile.Constraints(1, 1.1),
+    //             new TrapezoidProfile.State(0.1, 0),
+    //             new TrapezoidProfile.State(m_arm.getBoreEncoder(), 0)),
+    //         setpointState -> m_arm.ArmProfile(setpointState),
+    //         m_arm));
 
-    setArmMid.whileTrue(new SetArm(m_arm, 0.15));
+    // setArmTop.onTrue(new ArmProfile(m_arm, 0.1));
 
-    // setArmBot.onTrue(new SetArm(m_arm, 40));
+    // setArmMid.onTrue(new TrapProfile(m_arm, 0.1));
 
-    // resetArmEncoder.onTrue(new InstantCommand(() -> m_arm.zeroBoreEncoder()));
+    // setArmBot.onTrue(new SetArm(m_arm, 0.1));
 
     // setArmZero.onTrue(new SetArm(m_arm, 0.0));
 
@@ -231,13 +224,13 @@ public class RobotContainer {
     telescopeMove.whileTrue(new ControlTelescope(m_telescope, m_controller));
     telescopeMove2.whileTrue(new ControlTelescope(m_telescope, m_controller));
     resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
-    setTelescopeMID.onTrue(new SetTelescope(m_telescope, 20));
+    // setArmBot.onTrue(new SetTelescope(m_telescope, 20));
 
     /** Wrist */
-
     wristMove.whileTrue(new ControlWrist(m_wrist, m_controller));
     wristMove2.whileTrue(new ControlWrist(m_wrist, m_controller));
-    // resetWristEncoder.onTrue(new InstantCommand(() -> m_wrist.zeroWrist()));
+    resetWristEncoder.onTrue(new InstantCommand(() -> m_wrist.zeroWrist()));
+    // setArmBot.onTrue(new setWrist(m_wrist, 20));
 
   }
 
