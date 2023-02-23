@@ -36,7 +36,7 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(6.5, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(6, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(5, 0, 0, OMEGA_CONSTRAINTS);
 
@@ -117,12 +117,14 @@ public class GoalPose extends CommandBase {
       yController.setGoal(goal);
     }
 
+    System.out.println("GOAL: " + goal);
+
     omegaController.setGoal(-Math.PI);
 
     double yVel = yController.calculate(pose2d.getY());
 
     if (m_limelight.hasTarget()) {
-      double angle = m_limelight.alignment_values()[1];
+      double angle = m_limelight.getAlignmentValues()[1];
       thVel = angle > 0 ? 1 : -1;
     }
     thVel = omegaController.calculate((m_drivetrain.getPose().getRotation().getRadians()));

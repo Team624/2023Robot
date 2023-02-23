@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -185,9 +186,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void updatePoseLimelight(double[] pose, double latency) {
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
-    poseEstimator.resetPosition(getYaw(), getModulePositions(), newPose);
-    System.out.println("ODOMETRY WAS RESET");
-    System.out.println(newPose.toString());
+    poseEstimator.addVisionMeasurement(newPose, Timer.getFPGATimestamp()-latency);
   }
 
   public void setAuton(boolean state) {

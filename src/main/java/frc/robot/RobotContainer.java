@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,6 +20,7 @@ import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Telescope.ControlTelescope;
@@ -107,7 +110,7 @@ public class RobotContainer {
 
   private final POVButton right = new POVButton(d_controller, 90);
 
-  private final JoystickButton resetpose =
+  private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
   private final JoystickButton creepMode =
@@ -166,19 +169,18 @@ public class RobotContainer {
 
     // balance.onTrue(new Balance(m_drivetrain));
 
-    alignTag.onTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
-    // uncomment this
-    // alignTag.onTrue(new SubstationAlign(m_drivetrain,
-    // DriverStation.getAlliance()==Alliance.Red));
-    alignTag2.onTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
+    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
 
-    alignTag3.onTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
+    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
-    left.onTrue(new ConeAlign(m_drivetrain, m_limelight, false));
+    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    right.onTrue(new ConeAlign(m_drivetrain, m_limelight, true));
+    left.whileTrue(new ConeAlign(m_drivetrain, false));
 
-    resetpose.whileTrue(new UpdatePose(m_limelight, m_drivetrain));
+    right.whileTrue(new ConeAlign(m_drivetrain, true));
+
+    substationButton.whileTrue(
+        new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
 
     creepMode.whileTrue(new InstantCommand(() -> m_drivetrain.yesCreepMode()));
     creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));
@@ -201,13 +203,6 @@ public class RobotContainer {
     telescopeMove.whileTrue(new ControlTelescope(m_telescope, m_controller));
     telescopeMove2.whileTrue(new ControlTelescope(m_telescope, m_controller));
     resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
-
-    /** Wrist */
-    // wristMove.whileTrue(new ControlWrist(m_wrist, m_controller));
-    // wristMove2.whileTrue(new ControlWrist(m_wrist, m_controller));
-    // resetWristEncoder.onTrue(new InstantCommand(() -> m_wrist.zeroWrist()));
-
-    // openClaw.whileTrue(new OpenClaw(m_claw));
   }
 
   /**
