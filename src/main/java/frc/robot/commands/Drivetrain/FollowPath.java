@@ -10,10 +10,14 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.Path;
 
@@ -75,6 +79,8 @@ public class FollowPath extends CommandBase {
 
     var state = path.getState(timeSeconds);
 
+    System.out.println(state.velocity);
+
     System.out.println(
         timeSeconds
             + "s = ("
@@ -84,6 +90,8 @@ public class FollowPath extends CommandBase {
             + ") at "
             + state.velocity
             + "m/s");
+            
+    SmartDashboard.getEntry("Auton Velocity").setNumber(state.velocity);
 
     ChassisSpeeds chassisSpeeds =
         controller.calculate(
@@ -101,7 +109,7 @@ public class FollowPath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= path.getSeconds() && controller.atReference()); // && controller.atReference()
+    return (timer.get() >= path.getSeconds() && controller.atReference());
   }
 
   @Override

@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -37,8 +40,6 @@ public class Drivetrain extends SubsystemBase {
 
   private ShuffleboardTab drivetrain_tab = Shuffleboard.getTab("Drivetrain");
   private Field2d field = new Field2d();
-
-  public boolean isAuton = false;
 
   private SwerveModuleState[] m_states =
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
@@ -162,10 +163,6 @@ public class Drivetrain extends SubsystemBase {
     swerveOdometry.resetPosition(getYaw(), getModulePositions(), newPose);
   }
 
-  public void setAuton(boolean state) {
-    isAuton = state;
-  }
-
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (SwerveModule mod : mSwerveMods) {
@@ -189,7 +186,7 @@ public class Drivetrain extends SubsystemBase {
   public void setPose() {
     double[] startPosition =
         SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
-    Rotation2d newRot = new Rotation2d(-startPosition[2]);
+    Rotation2d newRot = new Rotation2d(MathUtil.angleModulus(-startPosition[2]));
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
 
     ahrs.setAngleAdjustment(newRot.getDegrees());

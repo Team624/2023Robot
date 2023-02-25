@@ -190,12 +190,12 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 1.0;
+    public static final double DRIVE_CONTROLLER_X_KP = 1.4;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 1.0;
+    public static final double DRIVE_CONTROLLER_Y_KP = 1.4;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
@@ -204,13 +204,13 @@ public final class Constants {
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
-        3.0 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        1.4 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION =
-        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
+        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 1.5); // 2.0
 
     // Rotational tolerance for autonomous paths
     public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
     public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
-    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.5);
+    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
   }
 }
