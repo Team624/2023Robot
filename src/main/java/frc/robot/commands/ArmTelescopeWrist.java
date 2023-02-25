@@ -22,13 +22,18 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
-  public ArmTelescopeWrist(Arm arm, Telescope telescope, Wrist wrist) {
+  public ArmTelescopeWrist(Arm arm, Telescope telescope, Wrist wrist, int i) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
-    addCommands(new SetArm(arm, 0), new SetTelescope(telescope, 0), new SetWrist(wrist, 0));
+
+    // bot, low, mid, top
+    double[] wristPos = {0,1,2,3};
+    double[] armPos = {0,1,2,3};
+    double[] telePos = {0,1,2,3};
+    addCommands(new SetArm(arm, armPos[i]), new SetTelescope(telescope, telePos[i]), new SetWrist(wrist, wristPos[i]));
   }
 }

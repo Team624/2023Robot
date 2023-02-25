@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Drivetrain.BlankDrive;
@@ -57,6 +58,7 @@ public class RobotContainer {
   // private final JoystickButton ArmTelescopeWrist =
   //     new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
 
+
   /* Intake */
 
   private final JoystickButton runIntake =
@@ -75,6 +77,8 @@ public class RobotContainer {
   private final POVButton setArmMid = new POVButton(m_controller, 90);
 
   private final POVButton setArmBot = new POVButton(m_controller, 180);
+
+  private final POVButton setArmLow = new POVButton(m_controller, 270);
 
   // private final POVButton setArmZero = new POVButton(m_controller, 270);
 
@@ -220,6 +224,10 @@ public class RobotContainer {
 
     // setArmZero.onTrue(new SetArm(m_arm, 0.0));
 
+    setArmBot.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
+    setArmLow.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
+    setArmMid.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
+    setArmTop.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
     /** Telescope */
     telescopeMove.whileTrue(new ControlTelescope(m_telescope, m_controller));
     telescopeMove2.whileTrue(new ControlTelescope(m_telescope, m_controller));
