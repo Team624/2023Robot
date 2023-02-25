@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
@@ -12,14 +14,16 @@ public class UpdatePose extends CommandBase {
   /** Creates a new UpdatePose. */
   private final Limelight m_Limelight;
 
-  private final Drivetrain m_drivetrain;
+  private final Drivetrain m_Drivetrain;
 
-  public UpdatePose(Drivetrain Drivetrain, Limelight Limelight) {
+  public static boolean keepRunning = true;
+
+  public UpdatePose(Limelight Limelight, Drivetrain drivetrian) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_drivetrain = Drivetrain;
     this.m_Limelight = Limelight;
+    this.m_Drivetrain = drivetrian;
 
-    addRequirements(Drivetrain);
+    addRequirements(Limelight);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +33,13 @@ public class UpdatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.updatePoseLimelight(m_Limelight.getBotPose());
+    if (m_Limelight.hasTarget() && keepRunning) {
+      //remove this if statement later
+      if (!((m_Limelight.getID() == 4 && DriverStation.getAlliance() == Alliance.Red)
+          || (m_Limelight.getID() == 5 && DriverStation.getAlliance() == Alliance.Blue))) {
+        m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose(), m_Limelight.getLatency());
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.

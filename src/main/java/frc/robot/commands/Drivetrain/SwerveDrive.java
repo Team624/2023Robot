@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class SwerveDrive extends CommandBase {
@@ -19,7 +18,6 @@ public class SwerveDrive extends CommandBase {
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
-  private BooleanSupplier robotCentricSup;
 
   private SlewRateLimiter filterX = new SlewRateLimiter(10);
   private SlewRateLimiter filterY = new SlewRateLimiter(10);
@@ -28,8 +26,7 @@ public class SwerveDrive extends CommandBase {
       Drivetrain s_Swerve,
       DoubleSupplier translationSup,
       DoubleSupplier strafeSup,
-      DoubleSupplier rotationSup,
-      BooleanSupplier robotCentricSup) {
+      DoubleSupplier rotationSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = s_Swerve;
     addRequirements(s_Swerve);
@@ -37,7 +34,6 @@ public class SwerveDrive extends CommandBase {
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
-    this.robotCentricSup = robotCentricSup;
   }
 
   // Called when the command is initially scheduled.
@@ -50,6 +46,12 @@ public class SwerveDrive extends CommandBase {
     double translationVal = translationSup.getAsDouble();
     double strafeVal = strafeSup.getAsDouble();
     double rotationVal = rotationSup.getAsDouble();
+
+    if (m_drivetrain.isCreepin) {
+      translationVal *= 0.4;
+      strafeVal *= 0.4;
+      rotationVal *= 0.4;
+    }
 
     translationVal = filterX.calculate(translationVal);
     strafeVal = filterY.calculate(strafeVal);

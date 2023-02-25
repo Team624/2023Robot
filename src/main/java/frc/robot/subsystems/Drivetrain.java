@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,12 +18,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.SwerveModule;
 import frc.robot.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
@@ -30,6 +34,7 @@ public class Drivetrain extends SubsystemBase {
   public SwerveDriveOdometry swerveOdometry;
 
   private boolean m_isOpenLoop;
+  public boolean isCreepin = false;
 
   public PIDController skewApril_pid;
   public PIDController autoBalance_pid;
@@ -43,6 +48,8 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveModuleState[] m_states =
       Constants.Swerve.swerveKinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+  public SwerveDrivePoseEstimator poseEstimator;
 
   public SwerveModule[] mSwerveMods;
 
@@ -61,6 +68,14 @@ public class Drivetrain extends SubsystemBase {
     skewApril_pid = getSkewAprilPID();
 
     drivetrain_tab.add(field).withSize(4, 3);
+
+    poseEstimator =
+        new SwerveDrivePoseEstimator(
+            Constants.Swerve.swerveKinematics,
+            getYaw(),
+            getModulePositions(),
+            new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
+    ;
   }
 
   public void drive(
@@ -157,18 +172,15 @@ public class Drivetrain extends SubsystemBase {
         chassisSpeeds.omegaRadiansPerSecond);
   }
 
-  public void updatePoseLimelight(double[] pose) {
+  public void updatePoseLimelight(double[] pose, double latency) {
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
-    System.out.println(newPose);
-    swerveOdometry.resetPosition(getYaw(), getModulePositions(), newPose);
+    poseEstimator.addVisionMeasurement(newPose, Timer.getFPGATimestamp()-latency);
   }
 
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (SwerveModule mod : mSwerveMods) {
-      SwerveModuleState state = mod.getState();
-
-      states[mod.moduleNumber] = state;
+      states[mod.moduleNumber] = mod.getState();
     }
     return states;
   }
@@ -176,39 +188,42 @@ public class Drivetrain extends SubsystemBase {
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
     for (SwerveModule mod : mSwerveMods) {
-      SwerveModulePosition position = positions[mod.moduleNumber] = mod.getPosition();
-
-      positions[mod.moduleNumber] = position;
+      positions[mod.moduleNumber] = mod.getPosition();
     }
     return positions;
   }
 
   public void setPose() {
-    double[] startPosition =
-        SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(new double[3]);
-    Rotation2d newRot = new Rotation2d(MathUtil.angleModulus(-startPosition[2]));
+    zeroGyroscope();
+    double[] zeros = {0.0, 0.0, 0.0};
+    double[] startPosition = SmartDashboard.getEntry("/pathTable/startPose").getDoubleArray(zeros);
+    Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
-
-    ahrs.setAngleAdjustment(newRot.getDegrees());
-    ahrs.reset();
-
+    // swerveOdometry.resetPosition(newPose, newRot);
     swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);
+    ahrs.setAngleAdjustment(newRot.getDegrees());
   }
 
   public void zeroGyroscope() {
     ahrs.setAngleAdjustment(0);
     ahrs.reset();
-
-    swerveOdometry.resetPosition(
-        new Rotation2d(0), getModulePositions(), swerveOdometry.getPoseMeters());
   }
 
   public Pose2d getPose() {
     return swerveOdometry.getPoseMeters();
   }
 
+  public double[] getSwervePose() {
+
+    double[] pose = {swerveOdometry.getPoseMeters().getX(), swerveOdometry.getPoseMeters().getY()};
+    return pose;
+  }
+
   public void resetOdometry(Pose2d pose) {
-    swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
+    swerveOdometry.resetPosition(
+        getYaw(),
+        getModulePositions(),
+        pose);
   }
 
   public Rotation2d getYaw() {
@@ -223,7 +238,7 @@ public class Drivetrain extends SubsystemBase {
     return ahrs;
   }
 
-  public double getRoll() {
+  public double getAngle() {
     return ahrs.getRoll();
   }
 

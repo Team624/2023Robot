@@ -1,7 +1,6 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,9 +40,7 @@ public class Balance extends CommandBase {
   public void execute() {
     // x component of charge station = 3.88745 meters away from alliance wall
 
-    angle = -m_drivetrain.getRoll();
-
-    System.out.println("Angle: " + angle);
+    angle = m_drivetrain.getPitch();
     double pid_val = pidController.calculate(angle);
     System.out.println(angle + "° : " + pid_val);
 

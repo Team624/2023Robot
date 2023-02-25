@@ -47,7 +47,7 @@ public class AprilTagTheta extends CommandBase {
     double thVelocity = 0;
 
     if (m_limelight.hasTarget()) {
-      double skew_angle = m_limelight.alignment_values()[1];
+      double skew_angle = m_limelight.getAlignmentValues()[1];
       thVelocity = getSkewPID(skew_angle);
 
       if (skew_angle < 0) {
@@ -80,8 +80,8 @@ public class AprilTagTheta extends CommandBase {
   public boolean isFinished() {
 
     if (m_limelight.hasTarget()) {
-      System.out.println("angle: " + m_limelight.alignment_values()[1]);
-      if (Math.abs(m_limelight.alignment_values()[1]) < 3) {
+      System.out.println("angle: " + m_limelight.getAlignmentValues()[1]);
+      if (Math.abs(m_limelight.getAlignmentValues()[1]) < 3) {
         return true;
       }
     }

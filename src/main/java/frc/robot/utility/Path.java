@@ -4,8 +4,6 @@
 
 package frc.robot.utility;
 
-import java.nio.file.DirectoryIteratorException;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
