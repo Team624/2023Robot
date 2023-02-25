@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,16 +14,17 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Drivetrain.AprilTagTheta;
+import frc.robot.commands.Drivetrain.Balance;
+import frc.robot.commands.Drivetrain.DisabledSwerve;
+import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.SwerveDrive;
+import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
-import frc.robot.commands.Drivetrain.DisabledSwerve;
-import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
-import frc.robot.commands.Drivetrain.SwerveDrive;
-import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
 import frc.robot.commands.auton.AutonManager;
@@ -41,6 +43,7 @@ import frc.robot.subsystems.Telescope;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final XboxController d_controller = new XboxController(0);
+  private final GenericHID driverPOV = new GenericHID(0);
   public final XboxController m_controller = new XboxController(1);
 
   CommandXboxController m_controllerCommand = new CommandXboxController(1);
@@ -116,8 +119,11 @@ public class RobotContainer {
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
-  // private final JoystickButton balance =
-  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
+  private final JoystickButton resetpose =
+      new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
+
+  private final JoystickButton balance =
+      new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -182,9 +188,6 @@ public class RobotContainer {
     substationButton.whileTrue(
         new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
 
-    creepMode.whileTrue(new InstantCommand(() -> m_drivetrain.yesCreepMode()));
-    creepMode.whileFalse(new InstantCommand(() -> m_drivetrain.noCreepMode()));
-
     armMove.whileTrue(new ControlArm(m_arm, m_controller));
 
     armMove2.whileTrue(new ControlArm(m_arm, m_controller));
@@ -226,8 +229,8 @@ public class RobotContainer {
     new DisabledSwerve(m_drivetrain);
   }
 
-  public void setBlankDrivetrainCommand() {
-    m_drivetrain.setDefaultCommand(new BlankDrive(m_drivetrain));
+  public void setDisabledDrivetrainDefault() {
+    m_drivetrain.setDefaultCommand(new DisabledSwerve(m_drivetrain));
   }
 
   public void setDrivetrainDefaultCommand() {

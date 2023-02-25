@@ -19,8 +19,8 @@ public class SwerveDrive extends CommandBase {
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
 
-  private SlewRateLimiter filterX = new SlewRateLimiter(7);
-  private SlewRateLimiter filterY = new SlewRateLimiter(7);
+  private SlewRateLimiter filterX = new SlewRateLimiter(10);
+  private SlewRateLimiter filterY = new SlewRateLimiter(10);
 
   public SwerveDrive(
       Drivetrain s_Swerve,

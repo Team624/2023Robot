@@ -74,10 +74,10 @@ public final class Constants {
     public static final double angleKF = chosenModule.angleKF;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 0.05; // TODO: This must be tuned to specific robot
+    public static final double driveKP = 0.15; // TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
-    public static final double driveKF = 0.0;
+    public static final double driveKF = 0.01;
 
     public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
@@ -196,28 +196,28 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 3.0;
+    public static final double DRIVE_CONTROLLER_X_KP = 1.4;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 3.0;
+    public static final double DRIVE_CONTROLLER_Y_KP = 1.4;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = .2685; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.0; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
-        3.0 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        1.4 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION =
-        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
+        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 1.5); // 2.0
 
     // Rotational tolerance for autonomous paths
-    public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
-    public static final double AUTONOMOUS_Y_TOLERANCE = 0.2;
-    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.5);
+    public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
+    public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
+    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
   }
 
   public static final class Intake {

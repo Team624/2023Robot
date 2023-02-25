@@ -4,10 +4,14 @@
 
 package frc.robot.commands.auton;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utility.BezierCurve;
@@ -17,8 +21,10 @@ import frc.robot.utility.Path;
 public class AutonManager extends CommandBase {
   private Drivetrain drivetrain;
   private Path[] paths;
-  private FollowPath currentFollowPathCommand;
+  private Command currentFollowPathCommand;
   private int previousPath = -1;
+  private Command currentBalanceCommand;
+  private Command currentArmCommand;
 
   public AutonManager(Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
@@ -29,7 +35,6 @@ public class AutonManager extends CommandBase {
   public void initialize() {
     updatePaths();
     drivetrain.setPose();
-    drivetrain.setAuton(true);
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
 
     SmartDashboard.putBoolean("/auto/state", true);
@@ -39,15 +44,14 @@ public class AutonManager extends CommandBase {
   @Override
   public void execute() {
     // Stop the drivetrain if a new path was not started
-    if (!startNTPath()) {
-      drivetrain.stop();
-    }
+    startNTPath();
+    startNTBalance();
+    updateNTArm();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.setAuton(false);
     currentFollowPathCommand.cancel();
 
     SmartDashboard.putBoolean("/auto/state", false);
@@ -55,25 +59,108 @@ public class AutonManager extends CommandBase {
     System.out.println("Auton ended!");
   }
 
+  private boolean startNTBalance() {
+    if (currentBalanceCommand != null) return false;
+
+    boolean startBalance = SmartDashboard.getEntry("/auto/balance/set").getBoolean(false);
+
+    if (startBalance) {
+      currentFollowPathCommand.end(true);
+      
+      currentBalanceCommand = new Balance(drivetrain);
+      currentBalanceCommand.schedule();
+      
+      System.out.println("Starting balance!!!");
+    }
+
+    return startBalance;
+  }
+
+  private void updateNTVision() {
+    String state = SmartDashboard.getEntry("/auto/vision/set").getString("-1 -1");
+
+    int grid = Integer.parseInt(state.split(" ")[0]);
+    int column = Integer.parseInt(state.split(" ")[0]);
+
+    System.out.println("Aligning with grid " + grid + " column " + column + " (in my imagination)");
+  }
+
+  private void updateNTArm() {
+    String state = SmartDashboard.getEntry("/auto/arm/set").getString("retract");
+
+    // TODO: Replace these with commands at some point. Do the setstate in the command when it finished
+    switch (state) {
+      case "move_intake":
+      SmartDashboard.getEntry("/auto/arm/state").setString("intake");
+      break;
+
+      case "intake":
+      SmartDashboard.getEntry("/auto/arm/state").setString("intake");
+      break;
+
+      case "move_cone_high":
+      SmartDashboard.getEntry("/auto/arm/state").setString("cone_high");
+      break;
+
+      case "move_cone_mid":
+      SmartDashboard.getEntry("/auto/arm/state").setString("cone_mid");
+      break;
+
+      case "move_cone_low":
+      SmartDashboard.getEntry("/auto/arm/state").setString("cone_low");
+      break;
+
+      case "move_cube_high":
+      SmartDashboard.getEntry("/auto/arm/state").setString("cube_high");
+      break;
+
+      case "move_cube_mid":
+      SmartDashboard.getEntry("/auto/arm/state").setString("cube_mid");
+      break;
+
+      case "move_cube_low":
+      SmartDashboard.getEntry("/auto/arm/state").setString("cube_low");
+      break;
+
+      case "place":
+      
+      break;
+
+      case "retract":
+      default:
+      System.out.println("Retracting my arm (in my imagination)");
+      SmartDashboard.getEntry("/auto/arm/state").setString("retract");
+    }
+  }
+
   // Starts the path specified by ROS in NetworkTables
   // Returns whether a path was started
   private boolean startNTPath() {
     if (currentFollowPathCommand != null && currentFollowPathCommand.isScheduled()) return false;
 
-    int index = SmartDashboard.getEntry("/pathTable/startPathIndex").getNumber(-1).intValue();
+    Number[] indexes =
+        SmartDashboard.getEntry("/pathTable/startPathIndex").getNumberArray(new Number[0]);
 
-    if (index < 0 || index >= paths.length || index <= previousPath) return false;
+    SequentialCommandGroup commandGroup = new SequentialCommandGroup();
 
-    FollowPath followPathCommand = new FollowPath(this.drivetrain, this.paths[index]);
+    for (Number index : indexes) {
+      int i = (int) index.doubleValue();
 
-    currentFollowPathCommand = followPathCommand;
+      System.out.println("Starting path" +
+       i);
 
-    previousPath = index;
+      if (i < 0 || i >= paths.length || i <= previousPath) return false;
 
-    // Use deadlineWith to stop when AutonManager stops.
-    followPathCommand.schedule();
+      commandGroup.addCommands(new FollowPath(this.drivetrain, this.paths[i]));
 
-    SmartDashboard.getEntry("/pathTable/startPathIndex").setNumber(-1);
+      previousPath = i;
+    }
+
+    currentFollowPathCommand = commandGroup;
+
+    commandGroup.schedule();
+
+    SmartDashboard.getEntry("/pathTable/startPathIndex").setNumberArray(new Number[0]);
 
     return true;
   }
@@ -93,15 +180,22 @@ public class AutonManager extends CommandBase {
   private Path getPath(int pathIndex) {
     String pathRoot = "/pathTable/path" + pathIndex;
 
+    // Pull properties of the path from NetworkTables
     double timeSeconds = SmartDashboard.getEntry(pathRoot + "/time").getNumber(0).doubleValue();
 
     Rotation2d startHeading =
-        Rotation2d.fromRadians(
-            SmartDashboard.getEntry(pathRoot + "/start_heading").getNumber(0).doubleValue());
+        Rotation2d.fromRadians(MathUtil.angleModulus(SmartDashboard.getEntry(pathRoot + "/start_heading").getNumber(0).doubleValue()));
 
     Rotation2d endHeading =
         Rotation2d.fromRadians(
-            SmartDashboard.getEntry(pathRoot + "/end_heading").getNumber(0).doubleValue());
+          MathUtil.angleModulus(
+            SmartDashboard.getEntry(pathRoot + "/end_heading").getNumber(0).doubleValue()));
+
+    boolean stopAtEnd = SmartDashboard.getEntry(pathRoot + "/stop_at_end").getBoolean(true);
+
+    double maxAcceleration = SmartDashboard.getEntry(pathRoot + "/max_acceleration").getNumber(5.0).doubleValue();
+
+    // Pull control points of bezier curve from NetworkTables
 
     Translation2d[] control_points = new Translation2d[4];
 
@@ -116,6 +210,8 @@ public class AutonManager extends CommandBase {
 
     BezierCurve curve = new BezierCurve(control_points);
 
-    return new Path(curve, startHeading, endHeading, pathIndex, timeSeconds);
+    double startVelocity = pathIndex == 0 ? 0.0 : paths[pathIndex - 1].getEndVelocity();
+
+    return new Path(curve, startHeading, endHeading, startVelocity, stopAtEnd, maxAcceleration, pathIndex, timeSeconds);
   }
 }

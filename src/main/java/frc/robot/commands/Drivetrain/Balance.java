@@ -3,6 +3,7 @@ package frc.robot.commands.Drivetrain;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -64,9 +65,14 @@ public class Balance extends CommandBase {
 
     if (Math.abs(angle) < 9 && !ground) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
+      setNTState(true);
 
       return true;
     }
     return false;
+  }
+
+  private void setNTState(boolean state) {
+    SmartDashboard.getEntry("/auto/balance/state").setBoolean(state);
   }
 }
