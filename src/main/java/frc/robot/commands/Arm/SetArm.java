@@ -12,9 +12,9 @@ public class SetArm extends CommandBase {
   /** Creates a new SetArm. */
   private final Arm m_Arm;
 
-  private final double m_setPoint;
+  private final Rotation2d m_setPoint;
 
-  public SetArm(Arm arm, double setpoint) {
+  public SetArm(Arm arm, Rotation2d setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
     this.m_setPoint = setpoint;
@@ -28,8 +28,8 @@ public class SetArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d setPoint2d = new Rotation2d(m_setPoint);
-    m_Arm.setArmCommand(m_setPoint, setPoint2d);
+    m_Arm.setReference(m_setPoint);
+    System.out.println("Setpoint: " + m_setPoint.getDegrees() + " Current: " + m_Arm.getAbsoluteRotation().getDegrees());
   }
 
   // Called once the command ends or is interrupted.

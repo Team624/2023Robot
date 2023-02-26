@@ -203,15 +203,15 @@ public class RobotContainer {
 
     manual.and(armMove2).whileTrue(new ControlArm(m_arm, m_controller));
 
-    setArmTop.onTrue(new SetArm(m_arm, 69));
+    setArmTop.whileTrue(new SetArm(m_arm, Constants.Arm.SETPOINT_HIGH));
 
-    setArmMid.onTrue(new SetArm(m_arm, 62));
+    setArmMid.whileTrue(new SetArm(m_arm, Constants.Arm.SETPOINT_MID));
 
-    setArmBot.onTrue(new SetArm(m_arm, 40));
+    setArmBot.whileTrue(new SetArm(m_arm, Constants.Arm.SETPOINT_INTAKE));
 
     // resetArmEncoder.onTrue(new InstantCommand(() -> m_arm.resetEncoder()));
 
-    setArmZero.onTrue(new SetArm(m_arm, 0.0));
+    setArmZero.whileTrue(new SetArm(m_arm, Constants.Arm.SETPOINT_RETRACT));
 
     /** Telescope */
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));

@@ -5,9 +5,12 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SdsModuleConfigurations;
 import frc.lib.util.SwerveModuleConstants;
@@ -229,13 +232,24 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final double P = 0.04;
+    public static final double P = 10.0;
     public static final double I = 0;
-    public static final double D = 0;
-    public static final int armMotor = 3;
+    public static final double D = 0.0;
 
-    public static final double kS = 0.01;
-    public static final double kG = 0.3;
+    public static final Constraints CONSTRAINTS = new Constraints(0.5, 0.8);
+
+    public static final int armMotor = 3;
+    public static final int BORE_ENCODER_DIO_PORT = 0;
+
+    public static final double BORE_ENCODER_OFFSET = 0;
+
+    public static final Rotation2d SETPOINT_RETRACT = Rotation2d.fromDegrees(0);
+    public static final Rotation2d SETPOINT_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d SETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d SETPOINT_HIGH = Rotation2d.fromDegrees(110);
+
+    public static final double kS = 0.0;
+    public static final double kG = 0.06;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
   }

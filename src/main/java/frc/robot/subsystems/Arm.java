@@ -13,8 +13,11 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,39 +25,29 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private CANSparkMax armMotor;
 
+  private DutyCycleEncoder armBoreEncoder;
+
   private RelativeEncoder armEncoder;
 
-  private SparkMaxPIDController armSparkmaxPID;
+  private ProfiledPIDController armController;
 
-  private SparkMaxAbsoluteEncoder alternateEncoder;
+  private Rotation2d rotationReference;
+  private Rotation2d currentRotation;
 
-  ArmFeedforward feedforward =
+  private ArmFeedforward feedforward =
       new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV);
 
-  private double P;
-  private double I;
-  private double D;
-
   public Arm() {
-
     armMotor = new CANSparkMax(frc.robot.Constants.Arm.armMotor, MotorType.kBrushless);
     armMotor.restoreFactoryDefaults();
     armEncoder = armMotor.getEncoder();
     armMotor.setIdleMode(IdleMode.kBrake);
-    armSparkmaxPID = armMotor.getPIDController();
 
-    P = frc.robot.Constants.Arm.P;
-    I = frc.robot.Constants.Arm.I;
-    D = frc.robot.Constants.Arm.D;
+    armController = new ProfiledPIDController(Constants.Arm.P, Constants.Arm.I, Constants.Arm.D, Constants.Arm.CONSTRAINTS);
 
-    armSparkmaxPID.setP(P);
-    armSparkmaxPID.setI(I);
-    armSparkmaxPID.setD(D);
+    armBoreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_DIO_PORT);
 
-    armSparkmaxPID.setOutputRange(-1, 1);
-
-    alternateEncoder = armMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    armSparkmaxPID.setFeedbackDevice(alternateEncoder);
+    rotationReference = getAbsoluteRotation();
   }
 
   @Override
@@ -63,6 +56,19 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("/Arm/Encoder", getArmEncoder());
     SmartDashboard.putNumber("/Arm/Bore", getBore());
+    SmartDashboard.putNumber("/Arm/BoreDegrees", getAbsoluteRotation().getDegrees());
+    double ffradians = 2 * Math.PI - (-rotationReference.getRadians());
+    System.out.println();
+    double voltage = armController.calculate(/* getAbsoluteRotation().getRadians(), rotationReference.getRadians()) + */feedforward.calculate(2 * Math.PI - (-rotationReference.getRadians())
+    , 0));
+
+    System.out.println("Voltage: " + voltage);
+
+    armMotor.setVoltage(voltage);
+  }
+
+  public void setReference(Rotation2d rotation) {
+    this.rotationReference = rotation;
   }
 
   public void controlArm(double speed) {
@@ -74,23 +80,24 @@ public class Arm extends SubsystemBase {
   }
 
   public double getBore() {
-    return alternateEncoder.getPosition();
+    return armBoreEncoder.getAbsolutePosition();
+  }
+
+  public Rotation2d getAbsoluteRotation() {
+    double radians = 2 * Math.PI * getBore();
+
+    return new Rotation2d(radians);
   }
 
   public void stopArm() {
+    rotationReference = getAbsoluteRotation();
     armMotor.stopMotor();
   }
 
   public void setArmCommand(double setpoint, Rotation2d angle) {
     // armSparkmaxPID.setReference(setpoint, ControlType.kPosition);
 
-    armMotor
-        .getPIDController()
-        .setReference(
-            angle.getRadians(),
-            ControlType.kPosition,
-            0,
-            feedforward.calculate(angle.getRadians(), 0));
+    armMotor.setVoltage(setpoint);
   }
 
   public void resetEncoder() {
