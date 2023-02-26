@@ -10,11 +10,13 @@ import frc.robot.subsystems.Wrist;
 public class SetWrist extends CommandBase {
   /** Creates a new SetWrist. */
   private final Wrist m_Wrist;
+
   private final double m_setpoint;
+
   public SetWrist(Wrist wrist, double setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Wrist=wrist;
-    this.m_setpoint=setpoint;
+    this.m_Wrist = wrist;
+    this.m_setpoint = setpoint;
   }
 
   // Called when the command is initially scheduled.

@@ -31,10 +31,13 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     this.m_Wrist = wrist;
 
     // bot, low, mid, top setpoints
-    
+
     double[] armPos = {0, 1, 2, 3};
     double[] telePos = {0, 1, 2, 3};
     double[] wristPos = {0, 1, 2, 3};
-    addCommands(new SetArm(arm, armPos[i]), new SetTelescope(telescope, telePos[i]),new SetWrist(wrist, wristPos[i]));
+    addCommands(
+        new SetArm(arm, armPos[i]),
+        new SetTelescope(telescope, telePos[i]),
+        new SetWrist(wrist, wristPos[i]));
   }
 }

@@ -16,7 +16,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -81,8 +80,6 @@ public class Arm extends SubsystemBase {
     armSparkmaxPIDLeft = armMotorLeft.getPIDController();
     armMotorLeft.setCANTimeout(500);
 
-    
-
     LkP = frc.robot.Constants.Arm.LkP;
     LkI = frc.robot.Constants.Arm.LkI;
     LkD = frc.robot.Constants.Arm.LkD;
@@ -123,7 +120,6 @@ public class Arm extends SubsystemBase {
 
   public double getBoreEncoder() {
     return alternateEncoder.getPosition();
-    
   }
 
   // public void zeroBoreEncoder() {
@@ -165,7 +161,6 @@ public class Arm extends SubsystemBase {
 
     armSparkmaxPIDLeft.setReference(
         setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
-
   }
 
   public void ArmProfile(TrapezoidProfile.State setpoint) {

@@ -44,14 +44,14 @@ public class ControlTelescope extends CommandBase {
     //   if(m_Controller.getRightY()<0){
     //     m_Telescope.controlTelescope(-m_Controller.getRightY());
     //   }
-      
+
     // }
     // if(encoderValue>35){
     //   if(m_Controller.getRightY()>0){
     //     m_Telescope.controlTelescope(-m_Controller.getRightY());
     //   }
     // }
-    
+
     m_Telescope.controlTelescope(-m_Controller.getRightY());
   }
 

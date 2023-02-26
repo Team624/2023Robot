@@ -95,10 +95,7 @@ public class Wrist extends SubsystemBase {
     Rotation2d angle = new Rotation2d(setpoint);
 
     wristPidController.setReference(
-        setpoint,
-        ControlType.kPosition,
-        0,
-        wristfeedforward.calculate(angle.getRadians(), 0));
+        setpoint, ControlType.kPosition, 0, wristfeedforward.calculate(angle.getRadians(), 0));
   }
 
   public double getWristEncoder() {

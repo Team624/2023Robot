@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -207,7 +206,6 @@ public class RobotContainer {
     setArmTop.onTrue(new SetArm(m_arm, 0.8));
     // setArmMid.onTrue(new SetArm2(m_arm, 0.8));
     // setArmBot.onTrue(new SetArm3(m_arm, 0.8));
-
 
     // setArmZero.onTrue(new SetArm(m_arm, 0.0));
 

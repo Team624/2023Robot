@@ -48,10 +48,8 @@ public class Telescope extends SubsystemBase {
     telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-
     telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 20);
     telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
-    
   }
 
   @Override
@@ -70,7 +68,6 @@ public class Telescope extends SubsystemBase {
 
   public void stopTelescope() {
     telescopeMotor.stopMotor();
-    
   }
 
   public void setTelescope(double position) {
