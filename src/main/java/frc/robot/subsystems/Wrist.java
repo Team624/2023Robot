@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,6 +31,8 @@ public class Wrist extends SubsystemBase {
 
   ArmFeedforward wristfeedforward =
       new ArmFeedforward(Constants.Wrist.kS, Constants.Wrist.kG, Constants.Wrist.kV);
+
+  private DutyCycleEncoder WristboreEncoder;
 
   public Wrist() {
 
@@ -51,13 +54,28 @@ public class Wrist extends SubsystemBase {
     wristPidController.setI(WristI);
     wristPidController.setD(WristD);
 
+    wristMotor.setCANTimeout(500);
+
     wristPidController.setOutputRange(-1, 1);
+
+    WristboreEncoder = new DutyCycleEncoder(1);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("/Wrist/Encoder", getWristEncoder());
+    SmartDashboard.putNumber("/Arm/BoreEncoder/get", WristboreEncoder.get());
+    SmartDashboard.putNumber("/Wrist/BoreEncoder/Absolute", WristboreEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("/Wrist/BoreEncoder/Distance", WristboreEncoder.getDistance());
+  }
+
+  public double getBoreEncoder() {
+    return WristboreEncoder.getAbsolutePosition();
+  }
+
+  public void zeroBoreEncoder() {
+    WristboreEncoder.reset();
   }
 
   public void moveWrist(double speed) {
@@ -72,7 +90,9 @@ public class Wrist extends SubsystemBase {
     wristMotor.stopMotor();
   }
 
-  public void setWristCommand(double setpoint, Rotation2d angle) {
+  public void setWristCommand(double setpoint) {
+
+    Rotation2d angle = new Rotation2d(setpoint);
 
     wristPidController.setReference(
         angle.getRadians(),

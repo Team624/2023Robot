@@ -16,16 +16,16 @@ public class SetArm extends CommandBase {
   private final double m_Setpoint;
 
   private static final TrapezoidProfile.Constraints ARM_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(1, 1.1);
+      new TrapezoidProfile.Constraints(0.25, 0.3);
 
   private final ProfiledPIDController armController =
-      new ProfiledPIDController(0.0003, 0, 0, ARM_CONSTRAINTS);
+      new ProfiledPIDController(0.001, 0, 0, ARM_CONSTRAINTS);
 
   public SetArm(Arm arm, double setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
     this.m_Setpoint = setpoint;
-    armController.setTolerance(0.05);
+    armController.setTolerance(0.01);
   }
 
   // Called when the command is initially scheduled.
@@ -37,7 +37,7 @@ public class SetArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armController.setGoal(m_Setpoint);
+    armController.setGoal(0.8);
 
     double vel = armController.calculate(m_Arm.getBoreEncoder());
 
@@ -53,8 +53,9 @@ public class SetArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("GOAL: " + armController.getGoal().position);
+    System.out.println("GOAL: " + armController.getSetpoint().position);
     System.out.println("BORE: " + m_Arm.getBoreEncoder());
+    System.out.println("offset: "+ armController.getPositionError());
     return armController.atGoal();
   }
 }

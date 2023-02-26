@@ -4,18 +4,15 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private CANSparkMax intakeMotor;
+  // private CANSparkMax intakeMotor;
+  private PWMSparkMax intakeMotor;
 
   private RelativeEncoder intakeEncoder;
 
@@ -27,25 +24,22 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
 
-    intakeMotor = new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless);
+    // intakeMotor = new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless);
 
-    intakeMotor.restoreFactoryDefaults();
+    intakeMotor = new PWMSparkMax(0);
 
-    intakeEncoder = intakeMotor.getEncoder();
+    // intakePidController = intakeMotor.getPIDController();
+    // intakeMotor.setIdleMode(IdleMode.kBrake);
+    // IntakeP = frc.robot.Constants.Intake.P;
+    // IntakeI = frc.robot.Constants.Intake.I;
+    // IntakeD = frc.robot.Constants.Intake.D;
 
-    intakePidController = intakeMotor.getPIDController();
-    intakeMotor.setIdleMode(IdleMode.kBrake);
-    IntakeP = frc.robot.Constants.Intake.P;
-    IntakeI = frc.robot.Constants.Intake.I;
-    IntakeD = frc.robot.Constants.Intake.D;
+    // intakePidController.setP(IntakeP);
+    // intakePidController.setI(IntakeI);
+    // intakePidController.setD(IntakeD);
 
-    intakePidController.setP(IntakeP);
-    intakePidController.setI(IntakeI);
-    intakePidController.setD(IntakeD);
+    // intakePidController.setOutputRange(-1, 1);
 
-    
-
-    intakePidController.setOutputRange(-1, 1);
   }
 
   @Override

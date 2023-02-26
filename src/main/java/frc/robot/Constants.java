@@ -125,7 +125,7 @@ public final class Constants {
 
       public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(317.197);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(136.142);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -143,7 +143,7 @@ public final class Constants {
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(169.365);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(171.032);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -161,7 +161,7 @@ public final class Constants {
 
       public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(268.41);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(353.76);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -179,7 +179,7 @@ public final class Constants {
 
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(258.31);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(165.8496);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -221,16 +221,15 @@ public final class Constants {
     public static final double I = 0;
     public static final double D = 0;
     public static final int intakeMotor = 12;
-    
   }
 
   public static final class Arm {
-    public static final double RkP = 0.0007;
+    public static final double RkP = 0.07;
     public static final double RkI = 0.0;
     public static final double RkD = 0.0;
     public static final int armMotorRight = 6;
 
-    public static final double LkP = 0.0007;
+    public static final double LkP = 0.07;
     public static final double LkI = 0.0;
     public static final double LkD = 0.0;
     public static final int armMotorLeft = 17;

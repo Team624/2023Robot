@@ -280,4 +280,18 @@ public class Drivetrain extends SubsystemBase {
       alliance = 2;
     }
   }
+
+  public void swerveXposition() {
+    for (SwerveModule mod : mSwerveMods) {
+      if (mod.moduleNumber == 0) {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), m_isOpenLoop);
+      } else if (mod.moduleNumber == 0) {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), m_isOpenLoop);
+      } else if (mod.moduleNumber == 0) {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), m_isOpenLoop);
+      } else {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), m_isOpenLoop);
+      }
+    }
+  }
 }
