@@ -55,7 +55,7 @@ public class SetArm extends CommandBase {
   public boolean isFinished() {
     System.out.println("GOAL: " + armController.getSetpoint().position);
     System.out.println("BORE: " + m_Arm.getBoreEncoder());
-    System.out.println("offset: "+ armController.getPositionError());
+    System.out.println("offset: " + armController.getPositionError());
     return armController.atGoal();
   }
 }

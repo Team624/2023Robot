@@ -29,7 +29,6 @@ public class SetArm3 extends CommandBase {
   @Override
   public void initialize() {
     m_setpoint = new TrapezoidProfile.State(m_Arm.getBoreEncoder(), 0);
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,5 +51,4 @@ public class SetArm3 extends CommandBase {
   public boolean isFinished() {
     return false;
   }
-
 }

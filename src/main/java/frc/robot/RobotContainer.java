@@ -4,21 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.Arm.SetArm2;
-import frc.robot.commands.Arm.SetArm3;
+import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.BlankDrive;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -61,7 +57,6 @@ public class RobotContainer {
 
   private final JoystickButton manual =
       new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
-
 
   /* Intake */
 
@@ -208,29 +203,18 @@ public class RobotContainer {
 
     manual.and(armMove).whileTrue(new ControlArm(m_arm, m_controller));
     manual.and(armMove2).whileTrue(new ControlArm(m_arm, m_controller));
+
     setArmTop.onTrue(new SetArm(m_arm, 0.8));
     // setArmMid.onTrue(new SetArm2(m_arm, 0.8));
     // setArmBot.onTrue(new SetArm3(m_arm, 0.8));
 
 
-
-    // setArmTop.onTrue(
-    //     new TrapezoidProfileCommand(
-    //         new TrapezoidProfile(
-    //             new TrapezoidProfile.Constraints(0.5, 0.7),
-    //             new TrapezoidProfile.State(0.07, 0),
-    //             new TrapezoidProfile.State(m_arm.getBoreEncoder(), 0)),
-    //         setpointState -> m_arm.ArmProfile(setpointState),
-    //         m_arm));
-
-
-
     // setArmZero.onTrue(new SetArm(m_arm, 0.0));
 
-    setArmBot.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
-    setArmLow.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
-    setArmMid.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
-    setArmTop.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
+    // setArmBot.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
+    // setArmLow.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
+    // setArmMid.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
+    // setArmTop.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
     /** Telescope */
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));
     manual.and(telescopeMove2).whileTrue(new ControlTelescope(m_telescope, m_controller));

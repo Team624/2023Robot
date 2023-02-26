@@ -8,10 +8,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -30,8 +29,6 @@ public class Arm extends SubsystemBase {
   private CANSparkMax armMotorLeft;
 
   private SparkMaxAbsoluteEncoder alternateEncoder;
-  
-  
 
   private RelativeEncoder armEncoderLeft;
   private RelativeEncoder armEncoderRight;
@@ -52,13 +49,12 @@ public class Arm extends SubsystemBase {
 
   private MotorControllerGroup Armgroup;
 
-  private DutyCycleEncoder ArmboreEncoder;
+  // private DutyCycleEncoder ArmboreEncoder;
 
   private ProfiledPIDController ArmProfiledPIDController =
       new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(0.8, 0.8));
 
   public Arm() {
-
 
     armMotorRight = new CANSparkMax(frc.robot.Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.restoreFactoryDefaults();
@@ -85,8 +81,7 @@ public class Arm extends SubsystemBase {
     armSparkmaxPIDLeft = armMotorLeft.getPIDController();
     armMotorLeft.setCANTimeout(500);
 
-    alternateEncoder = armMotorRight.getAbsoluteEncoder(Type.kDutyCycle);
-    armSparkmaxPIDLeft.setFeedbackDevice(alternateEncoder);
+    
 
     LkP = frc.robot.Constants.Arm.LkP;
     LkI = frc.robot.Constants.Arm.LkI;
@@ -100,15 +95,13 @@ public class Arm extends SubsystemBase {
 
     Armgroup = new MotorControllerGroup(armMotorRight, armMotorLeft);
 
-    ArmboreEncoder = new DutyCycleEncoder(0);
+    // ArmboreEncoder = new DutyCycleEncoder(0);
 
-    // armMotorLeft.follow(armMotorRight, true);
+    alternateEncoder = armMotorRight.getAbsoluteEncoder(Type.kDutyCycle);
+    armSparkmaxPIDRight.setFeedbackDevice(alternateEncoder);
 
-    double maxVel=0.0;
+    double maxVel = 0.0;
     double maxAcc = 0.0;
-
-    
-
   }
 
   @Override
@@ -117,9 +110,9 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("/Arm/Encoder/Right", getArmEncoderRight());
     SmartDashboard.putNumber("/Arm/Encoder/Left", getArmEncoderLeft());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/get", ArmboreEncoder.get());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", ArmboreEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", ArmboreEncoder.getDistance());
+    // SmartDashboard.putNumber("/Arm/BoreEncoder/get", ArmboreEncoder.get());
+    // SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", ArmboreEncoder.getAbsolutePosition());
+    // SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", ArmboreEncoder.getDistance());
     SmartDashboard.putNumber("/Arm/alternate/", alternateEncoder.getPosition());
     // ArmboreEncoder.setPositionOffset(0.23);
   }
@@ -129,12 +122,13 @@ public class Arm extends SubsystemBase {
   }
 
   public double getBoreEncoder() {
-    return ArmboreEncoder.getAbsolutePosition();
+    return alternateEncoder.getPosition();
+    
   }
 
-  public void zeroBoreEncoder() {
-    ArmboreEncoder.reset();
-  }
+  // public void zeroBoreEncoder() {
+  //   ArmboreEncoder.reset();
+  // }
 
   public void controlArmLeft(double speed) {
     armMotorLeft.set(speed);
@@ -160,18 +154,17 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmCommand(double setpoint) {
-    System.out.println("setpoint in command: "+setpoint);
+    System.out.println("setpoint in command: " + setpoint);
     Rotation2d angle = new Rotation2d(setpoint);
 
-    armMotorLeft.setVoltage(setpoint + feedforward.calculate(angle.getRadians(), 0));
-    armMotorRight.setVoltage(setpoint + feedforward.calculate(angle.getRadians(), 0));
-    
+    // armMotorLeft.setVoltage(setpoint + feedforward.calculate(angle.getRadians(), 0));
+    // armMotorRight.setVoltage(setpoint + feedforward.calculate(angle.getRadians(), 0));
 
-    // armSparkmaxPIDRight.setReference(
-    //     setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
+    armSparkmaxPIDRight.setReference(
+        setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
 
-    // armSparkmaxPIDLeft.setReference(
-    //     setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
+    armSparkmaxPIDLeft.setReference(
+        setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
 
   }
 
@@ -180,15 +173,9 @@ public class Arm extends SubsystemBase {
     System.out.println(setpoint.position);
     Rotation2d setpoint2d = new Rotation2d(setpoint.position);
 
-    armSparkmaxPIDLeft.setReference(
-        1-setpoint.position,
-        ControlType.kPosition,
-        0);
+    armSparkmaxPIDLeft.setReference(1 - setpoint.position, ControlType.kPosition, 0);
 
-    armSparkmaxPIDRight.setReference(
-        1-setpoint.position,
-        ControlType.kPosition,
-        0);
+    armSparkmaxPIDRight.setReference(1 - setpoint.position, ControlType.kPosition, 0);
   }
 
   public void resetEncoder() {
