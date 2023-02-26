@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +25,8 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder armEncoder;
 
   private SparkMaxPIDController armSparkmaxPID;
+
+  private SparkMaxAbsoluteEncoder alternateEncoder;
 
   ArmFeedforward feedforward =
       new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV);
@@ -48,6 +52,9 @@ public class Arm extends SubsystemBase {
     armSparkmaxPID.setD(D);
 
     armSparkmaxPID.setOutputRange(-1, 1);
+
+    alternateEncoder = armMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    armSparkmaxPID.setFeedbackDevice(alternateEncoder);
   }
 
   @Override
@@ -55,6 +62,7 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("/Arm/Encoder", getArmEncoder());
+    SmartDashboard.putNumber("/Arm/Bore", getBore());
   }
 
   public void controlArm(double speed) {
@@ -63,6 +71,10 @@ public class Arm extends SubsystemBase {
 
   public double getArmEncoder() {
     return armEncoder.getPosition();
+  }
+
+  public double getBore() {
+    return alternateEncoder.getPosition();
   }
 
   public void stopArm() {

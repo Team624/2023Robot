@@ -66,10 +66,10 @@ public class AutonManager extends CommandBase {
 
     if (startBalance) {
       currentFollowPathCommand.end(true);
-      
+
       currentBalanceCommand = new Balance(drivetrain);
       currentBalanceCommand.schedule();
-      
+
       System.out.println("Starting balance!!!");
     }
 
@@ -88,48 +88,48 @@ public class AutonManager extends CommandBase {
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("retract");
 
-    // TODO: Replace these with commands at some point. Do the setstate in the command when it finished
+    // TODO: Replace these with commands at some point. Do the setstate in the command when it
+    // finished
     switch (state) {
       case "move_intake":
-      SmartDashboard.getEntry("/auto/arm/state").setString("intake");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("intake");
+        break;
 
       case "intake":
-      SmartDashboard.getEntry("/auto/arm/state").setString("intake");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("intake");
+        break;
 
       case "move_cone_high":
-      SmartDashboard.getEntry("/auto/arm/state").setString("cone_high");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("cone_high");
+        break;
 
       case "move_cone_mid":
-      SmartDashboard.getEntry("/auto/arm/state").setString("cone_mid");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("cone_mid");
+        break;
 
       case "move_cone_low":
-      SmartDashboard.getEntry("/auto/arm/state").setString("cone_low");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("cone_low");
+        break;
 
       case "move_cube_high":
-      SmartDashboard.getEntry("/auto/arm/state").setString("cube_high");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("cube_high");
+        break;
 
       case "move_cube_mid":
-      SmartDashboard.getEntry("/auto/arm/state").setString("cube_mid");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("cube_mid");
+        break;
 
       case "move_cube_low":
-      SmartDashboard.getEntry("/auto/arm/state").setString("cube_low");
-      break;
+        SmartDashboard.getEntry("/auto/arm/state").setString("cube_low");
+        break;
 
       case "place":
-      
-      break;
+        break;
 
       case "retract":
       default:
-      System.out.println("Retracting my arm (in my imagination)");
-      SmartDashboard.getEntry("/auto/arm/state").setString("retract");
+        System.out.println("Retracting my arm (in my imagination)");
+        SmartDashboard.getEntry("/auto/arm/state").setString("retract");
     }
   }
 
@@ -146,8 +146,7 @@ public class AutonManager extends CommandBase {
     for (Number index : indexes) {
       int i = (int) index.doubleValue();
 
-      System.out.println("Starting path" +
-       i);
+      System.out.println("Starting path" + i);
 
       if (i < 0 || i >= paths.length || i <= previousPath) return false;
 
@@ -184,16 +183,19 @@ public class AutonManager extends CommandBase {
     double timeSeconds = SmartDashboard.getEntry(pathRoot + "/time").getNumber(0).doubleValue();
 
     Rotation2d startHeading =
-        Rotation2d.fromRadians(MathUtil.angleModulus(SmartDashboard.getEntry(pathRoot + "/start_heading").getNumber(0).doubleValue()));
+        Rotation2d.fromRadians(
+            MathUtil.angleModulus(
+                SmartDashboard.getEntry(pathRoot + "/start_heading").getNumber(0).doubleValue()));
 
     Rotation2d endHeading =
         Rotation2d.fromRadians(
-          MathUtil.angleModulus(
-            SmartDashboard.getEntry(pathRoot + "/end_heading").getNumber(0).doubleValue()));
+            MathUtil.angleModulus(
+                SmartDashboard.getEntry(pathRoot + "/end_heading").getNumber(0).doubleValue()));
 
     boolean stopAtEnd = SmartDashboard.getEntry(pathRoot + "/stop_at_end").getBoolean(true);
 
-    double maxAcceleration = SmartDashboard.getEntry(pathRoot + "/max_acceleration").getNumber(5.0).doubleValue();
+    double maxAcceleration =
+        SmartDashboard.getEntry(pathRoot + "/max_acceleration").getNumber(5.0).doubleValue();
 
     // Pull control points of bezier curve from NetworkTables
 
@@ -212,6 +214,14 @@ public class AutonManager extends CommandBase {
 
     double startVelocity = pathIndex == 0 ? 0.0 : paths[pathIndex - 1].getEndVelocity();
 
-    return new Path(curve, startHeading, endHeading, startVelocity, stopAtEnd, maxAcceleration, pathIndex, timeSeconds);
+    return new Path(
+        curve,
+        startHeading,
+        endHeading,
+        startVelocity,
+        stopAtEnd,
+        maxAcceleration,
+        pathIndex,
+        timeSeconds);
   }
 }
