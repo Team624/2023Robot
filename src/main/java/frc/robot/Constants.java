@@ -221,10 +221,10 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final double P = 0;
+    public static final double P = 0.01;
     public static final double I = 0;
     public static final double D = 0;
-    public static final int intakeMotor = 6;
+    public static final int intakeMotor = 8;
     public static final int intakeSolenoidID = 0;
   }
 
@@ -259,7 +259,7 @@ public final class Constants {
     public static final double P = 0.0;
     public static final double I = 0.0;
     public static final double D = 0.0;
-    public static final int WristMotor = 0;
+    public static final int WristMotor = 9;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
