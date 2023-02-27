@@ -241,7 +241,7 @@ public final class Constants {
   }
 
   public static final class Telescope {
-    public static final double P = 0.01;
+    public static final double P = 0.08;
     public static final double I = 0;
     public static final double D = 0;
     public static final int telescopemotor = 5;
@@ -252,7 +252,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 0.01;
+    public static final double P = 0.1;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;

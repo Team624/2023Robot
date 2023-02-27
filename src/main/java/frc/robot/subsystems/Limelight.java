@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -44,8 +43,8 @@ public class Limelight extends SubsystemBase {
     id_json.put(7.0, -5.2701);
     id_json.put(8.0, -6.94659);
 
-    CameraServer.startAutomaticCapture(
-        "camera name", "deploy/Pipeline-Name-5"); // Change camera name
+    // CameraServer.startAutomaticCapture(
+    //     "camera name", "deploy/Pipeline-Name-5"); // Change camera name
   }
 
   public boolean hasTarget() {

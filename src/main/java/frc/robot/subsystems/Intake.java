@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
 
     intakeMotor = new PWMSparkMax(0);
 
+    intakeMotor.setInverted(true);
 
     // intakePidController = intakeMotor.getPIDController();
     // intakeMotor.setIdleMode(IdleMode.kBrake);

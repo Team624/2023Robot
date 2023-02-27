@@ -4,8 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Arm.SetArm;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
@@ -15,17 +14,17 @@ import frc.robot.subsystems.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ArmTelescopeWrist extends SequentialCommandGroup {
-  /** Creates a new ArmTelescopeWrist. */
+public class TopPosition extends ParallelCommandGroup {
+  /** Creates a new TopPosition. */
+
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
-  public ArmTelescopeWrist(Arm arm, Telescope telescope, Wrist wrist, int i) {
+  public TopPosition(Arm arm, Telescope telescope, Wrist wrist, int i) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
@@ -33,8 +32,8 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     // bot, low, mid, top setpoints
 
     double[] armPos = {0, 1, 2, 0};
-    double[] telePos = {0, 1, 0, 29.3};
-    double[] wristPos = {0, 0, 0, -57};
+    double[] telePos = {0, 1, 0, 29.5};
+    double[] wristPos = {0, 0, 0, -65};
     addCommands(new SetTelescope(telescope, telePos[i]), new SetWrist(wrist, wristPos[i]));
   }
 }

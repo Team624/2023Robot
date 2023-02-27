@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -59,6 +60,12 @@ public class Wrist extends SubsystemBase {
     wristPidController.setOutputRange(-1, 1);
 
     WristboreEncoder = new DutyCycleEncoder(1);
+
+    // wristMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+    // wristMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+    // wristMotor.setSoftLimit(SoftLimitDirection.kForward, 0.01f);
+    // wristMotor.setSoftLimit(SoftLimitDirection.kReverse, -228);
   }
 
   @Override
@@ -95,7 +102,7 @@ public class Wrist extends SubsystemBase {
     Rotation2d angle = new Rotation2d(setpoint);
 
     wristPidController.setReference(
-        setpoint, ControlType.kPosition, 0, wristfeedforward.calculate(angle.getRadians(), 0));
+        setpoint, ControlType.kPosition, 0);
   }
 
   public double getWristEncoder() {

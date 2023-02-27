@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,7 +49,7 @@ public class Arm extends SubsystemBase {
 
   private MotorControllerGroup Armgroup;
 
-  // private DutyCycleEncoder ArmboreEncoder;
+  private DutyCycleEncoder ArmboreEncoder;
 
   private ProfiledPIDController ArmProfiledPIDController =
       new ProfiledPIDController(0.05, 0.0, 0.0, new TrapezoidProfile.Constraints(0.8, 0.8));
@@ -92,7 +93,7 @@ public class Arm extends SubsystemBase {
 
     Armgroup = new MotorControllerGroup(armMotorRight, armMotorLeft);
 
-    // ArmboreEncoder = new DutyCycleEncoder(0);
+    ArmboreEncoder = new DutyCycleEncoder(0);
 
     alternateEncoder = armMotorRight.getAbsoluteEncoder(Type.kDutyCycle);
     armSparkmaxPIDRight.setFeedbackDevice(alternateEncoder);
@@ -107,10 +108,10 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("/Arm/Encoder/Right", getArmEncoderRight());
     SmartDashboard.putNumber("/Arm/Encoder/Left", getArmEncoderLeft());
-    // SmartDashboard.putNumber("/Arm/BoreEncoder/get", ArmboreEncoder.get());
-    // SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", ArmboreEncoder.getAbsolutePosition());
-    // SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", ArmboreEncoder.getDistance());
-    SmartDashboard.putNumber("/Arm/alternate/", alternateEncoder.getPosition());
+    SmartDashboard.putNumber("/Arm/BoreEncoder/get", ArmboreEncoder.get());
+    SmartDashboard.putNumber("/Arm/BoreEncoder/Absolute", ArmboreEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("/Arm/BoreEncoder/Distance", ArmboreEncoder.getDistance());
+
     // ArmboreEncoder.setPositionOffset(0.23);
   }
 
@@ -152,15 +153,10 @@ public class Arm extends SubsystemBase {
   public void setArmCommand(double setpoint) {
     System.out.println("setpoint in command: " + setpoint);
     Rotation2d angle = new Rotation2d(setpoint);
+    //feedforward.calculate(angle.getRadians(), 0)
 
-    // armMotorLeft.setVoltage(setpoint + feedforward.calculate(angle.getRadians(), 0));
-    // armMotorRight.setVoltage(setpoint + feedforward.calculate(angle.getRadians(), 0));
-
-    armSparkmaxPIDRight.setReference(
-        setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
-
-    armSparkmaxPIDLeft.setReference(
-        setpoint, ControlType.kPosition, 0, feedforward.calculate(angle.getRadians(), 0));
+    armMotorLeft.setVoltage(setpoint);
+    armMotorRight.setVoltage(setpoint);
   }
 
   public void ArmProfile(TrapezoidProfile.State setpoint) {
