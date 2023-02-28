@@ -4,10 +4,8 @@
 
 package frc.robot.commands.Telescope;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Telescope;
 
 public class ControlTelescope extends CommandBase {
@@ -15,10 +13,6 @@ public class ControlTelescope extends CommandBase {
   private final Telescope m_Telescope;
 
   private final XboxController m_Controller;
-
-  SimpleMotorFeedforward feedforward =
-      new SimpleMotorFeedforward(
-          Constants.Telescope.kS, Constants.Telescope.kV, Constants.Telescope.kA);
 
   public ControlTelescope(Telescope telescope, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.

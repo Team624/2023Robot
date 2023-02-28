@@ -2,21 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Arm;
+package frc.robot.commands.Wrist;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Wrist;
 
-public class SetArm2 extends CommandBase {
-  /** Creates a new SetArm2. */
-  private final Arm m_Arm;
+public class SetWrist2 extends CommandBase {
+  /** Creates a new SetWrist. */
+  private final Wrist m_Wrist;
 
-  private final double m_Setpoint;
+  private final double m_setpoint;
 
-  public SetArm2(Arm arm, double setpoint) {
+  public SetWrist2(Wrist wrist, double setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Arm = arm;
-    this.m_Setpoint = setpoint;
+    this.m_Wrist = wrist;
+    this.m_setpoint = setpoint;
   }
 
   // Called when the command is initially scheduled.
@@ -26,12 +26,14 @@ public class SetArm2 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Arm.goToSetpoint(m_Setpoint);
+    m_Wrist.setWristCommand(m_setpoint);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Wrist.stopWrist();
+  }
 
   // Returns true when the command should end.
   @Override

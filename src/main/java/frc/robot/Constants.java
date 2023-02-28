@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SdsModuleConfigurations;
 import frc.lib.util.SwerveModuleConstants;
@@ -238,28 +239,62 @@ public final class Constants {
     public static final double kG = 8;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
+
+    public static final Constraints CONSTRAINTS = new Constraints(0.5, 0.8);
+
+    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(0);
+    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(110);
   }
 
   public static final class Telescope {
-    public static final double P = 0.08;
-    public static final double I = 0;
+    public static final double P = 0.03;
+    public static final double I = 0.0001;
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double kS = 0.0;
-    public static final double kV = 0.0;
-    public static final double kA = 0.0;
+    public static final double TELESCOPE_SETPOINT_FUNNEL = 0.0;
+    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 0.0;
+    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 0.0;
+    public static final double TELESCOPE_SETPOINT_MID = 5.7;
+    public static final double TELESCOPE_SETPOINT_HIGH = 29.5;
   }
 
   public static final class Wrist {
-    public static final double P = 0.1;
+    public static final double P = 3;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
+
+    public static final Constraints wristCONSTRAINTS = new Constraints(0.5, 0.8);
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
+
+    public static final Rotation2d WRIST_RotSETPOINT_FUNNEL = Rotation2d.fromDegrees(0);
+    public static final Rotation2d WRIST_RotSETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d WRIST_RotSETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d WRIST_RotSETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d WRIST_RotSETPOINT_HIGH = Rotation2d.fromDegrees(20);
+
+    // 3.85 radians = mid
+    // 4.24 raidans = high
+
+    // 5.54 raidans ground intake
+
+    public static final double WRIST_SETPOINT_FUNNEL = 0.0;
+    public static final double WRIST_SETPOINT_CONE_INTAKE = 5.54;
+    public static final double WRIST_SETPOINT_CUBE_INTAKE = 5.54;
+    public static final double WRIST_SETPOINT_MID = 3.85;
+    public static final double WRIST_SETPOINT_HIGH = 4.24;
+  }
+
+  public static final class LED {
+    public static final int LEDPort = 0;
+    public static final int LENGTH = 5;
   }
 }

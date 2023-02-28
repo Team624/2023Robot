@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.Telescope.SetTelescope;
-import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -30,11 +30,20 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    // bot, low, mid, top setpoints
+    // retract = 0
+    // IntakeCONE = 1
+    // IntakeCUBE = 2
+    // mid = 3
+    // High = 4
 
-    double[] armPos = {0, 1, 2, 0};
-    double[] telePos = {0, 1, 0, 29.3};
-    double[] wristPos = {0, 0, 0, -57};
-    addCommands(new SetTelescope(telescope, telePos[i]), new SetWrist(wrist, wristPos[i]));
+    Rotation2d[] armPos = {
+      Constants.Arm.ARM_SETPOINT_FUNNEL,
+      Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
+      Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
+      Constants.Arm.ARM_SETPOINT_MID,
+      Constants.Arm.ARM_SETPOINT_HIGH
+    };
+
+    addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
   }
 }
