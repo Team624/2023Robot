@@ -23,13 +23,14 @@ public class SetArm extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Arm.enable();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Arm.setReference(m_setPoint);
-    System.out.println("Setpoint: " + m_setPoint.getDegrees() + " Current: " + m_Arm.getAbsoluteRotation().getDegrees());
+    m_Arm.setGoal(m_setPoint);
   }
 
   // Called once the command ends or is interrupted.

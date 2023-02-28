@@ -32,9 +32,9 @@ public class Telescope extends SubsystemBase {
     telescopePID = telescopeMotor.getPIDController();
     telescopeMotor.setIdleMode(IdleMode.kBrake);
 
-    P = frc.robot.Constants.Arm.P;
-    I = frc.robot.Constants.Arm.I;
-    D = frc.robot.Constants.Arm.D;
+    P = frc.robot.Constants.Telescope.P;
+    I = frc.robot.Constants.Telescope.I;
+    D = frc.robot.Constants.Telescope.D;
 
     telescopePID.setP(P);
     telescopePID.setI(I);
