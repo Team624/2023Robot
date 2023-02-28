@@ -65,6 +65,7 @@ public class Balance extends CommandBase {
 
     if (Math.abs(angle) < 9 && !ground) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
+      // m_drivetrain.swerveXposition();
       setNTState(true);
 
       return true;

@@ -268,6 +268,11 @@ public final class Constants {
     public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 0.0;
     public static final double TELESCOPE_SETPOINT_MID = 5.7;
     public static final double TELESCOPE_SETPOINT_HIGH = 29.5;
+
+    // FF constants
+    public static final double kS = 0.0;
+    public static final double kG = 0.0;
+    public static final double kV = 0.0;
   }
 
   public static final class Wrist {

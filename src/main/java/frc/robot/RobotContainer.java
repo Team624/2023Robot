@@ -38,6 +38,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.ledControl;
+import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,7 +57,9 @@ public class RobotContainer {
 
   /* Operator Controls */
 
-  private final JoystickButton toggleLED =
+  /* LEDs */
+
+  private final JoystickButton changePiece4LED =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
 
   private final int armAxis = XboxController.Axis.kLeftY.value;
@@ -75,13 +79,8 @@ public class RobotContainer {
 
   /* Arm */
 
-  private final POVButton setBotTop = new POVButton(m_controller, 0);
-
-  private final POVButton setBotMid = new POVButton(m_controller, 90);
-
-  private final POVButton setBotLower = new POVButton(m_controller, 180);
-
-  private final POVButton setBot0 = new POVButton(m_controller, 270);
+  private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.08);
+  private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
 
   /* Telescope */
 
@@ -91,16 +90,27 @@ public class RobotContainer {
   private final JoystickButton resetTelescopeEncoder =
       new JoystickButton(m_controller, XboxController.Button.kA.value);
 
+  /* Wrist */
+
   private final Trigger wristMove = m_controllerCommand.axisLessThan(wristAxis, -0.08);
   private final Trigger wristMove2 = m_controllerCommand.axisGreaterThan(wristAxis, 0.08);
 
-  private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.08);
-  private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
+  /* Full setpoints */
+
+  private final POVButton setBotTop = new POVButton(m_controller, 0);
+
+  private final POVButton setBotMid = new POVButton(m_controller, 90);
+
+  private final POVButton setBotLower = new POVButton(m_controller, 180);
+
+  private final POVButton setBot0 = new POVButton(m_controller, 270);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+  private final POVButton changeStation4LED = new POVButton(d_controller, 0);
 
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
@@ -124,11 +134,8 @@ public class RobotContainer {
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
-  private final JoystickButton resetpose =
-      new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
-
-  private final JoystickButton balance =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
+  // private final JoystickButton balance =
+  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -137,10 +144,8 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
-  // private final ledControl m_LedControl =
-  //     new ledControl(
-  //         new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH),
-  //         DriverStation.getAlliance() == Alliance.Red);
+  private final ledControl m_LedControl =
+      new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -179,14 +184,20 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+
+    changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
+
+    changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
+
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
     // balance.onTrue(new Balance(m_drivetrain));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
     // uncomment this
-    // alignTag.onTrue(new SubstationAlign(m_drivetrain,
-    // DriverStation.getAlliance()==Alliance.Red));
+    substationButton.whileTrue(
+        new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
+
     alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));

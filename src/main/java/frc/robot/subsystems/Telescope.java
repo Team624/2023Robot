@@ -11,12 +11,16 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Telescope extends SubsystemBase {
   /** Creates a new Telescope. */
   private CANSparkMax telescopeMotor;
+
+  private ElevatorFeedforward telescopFeedforward;
 
   private RelativeEncoder telescopeEncoder;
 
@@ -49,6 +53,10 @@ public class Telescope extends SubsystemBase {
 
     telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 30);
     telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
+
+    telescopFeedforward =
+        new ElevatorFeedforward(
+            Constants.Telescope.kS, Constants.Telescope.kG, Constants.Telescope.kV);
   }
 
   @Override
@@ -71,6 +79,8 @@ public class Telescope extends SubsystemBase {
 
   public void setTelescope(double position) {
     telescopePID.setReference(position, ControlType.kPosition);
+    telescopePID.setReference(
+        position, ControlType.kPosition, 0, telescopFeedforward.calculate(0.0));
   }
 
   public void resetEncoder() {
