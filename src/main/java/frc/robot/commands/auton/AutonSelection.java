@@ -20,12 +20,12 @@ public class AutonSelection extends CommandBase {
   public void initialize() {
     this.autonTab = Shuffleboard.getTab("Autonomous");
 
-    this.shouldBalanceGet = 
-      autonTab
-        .add("Balance?", true)
-        .withPosition(0, 1)
-        .withWidget(BuiltInWidgets.kToggleSwitch)
-        .getEntry();
+    this.shouldBalanceGet =
+        autonTab
+            .add("Balance?", true)
+            .withPosition(0, 1)
+            .withWidget(BuiltInWidgets.kToggleSwitch)
+            .getEntry();
 
     this.chooser = new SendableChooser<Integer>();
 
@@ -37,7 +37,6 @@ public class AutonSelection extends CommandBase {
 
     System.out.println("Started disabled command");
   }
-
 
   @Override
   public void execute() {
@@ -57,14 +56,12 @@ public class AutonSelection extends CommandBase {
     if (choice != null) {
       SmartDashboard.putNumber("/auto/select", choice);
     }
-    
+
     SmartDashboard.putBoolean("/auto/is_blue", DriverStation.getAlliance() == Alliance.Blue);
   }
 
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean runsWhenDisabled() {

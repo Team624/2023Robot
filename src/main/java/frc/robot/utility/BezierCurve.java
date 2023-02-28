@@ -37,9 +37,15 @@ public class BezierCurve {
   }
 
   public Translation2d getFirstDerivative(double t) {
-    double x = 3 * Math.pow((1 - t), 2) * (p[1].getX() - p[0].getX()) + 6 * (1 - t) * t * (p[2].getX() - p[1].getX()) + 3 * Math.pow(t, 2) * (p[3].getX() - p[2].getX());
+    double x =
+        3 * Math.pow((1 - t), 2) * (p[1].getX() - p[0].getX())
+            + 6 * (1 - t) * t * (p[2].getX() - p[1].getX())
+            + 3 * Math.pow(t, 2) * (p[3].getX() - p[2].getX());
 
-    double y = 3 * Math.pow((1 - t), 2) * (p[1].getY() - p[0].getY()) + 6 * (1 - t) * t * (p[2].getY() - p[1].getY()) + 3 * Math.pow(t, 2) * (p[3].getY() - p[2].getY());
+    double y =
+        3 * Math.pow((1 - t), 2) * (p[1].getY() - p[0].getY())
+            + 6 * (1 - t) * t * (p[2].getY() - p[1].getY())
+            + 3 * Math.pow(t, 2) * (p[3].getY() - p[2].getY());
 
     return new Translation2d(x, y);
   }

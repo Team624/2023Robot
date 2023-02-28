@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Contains data and functions for an autonomous path. */
@@ -113,7 +112,7 @@ public class Path {
   //   double xmax = maxAcceleration * newT * newT / 4;
   //   double xdiff = xmax - xEx;
   //   // get triangle for which xdiff is area
-    
+
   //   System.out.println("xdiff: " + xdiff + " maxAccel: " + maxAcceleration);
 
   //   double tmid = 2 * Math.sqrt(xdiff / maxAcceleration);
@@ -127,36 +126,45 @@ public class Path {
   //   return maxAcceleration * (tIn + tplus) + v1;
   // }
 
-  public double calculateMaxVelocity(){
+  public double calculateMaxVelocity() {
     if (!stopAtEnd) {
-      double xEx=curve.getDistance()-startVelocity*timeSeconds;
+      double xEx = curve.getDistance() - startVelocity * timeSeconds;
       // double goofyArnavMaxAccel = xEx<0 ? -maxAcceleration : maxAcceleration;
 
       double goofyArnavMaxAccel = xEx < 0 ? -maxAcceleration : maxAcceleration;
 
-      double areaT = timeSeconds*timeSeconds*.5*goofyArnavMaxAccel-xEx;
+      double areaT = timeSeconds * timeSeconds * .5 * goofyArnavMaxAccel - xEx;
       // v2=vo2+2ax
-      System.out.println(goofyArnavMaxAccel + " " + timeSeconds + " " + startVelocity + " " + goofyArnavMaxAccel + " " + areaT);
+      System.out.println(
+          goofyArnavMaxAccel
+              + " "
+              + timeSeconds
+              + " "
+              + startVelocity
+              + " "
+              + goofyArnavMaxAccel
+              + " "
+              + areaT);
 
-      double tnew = Math.sqrt(areaT*2/goofyArnavMaxAccel);
+      double tnew = Math.sqrt(areaT * 2 / goofyArnavMaxAccel);
       return startVelocity + (goofyArnavMaxAccel * (timeSeconds - tnew));
     }
 
     double v1 = 0;
     double v2 = startVelocity;
 
-    double dv = v2-v1;
-    double tIn = dv/maxAcceleration;
-    double minx = (timeSeconds-.5*tIn)*dv+v1*timeSeconds;
-    double xEx = curve.getDistance()-minx;
-    double newT = timeSeconds-tIn;
-    double xmax = maxAcceleration*newT*newT/4;
-    double xdiff = xmax-xEx;
+    double dv = v2 - v1;
+    double tIn = dv / maxAcceleration;
+    double minx = (timeSeconds - .5 * tIn) * dv + v1 * timeSeconds;
+    double xEx = curve.getDistance() - minx;
+    double newT = timeSeconds - tIn;
+    double xmax = maxAcceleration * newT * newT / 4;
+    double xdiff = xmax - xEx;
     double tplus;
-    //get triangle for which xdiff is area
-    double tmid = 2*Math.sqrt(xdiff/maxAcceleration);
-    tplus = .5*(newT-tmid);
-    return maxAcceleration*(tIn+tplus)+v1;
+    // get triangle for which xdiff is area
+    double tmid = 2 * Math.sqrt(xdiff / maxAcceleration);
+    tplus = .5 * (newT - tmid);
+    return maxAcceleration * (tIn + tplus) + v1;
   }
 
   public double getEndVelocity() {
@@ -165,9 +173,14 @@ public class Path {
   }
 
   public State getState(double seconds) {
-    TrapezoidProfile.State profileState = profile.calculate(MathUtil.clamp(seconds, 0, this.timeSeconds));
+    TrapezoidProfile.State profileState =
+        profile.calculate(MathUtil.clamp(seconds, 0, this.timeSeconds));
 
-    System.out.println("Distance: " + profileState.position / curve.getDistance() + " Time: " + seconds / timeSeconds);
+    System.out.println(
+        "Distance: "
+            + profileState.position / curve.getDistance()
+            + " Time: "
+            + seconds / timeSeconds);
 
     Pose2d pose = interpolate(seconds / this.timeSeconds);
 

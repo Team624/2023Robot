@@ -86,12 +86,11 @@ public class FollowPath extends CommandBase {
             + ") at "
             + state.velocity
             + "m/s");
-            
+
     SmartDashboard.getEntry("Auton Velocity").setNumber(state.velocity);
 
     ChassisSpeeds chassisSpeeds =
-        controller.calculate(
-            currentPose, state.pose, state.velocity, state.wantedHeading);
+        controller.calculate(currentPose, state.pose, state.velocity, state.wantedHeading);
 
     drivetrain.drive(chassisSpeeds, false, false);
   }

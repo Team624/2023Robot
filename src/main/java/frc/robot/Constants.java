@@ -5,9 +5,12 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SdsModuleConfigurations;
 import frc.lib.util.SwerveModuleConstants;
@@ -156,7 +159,7 @@ public final class Constants {
     }
 
     /* Back Left Module - Module 2 */
-    public static final class Mod2 { // TODO: This must be tuned to specific robot
+    public static final class Mod2 { // TODO: This must be tuned to specific Aobot
       public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
       public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
       public static final int BACK_LEFT_MODULE_STEER_ENCODER = 23;
@@ -221,27 +224,40 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final double P = 0;
+    public static final double P = 0.01;
     public static final double I = 0;
     public static final double D = 0;
-    public static final int intakeMotor = 6;
+    public static final int intakeMotor = 8;
     public static final int intakeSolenoidID = 0;
   }
 
   public static final class Arm {
-    public static final double P = 0.04;
-    public static final double I = 0;
-    public static final double D = 0;
-    public static final int armMotor = 3;
+    // Devices
+    public static final int ARM_MOTOR_ID = 3;
+    public static final int BORE_ENCODER_PORT = 0;
 
-    public static final double kS = 0.01;
-    public static final double kG = 0.3;
+    // Absolute encoder offset
+    public static final double BORE_ENCODER_OFFSET = 0;
+
+    // Profiled PID controller gains
+    public static final double kP = .0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double kMaxVelocityRadiansPerSecond = 0.5;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 0.8;
+
+    // Feedforward constants
+    public static final double kS = 0.0;
+    public static final double kG = 0.4;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
-  }
 
-  public static final class Claw {
-    public static final int clawSolenoidID = 1;
+    // Setpoints
+    public static final Rotation2d SETPOINT_RETRACT = Rotation2d.fromDegrees(0);
+    public static final Rotation2d SETPOINT_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d SETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d SETPOINT_HIGH = Rotation2d.fromDegrees(110);
   }
 
   public static final class Telescope {
@@ -259,7 +275,7 @@ public final class Constants {
     public static final double P = 0.0;
     public static final double I = 0.0;
     public static final double D = 0.0;
-    public static final int WristMotor = 0;
+    public static final int WristMotor = 9;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
