@@ -18,14 +18,14 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 
 public class Arm extends ProfiledPIDSubsystem {
   /** Creates a new Arm. */
-  private CANSparkMax armMotor;
+  private CANSparkMax armMotorRight;
+
+  private CANSparkMax armMotorLeft;
 
   private DutyCycleEncoder boreEncoder;
 
@@ -41,20 +41,33 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry voltageEntry;
 
   public Arm() {
-    super(new ProfiledPIDController(Constants.Arm.kP, Constants.Arm.kI, Constants.Arm.kD, new TrapezoidProfile.Constraints(Constants.Arm.kMaxVelocityRadiansPerSecond, Constants.Arm.kMaxAccelerationRadiansPerSecondSquared)));
+    super(
+        new ProfiledPIDController(
+            Constants.Arm.kP,
+            Constants.Arm.kI,
+            Constants.Arm.kD,
+            new TrapezoidProfile.Constraints(
+                Constants.Arm.kMaxVelocityRadiansPerSecond,
+                Constants.Arm.kMaxAccelerationRadiansPerSecondSquared)));
 
-    armMotor = new CANSparkMax(Constants.Arm.ARM_MOTOR_ID, MotorType.kBrushless);
-    armMotor.restoreFactoryDefaults();
-    armMotor.setIdleMode(IdleMode.kBrake);
+    armMotorRight = new CANSparkMax(Constants.Arm.armMotorRight, MotorType.kBrushless);
+    armMotorRight.restoreFactoryDefaults();
+    armMotorRight.setIdleMode(IdleMode.kBrake);
+
+    armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
+    armMotorLeft.restoreFactoryDefaults();
+    armMotorLeft.setIdleMode(IdleMode.kBrake);
 
     boreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_PORT);
 
-    armFeedForward = new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV, Constants.Arm.kA);
+    armFeedForward =
+        new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV, Constants.Arm.kA);
 
     armTab = Shuffleboard.getTab("Arm");
 
     positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
-    enabledEntry = armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+    enabledEntry =
+        armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
     setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
   }
@@ -69,7 +82,8 @@ public class Arm extends ProfiledPIDSubsystem {
   }
 
   public double getBore() {
-    return MathUtil.inputModulus(boreEncoder.getAbsolutePosition() - Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+    return MathUtil.inputModulus(
+        boreEncoder.getAbsolutePosition() - Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -84,10 +98,12 @@ public class Arm extends ProfiledPIDSubsystem {
     if (this.m_enabled) {
       // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
+      voltage =
+          output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
       System.out.println("Voltage: " + voltage);
       voltageEntry.setDouble(voltage);
-      armMotor.setVoltage(voltage);
+      armMotorLeft.setVoltage(voltage);
+      armMotorRight.setVoltage(voltage);
     }
   }
 
@@ -100,8 +116,23 @@ public class Arm extends ProfiledPIDSubsystem {
     this.setGoal(rotation.getRadians());
   }
 
+  public void stopArm() {
+    armMotorRight.stopMotor();
+    armMotorLeft.stopMotor();
+  }
+
+  public void setArmCommand(double setpoint) {
+    System.out.println("setpoint in command: " + setpoint);
+    Rotation2d angle = new Rotation2d(setpoint);
+    // feedforward.calculate(angle.getRadians(), 0)
+
+    armMotorLeft.setVoltage(setpoint);
+    armMotorRight.setVoltage(setpoint);
+  }
+
   public void setSpeed(double speed) {
     disable();
-    armMotor.set(speed);
+    armMotorLeft.set(speed);
+    armMotorRight.set(speed);
   }
 }

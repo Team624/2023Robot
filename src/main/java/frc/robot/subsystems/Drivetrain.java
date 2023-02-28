@@ -109,6 +109,20 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     setModuleStates();
 
+    for (SwerveModule mod : mSwerveMods) {
+      // if (Math.abs(mod.getCanCoder().getDegrees() - mod.getPosition().angle.getDegrees()) > 5) {
+      //   // System.out.println("CANCoder Number: " + mod.moduleNumber);
+      //   // System.out.println("CanCoder: " + mod.getCanCoder().getDegrees());
+      //   // System.out.println("Integrated: " + mod.getPosition().angle.getDegrees());
+      // }
+
+      SmartDashboard.putNumber(
+          "Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
+      SmartDashboard.putNumber(
+          "Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
+      SmartDashboard.putNumber(
+          "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+    }
     swerveOdometry.update(getYaw(), getModulePositions());
 
     updateNT();
@@ -202,6 +216,11 @@ public class Drivetrain extends SubsystemBase {
   public void zeroGyroscope() {
     ahrs.setAngleAdjustment(0);
     ahrs.reset();
+    swerveOdometry.resetPosition(
+        new Rotation2d(0), getModulePositions(), swerveOdometry.getPoseMeters());
+
+    poseEstimator.resetPosition(
+        new Rotation2d(0), getModulePositions(), poseEstimator.getEstimatedPosition());
   }
 
   public Pose2d getPose() {
@@ -236,5 +255,33 @@ public class Drivetrain extends SubsystemBase {
 
   public double getPitch() {
     return ahrs.getPitch();
+  }
+
+  public void yesCreepMode() {}
+
+  public void noCreepMode() {
+    isCreepin = false;
+  }
+
+  // public void updateAlliance() {
+  //   if (DriverStation.getAlliance() == Alliance.Blue) {
+  //     alliance = 1;
+  //   } else {
+  //     alliance = 2;
+  //   }
+  // }
+
+  public void swerveXposition() {
+    for (SwerveModule mod : mSwerveMods) {
+      if (mod.moduleNumber == 0) {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), m_isOpenLoop);
+      } else if (mod.moduleNumber == 1) {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), m_isOpenLoop);
+      } else if (mod.moduleNumber == 2) {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), m_isOpenLoop);
+      } else {
+        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), m_isOpenLoop);
+      }
+    }
   }
 }

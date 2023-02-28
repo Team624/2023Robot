@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -31,6 +32,7 @@ public class Telescope extends SubsystemBase {
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();
     telescopeMotor.setIdleMode(IdleMode.kBrake);
+    telescopeMotor.setCANTimeout(500);
 
     P = frc.robot.Constants.Telescope.P;
     I = frc.robot.Constants.Telescope.I;
@@ -41,6 +43,12 @@ public class Telescope extends SubsystemBase {
     telescopePID.setD(D);
 
     telescopePID.setOutputRange(-1, 1);
+
+    telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+    telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+    telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 30);
+    telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
   }
 
   @Override

@@ -5,8 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -128,8 +126,7 @@ public final class Constants {
 
       public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(195.54);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(195.205078125);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(136.142);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -147,8 +144,7 @@ public final class Constants {
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-0.659);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(358.505859375);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(171.032);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -166,8 +162,7 @@ public final class Constants {
 
       public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(158.23);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(156.005859375);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(353.76);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -185,8 +180,7 @@ public final class Constants {
 
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      // public static final Rotation2d angleOffset = Rotation2d.fromDegrees(25.83);
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(26.89453125);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(165.8496);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -227,13 +221,15 @@ public final class Constants {
     public static final double P = 0.01;
     public static final double I = 0;
     public static final double D = 0;
-    public static final int intakeMotor = 8;
-    public static final int intakeSolenoidID = 0;
+    public static final int intakeMotor = 12;
   }
 
   public static final class Arm {
-    // Devices
-    public static final int ARM_MOTOR_ID = 3;
+
+    public static final int armMotorRight = 6;
+
+    public static final int armMotorLeft = 17;
+
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
@@ -254,32 +250,59 @@ public final class Constants {
     public static final double kA = 0.0;
 
     // Setpoints
-    public static final Rotation2d SETPOINT_RETRACT = Rotation2d.fromDegrees(0);
-    public static final Rotation2d SETPOINT_INTAKE = Rotation2d.fromDegrees(45);
-    public static final Rotation2d SETPOINT_MID = Rotation2d.fromDegrees(90);
-    public static final Rotation2d SETPOINT_HIGH = Rotation2d.fromDegrees(110);
+    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(0);
+    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(110);
   }
 
   public static final class Telescope {
-    public static final double P = 0.01;
-    public static final double I = 0;
+    public static final double P = 0.03;
+    public static final double I = 0.0001;
     public static final double D = 0;
     public static final int telescopemotor = 4;
 
-    public static final double kS = 0.0;
-    public static final double kV = 0.0;
-    public static final double kA = 0.0;
+    public static final double TELESCOPE_SETPOINT_FUNNEL = 0.0;
+    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 0.0;
+    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 0.0;
+    public static final double TELESCOPE_SETPOINT_MID = 5.7;
+    public static final double TELESCOPE_SETPOINT_HIGH = 29.5;
   }
 
   public static final class Wrist {
-    public static final double P = 0.0;
+    public static final double P = 3;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 9;
+
+    public static final Constraints wristCONSTRAINTS = new Constraints(0.5, 0.8);
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
+
+    public static final Rotation2d WRIST_RotSETPOINT_FUNNEL = Rotation2d.fromDegrees(0);
+    public static final Rotation2d WRIST_RotSETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d WRIST_RotSETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d WRIST_RotSETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d WRIST_RotSETPOINT_HIGH = Rotation2d.fromDegrees(20);
+
+    // 3.85 radians = mid
+    // 4.24 raidans = high
+
+    // 5.54 raidans ground intake
+
+    public static final double WRIST_SETPOINT_FUNNEL = 0.0;
+    public static final double WRIST_SETPOINT_CONE_INTAKE = 5.54;
+    public static final double WRIST_SETPOINT_CUBE_INTAKE = 5.54;
+    public static final double WRIST_SETPOINT_MID = 3.85;
+    public static final double WRIST_SETPOINT_HIGH = 4.24;
+  }
+
+  public static final class LED {
+    public static final int LEDPort = 0;
+    public static final int LENGTH = 5;
   }
 }

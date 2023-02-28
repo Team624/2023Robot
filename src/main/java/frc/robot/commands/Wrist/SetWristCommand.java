@@ -4,37 +4,38 @@
 
 package frc.robot.commands.Wrist;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Wrist;
 
-public class setWrist extends CommandBase {
-  /** Creates a new setWrist. */
+public class SetWristCommand extends CommandBase {
+  /** Creates a new SetWristCommand. */
   private final Wrist m_Wrist;
 
-  private final double m_setPoint;
+  private final double m_setpoint;
 
-  public setWrist(Wrist wrist, double setpoint) {
+  public SetWristCommand(Wrist wrist, double setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Wrist = wrist;
-    this.m_setPoint = setpoint;
-    addRequirements(wrist);
+    this.m_setpoint = setpoint;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Wrist.resetController();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d setPoint2d = new Rotation2d(m_setPoint);
-    m_Wrist.setWristCommand(m_setPoint, setPoint2d);
+    m_Wrist.setReference(m_setpoint);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Wrist.stopWrist();
+  }
 
   // Returns true when the command should end.
   @Override
