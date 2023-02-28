@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -75,10 +77,10 @@ public final class Constants {
     public static final double angleKF = chosenModule.angleKF;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 0.05; // TODO: This must be tuned to specific robot
+    public static final double driveKP = 0.15; // TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
-    public static final double driveKF = 0.0;
+    public static final double driveKF = 0.01;
 
     public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
     public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
@@ -120,9 +122,9 @@ public final class Constants {
 
     /* Front Left Module - Module 0 */
     public static final class Mod0 { // TODO: This must be tuned to specific robot
-      public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 19;
-      public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 18;
-      public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 24;
+      public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
+      public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 20;
+      public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
 
       public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
@@ -138,9 +140,9 @@ public final class Constants {
 
     /* Front Right Module - Module 1 */
     public static final class Mod1 { // TODO: This must be tuned to specific robot
-      public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 11;
-      public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 10;
-      public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 23;
+      public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 15;
+      public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 14;
+      public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 24;
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
@@ -155,10 +157,10 @@ public final class Constants {
     }
 
     /* Back Left Module - Module 2 */
-    public static final class Mod2 { // TODO: This must be tuned to specific robot
+    public static final class Mod2 { // TODO: This must be tuned to specific Aobot
       public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
       public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
-      public static final int BACK_LEFT_MODULE_STEER_ENCODER = 21;
+      public static final int BACK_LEFT_MODULE_STEER_ENCODER = 23;
 
       public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
@@ -174,8 +176,8 @@ public final class Constants {
 
     /* Back Right Module - Module 3 */
     public static final class Mod3 { // TODO: This must be tuned to specific robot
-      public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 9;
-      public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
+      public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
+      public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 12;
       public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 22;
 
       public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
@@ -193,28 +195,28 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 3.0;
+    public static final double DRIVE_CONTROLLER_X_KP = 1.4;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 3.0;
+    public static final double DRIVE_CONTROLLER_Y_KP = 1.4;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = .2685; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.0; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
-        3.0 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        1.4 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION =
-        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 2); // 2.0
+        Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 1.5); // 2.0
 
     // Rotational tolerance for autonomous paths
-    public static final double AUTONOMOUS_X_TOLERANCE = 0.2;
-    public static final double AUTONOMOUS_Y_TOLERANCE = 0.2;
-    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.5);
+    public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
+    public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
+    public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
   }
 
   public static final class Intake {
@@ -235,25 +237,32 @@ public final class Constants {
     public static final double LkD = 0.0;
     public static final int armMotorLeft = 17;
 
-    public static final double kS = 0.01;
-    public static final double kG = 8;
+    // Profiled PID controller gains
+    public static final double kP = .0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double kMaxVelocityRadiansPerSecond = 0.5;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 0.8;
+
+    // Feedforward constants
+    public static final double kS = 0.0;
+    public static final double kG = 0.4;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final Constraints CONSTRAINTS = new Constraints(0.5, 0.8);
-
-    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(0);
-    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(45);
-    public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(45);
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(90);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(110);
+    // Setpoints
+    public static final Rotation2d SETPOINT_RETRACT = Rotation2d.fromDegrees(0);
+    public static final Rotation2d SETPOINT_INTAKE = Rotation2d.fromDegrees(45);
+    public static final Rotation2d SETPOINT_MID = Rotation2d.fromDegrees(90);
+    public static final Rotation2d SETPOINT_HIGH = Rotation2d.fromDegrees(110);
   }
 
   public static final class Telescope {
     public static final double P = 0.03;
     public static final double I = 0.0001;
     public static final double D = 0;
-    public static final int telescopemotor = 5;
+    public static final int telescopemotor = 4;
 
     public static final double TELESCOPE_SETPOINT_FUNNEL = 0.0;
     public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 0.0;
@@ -266,7 +275,7 @@ public final class Constants {
     public static final double P = 3;
     public static final double I = 0.0;
     public static final double D = 0.0;
-    public static final int WristMotor = 13;
+    public static final int WristMotor = 9;
 
     public static final Constraints wristCONSTRAINTS = new Constraints(0.5, 0.8);
 

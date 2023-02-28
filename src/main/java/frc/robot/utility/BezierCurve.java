@@ -4,6 +4,7 @@
 
 package frc.robot.utility;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /** Represents a cubic bezier curve. */
@@ -17,8 +18,7 @@ public class BezierCurve {
   }
 
   public Translation2d interpolate(double t) {
-    if (t < 0) t = 0;
-    if (t > 1) t = 1;
+    t = MathUtil.clamp(t, 0, 1);
 
     // Math from https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves
     double x =
@@ -32,6 +32,20 @@ public class BezierCurve {
             + 3 * Math.pow((1 - t), 2) * t * p[1].getY()
             + 3 * (1 - t) * Math.pow(t, 2) * p[2].getY()
             + Math.pow(t, 3) * p[3].getY();
+
+    return new Translation2d(x, y);
+  }
+
+  public Translation2d getFirstDerivative(double t) {
+    double x =
+        3 * Math.pow((1 - t), 2) * (p[1].getX() - p[0].getX())
+            + 6 * (1 - t) * t * (p[2].getX() - p[1].getX())
+            + 3 * Math.pow(t, 2) * (p[3].getX() - p[2].getX());
+
+    double y =
+        3 * Math.pow((1 - t), 2) * (p[1].getY() - p[0].getY())
+            + 6 * (1 - t) * t * (p[2].getY() - p[1].getY())
+            + 3 * Math.pow(t, 2) * (p[3].getY() - p[2].getY());
 
     return new Translation2d(x, y);
   }

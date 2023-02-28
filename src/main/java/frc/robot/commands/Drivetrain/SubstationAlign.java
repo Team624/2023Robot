@@ -59,12 +59,10 @@ public class SubstationAlign extends CommandBase {
   public void execute() {
     if (red_alliance) {
       xController.setGoal(distance);
-      omegaController.setGoal(Math.PI / 2);
     } else {
       xController.setGoal(16.54 - distance);
-      omegaController.setGoal(-Math.PI / 2);
     }
-
+    omegaController.setGoal(-Math.PI / 2);
     yController.setGoal(-1.26839);
     double yVel = yController.calculate(m_drivetrain.getPose().getY());
     double xVel = xController.calculate(m_drivetrain.getPose().getX());

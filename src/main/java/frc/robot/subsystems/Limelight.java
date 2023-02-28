@@ -4,7 +4,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +11,7 @@ public class Limelight extends SubsystemBase {
 
   private final NetworkTable networkTable;
   private final NetworkTableEntry botpose_network;
-  private final NetworkTableEntry camtran_network;
   private final NetworkTableEntry tid_network;
-  private final NetworkTableEntry latency_network;
   private final NetworkTableEntry ta_network;
   private double ta;
   private double tl;
@@ -28,10 +25,8 @@ public class Limelight extends SubsystemBase {
 
   public Limelight() {
     networkTable = NetworkTableInstance.getDefault().getTable("limelight");
-    latency_network = networkTable.getEntry("tl");
     ta_network = networkTable.getEntry("ta");
     botpose_network = networkTable.getEntry("botpose");
-    camtran_network = networkTable.getEntry("camtran");
     tid_network = networkTable.getEntry("tid");
     id_json = new HashMap<Double, Double>();
     id_json.put(1.0, -6.94659);
@@ -50,12 +45,12 @@ public class Limelight extends SubsystemBase {
   public boolean hasTarget() {
     return tid >= 1 && tid <= 8;
   }
-  // piss
+
   public double getID() {
     return tid;
   }
 
-  public double[] alignment_values() {
+  public double[] getAlignmentValues() {
     if (tid <= 8 && tid >= 1) {
       double distance = Math.abs(y_coordinate - id_json.get(tid));
       if (angle < 0) {
@@ -84,12 +79,6 @@ public class Limelight extends SubsystemBase {
       x_coordinate = 0;
       y_coordinate = 0;
       tl = 0;
-    }
-    double[] camtran = camtran_network.getDoubleArray(new double[] {});
-    if (camtran.length == 6) {
-      angle = camtran[4];
-    } else {
-      angle = 180;
     }
     tl = (tl + 11) / 1000.0;
     tid = tid_network.getDouble(-1.0);
@@ -122,37 +111,8 @@ public class Limelight extends SubsystemBase {
     return botpose;
   }
 
-  public String getValues() {
-    return Arrays.toString(alignment_values());
-  }
-
   public double getYofTag() {
     if (!hasTarget()) return 0;
     return id_json.get(getID());
-  }
-
-  public double getBotPoseAngle() {
-    return botpose[5];
-  }
-
-  public double getDistance() {
-    double x_april_tag = 0;
-    double id = getID();
-    if (id == 0) {
-      return 624;
-    }
-    if (id > 8 || id < 1) {
-      return -1;
-    } else if (id < 4) {
-      x_april_tag = 7.24310;
-    } else if (id > 5) {
-      x_april_tag = -7.24310;
-    } else if (id == 5) {
-      x_april_tag = -7.90832;
-    } else if (id == 4) {
-      x_april_tag = 7.90832;
-    }
-    x_april_tag += 8.27;
-    return Math.sqrt(Math.pow(x_april_tag - getX(), 2) + Math.pow(getYofTag() - getY(), 2));
   }
 }

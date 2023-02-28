@@ -12,35 +12,34 @@ public class SetArm extends CommandBase {
   /** Creates a new SetArm. */
   private final Arm m_Arm;
 
-  private final Rotation2d m_Setpoint;
+  private final Rotation2d m_setPoint;
 
   public SetArm(Arm arm, Rotation2d setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
-    this.m_Setpoint = setpoint;
+    this.m_setPoint = setpoint;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Arm.enable();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    m_Arm.setReference(m_Setpoint);
+    m_Arm.setGoal(m_setPoint);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_Arm.stopArm();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
     return false;
   }
 }

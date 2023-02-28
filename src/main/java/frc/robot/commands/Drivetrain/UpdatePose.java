@@ -33,8 +33,8 @@ public class UpdatePose extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     if (m_Limelight.hasTarget() && keepRunning) {
+      // remove this if statement later
       if (!((m_Limelight.getID() == 4 && DriverStation.getAlliance() == Alliance.Red)
           || (m_Limelight.getID() == 5 && DriverStation.getAlliance() == Alliance.Blue))) {
         m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose(), m_Limelight.getLatency());

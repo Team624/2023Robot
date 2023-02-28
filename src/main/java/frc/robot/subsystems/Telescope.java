@@ -13,7 +13,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class Telescope extends SubsystemBase {
   /** Creates a new Telescope. */
@@ -28,7 +27,7 @@ public class Telescope extends SubsystemBase {
   private double D;
 
   public Telescope() {
-    telescopeMotor = new CANSparkMax(Constants.Telescope.telescopemotor, MotorType.kBrushless);
+    telescopeMotor = new CANSparkMax(4, MotorType.kBrushless);
     telescopeMotor.restoreFactoryDefaults();
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();

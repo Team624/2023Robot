@@ -9,18 +9,19 @@ import frc.robot.subsystems.Arm;
 
 public class IdleArm extends CommandBase {
   /** Creates a new IdleArm. */
-  private final Arm m_Arm;
+  private final Arm m_arm;
 
   public IdleArm(Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Arm = arm;
+    this.m_arm = arm;
     addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Arm.stopArm();
+    m_arm.enable();
+    m_arm.setGoal(m_arm.getAbsoluteRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
