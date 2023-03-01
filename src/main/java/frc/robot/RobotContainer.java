@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.ArmTelescopeWrist;
-import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -27,6 +26,7 @@ import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
 import frc.robot.commands.Wrist.ControlWrist;
@@ -39,8 +39,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.ledControl;
-import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -145,8 +143,8 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
-  private final ledControl m_LedControl =
-      new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
+  // private final ledControl m_LedControl =
+  //     new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -184,9 +182,9 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
+    // changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
 
-    changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
+    // changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
@@ -288,7 +286,6 @@ public class RobotContainer {
     setBotHigh.whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
     setBotMid.whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
     setBotIntake.whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist, 2));
-
 
     // if(m_LedControl.cone){
     //   setBotIntake.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));

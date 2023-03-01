@@ -123,7 +123,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
-    swerveOdometry.update(getYaw(), getModulePositions());
+    poseEstimator.update(getYaw(), getModulePositions()); // this crap
 
     updateNT();
   }
@@ -183,7 +183,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void updatePoseLimelight(double[] pose, double latency) {
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
-    poseEstimator.addVisionMeasurement(newPose, Timer.getFPGATimestamp() - latency);
+    poseEstimator.addVisionMeasurement(newPose, Timer.getFPGATimestamp());
   }
 
   public SwerveModuleState[] getModuleStates() {
@@ -209,7 +209,7 @@ public class Drivetrain extends SubsystemBase {
     Rotation2d newRot = new Rotation2d(startPosition[2]);
     Pose2d newPose = new Pose2d(startPosition[0], startPosition[1], newRot);
     // swerveOdometry.resetPosition(newPose, newRot);
-    swerveOdometry.resetPosition(newRot, getModulePositions(), newPose);
+    poseEstimator.resetPosition(newRot, getModulePositions(), newPose);
     ahrs.setAngleAdjustment(newRot.getDegrees());
   }
 
@@ -224,17 +224,18 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return swerveOdometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
 
-  public double[] getSwervePose() {
+  // public double[] getSwervePose() {
 
-    double[] pose = {swerveOdometry.getPoseMeters().getX(), swerveOdometry.getPoseMeters().getY()};
-    return pose;
-  }
+  //   double[] pose = {swerveOdometry.getPoseMeters().getX(),
+  // swerveOdometry.getPoseMeters().getY()};
+  //   return pose;
+  // }
 
   public void resetOdometry(Pose2d pose) {
-    swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
   }
 
   public Rotation2d getYaw() {

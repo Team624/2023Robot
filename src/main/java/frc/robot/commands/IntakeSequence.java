@@ -19,11 +19,11 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeSequence extends SequentialCommandGroup {
   /** Creates a new IntakeSequence. */
-
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
+
   public IntakeSequence(Arm arm, Telescope telescope, Wrist wrist, int i) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -54,9 +54,9 @@ public class IntakeSequence extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_MID,
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
-    addCommands(new SetWristCommand(wrist, wristPos[i]),new SetTelescope(telescope, telePos[i]),
-    new SetArm(arm, armPos[i])
-    
-    );
+    addCommands(
+        new SetWristCommand(wrist, wristPos[i]),
+        new SetTelescope(telescope, telePos[i]),
+        new SetArm(arm, armPos[i]));
   }
 }

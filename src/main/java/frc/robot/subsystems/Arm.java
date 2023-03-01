@@ -106,13 +106,12 @@ public class Arm extends ProfiledPIDSubsystem {
 
   @Override
   protected void useOutput(double output, State setpoint) {
-    System.out.println("RUNNING!!!!!!!!!!!!!!!!\n");
+
     if (this.m_enabled) {
       // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
 
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
-      System.out.println("Voltage: " + voltage);
       voltageEntry.setDouble(voltage);
       armMotorLeft.setVoltage(voltage);
       armMotorRight.setVoltage(voltage);

@@ -109,11 +109,8 @@ public class Wrist extends SubsystemBase {
     // 5.54 raidans ground intake
     double voltage = wristController.calculate(getAbsoluteRotation().getRadians(), rotation);
 
-    System.out.println("Voltage: " + voltage);
-
     wristMotor.setVoltage(-voltage);
-    System.out.println("Bore: " + getAbsoluteRotation().getRadians());
-    System.out.println("Setpoint: " + rotation);
+  
   }
 
   public Rotation2d getAbsoluteRotation() {
