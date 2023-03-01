@@ -104,6 +104,13 @@ public class Arm extends ProfiledPIDSubsystem {
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBore();
 
+    // Handle encoder looping around
+    if (radians > 1.5 * Math.PI) { 
+      double excess = radians - 1.5 * Math.PI;
+
+      radians = -(0.5 * Math.PI - excess);
+    }
+
     return new Rotation2d(radians);
   }
 

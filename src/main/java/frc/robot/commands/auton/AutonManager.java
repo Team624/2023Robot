@@ -11,23 +11,38 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
+import frc.robot.commands.Intake.ReverseIntake;
+import frc.robot.commands.Intake.RunIntake;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Telescope;
+import frc.robot.subsystems.Wrist;
 import frc.robot.utility.BezierCurve;
 import frc.robot.utility.Path;
 
 // Gets states from NetworkTables (published by ros) during auton
 public class AutonManager extends CommandBase {
   private Drivetrain drivetrain;
+  private Arm arm;
+  private Telescope telescope;
+  private Wrist wrist;
+  private Intake intake;
+
   private Path[] paths;
   private Command currentFollowPathCommand;
   private int previousPath = -1;
   private Command currentBalanceCommand;
   private Command currentArmCommand;
 
-  public AutonManager(Drivetrain drivetrain) {
+  public AutonManager(Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake) {
     this.drivetrain = drivetrain;
+    this.arm = arm;
+    this.telescope = telescope;
+    this.wrist = wrist;
   }
 
   // Called when the command is initially scheduled.
@@ -88,49 +103,50 @@ public class AutonManager extends CommandBase {
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("retract");
 
-    // TODO: Replace these with commands at some point. Do the setstate in the command when it
-    // finished
+    if (state.equals("none") || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) return;
+
     switch (state) {
       case "move_intake":
         SmartDashboard.getEntry("/auto/arm/state").setString("intake");
+        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 1);
         break;
 
       case "intake":
         SmartDashboard.getEntry("/auto/arm/state").setString("intake");
-        break;
-
-      case "move_cone_high":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cone_high");
-        break;
-
-      case "move_cone_mid":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cone_mid");
-        break;
-
-      case "move_cone_low":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cone_low");
+        this.currentArmCommand = new RunIntake(intake);
         break;
 
       case "move_cube_high":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cube_high");
+      case "move_cone_high":
+        SmartDashboard.getEntry("/auto/arm/state").setString("cone_high");
+        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 4);
         break;
 
       case "move_cube_mid":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cube_mid");
+      case "move_cone_mid":
+        SmartDashboard.getEntry("/auto/arm/state").setString("cone_mid");
+        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 3);
         break;
 
       case "move_cube_low":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cube_low");
+      case "move_cone_low":
+        SmartDashboard.getEntry("/auto/arm/state").setString("cone_intake");
+        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 1);
         break;
 
       case "place":
+        this.currentArmCommand = new ReverseIntake(intake);
         break;
 
       case "retract":
       default:
-        System.out.println("Retracting my arm (in my imagination)");
+        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 0);
         SmartDashboard.getEntry("/auto/arm/state").setString("retract");
     }
+
+    this.currentArmCommand.schedule();
+
+    SmartDashboard.getEntry("/autl/arm/set").setString("none");
   }
 
   // Starts the path specified by ROS in NetworkTables
