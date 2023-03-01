@@ -39,7 +39,7 @@ public class SetTelescope extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(m_Telescope.getTelescopeEncoder() - m_setPoint) < 0.1) {
+    if (Math.abs(m_Telescope.getTelescopeEncoder() - m_setPoint) < 1.0) {
       return true;
     }
     return false;

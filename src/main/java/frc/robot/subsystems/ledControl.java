@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import com.revrobotics.ColorMatch;
@@ -9,7 +13,10 @@ import frc.robot.trobot5013lib.led.ChasePattern;
 import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 import frc.robot.trobot5013lib.led.TrobotAddressableLEDPattern;
 
+
+
 public class ledControl extends SubsystemBase {
+  /** Creates a new ledControl. */
 
   private final ColorMatch colorMatcher = new ColorMatch();
 
@@ -49,32 +56,40 @@ public class ledControl extends SubsystemBase {
     colorMatcher.addColorMatch(kYellowTarget);
   }
 
+  @Override
   public void periodic() {
-    if (_default) {
-      if (DriverStation.getAlliance() == Alliance.Red) {
-        m_led.setPattern(m_redChasePattern);
-      } else {
-        m_led.setPattern(m_blueChasePattern);
-        ;
-      }
-    } else if (!cone && double_substation) {
-      m_led.setPattern(m_purpleChasePattern);
-    } else if (!cone && !double_substation) {
-      m_led.setPattern(m_purpleWhiteChasePattern);
-    } else if (cone && double_substation) {
-      m_led.setPattern(m_yellowChasePattern);
+    // This method will be called once per scheduler run
+  }
+
+
+public void update(){
+  if (_default) {
+    if (DriverStation.getAlliance().equals(Alliance.Red)) {
+      m_led.setPattern(m_redChasePattern);
     } else {
-      m_led.setPattern(m_yellowWhiteChasePattern);
+      m_led.setPattern(m_blueChasePattern);
+      ;
     }
+  } else if (!cone && double_substation) {
+    m_led.setPattern(m_purpleChasePattern);
+  } else if (!cone && !double_substation) {
+    m_led.setPattern(m_purpleWhiteChasePattern);
+  } else if (cone && double_substation) {
+    m_led.setPattern(m_yellowChasePattern);
+  } else {
+    m_led.setPattern(m_yellowWhiteChasePattern);
   }
+}
+public void updateCargo() {
+  _default = false;
+  cone = !cone;
+  update();
+}
 
-  public void updateCargo() {
-    _default = false;
-    cone = !cone;
-  }
+public void updateStation() {
+  _default = false;
+  double_substation = !double_substation;
+  update();
+}
 
-  public void updateStation() {
-    _default = false;
-    double_substation = !double_substation;
-  }
 }

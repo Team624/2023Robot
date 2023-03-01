@@ -50,6 +50,7 @@ public class TrobotAddressableLED {
   }
 
   public void setPattern(TrobotAddressableLEDPattern pattern) {
+    System.out.println("setting patters");
     if (pattern != m_pattern) {
       m_pattern = pattern;
       if (task != null) {
@@ -73,6 +74,7 @@ public class TrobotAddressableLED {
   }
 
   public void update() {
+    System.out.println("update bruhv");
     m_pattern.setLEDs(getBuffer());
     getLED().setData(getBuffer());
   }

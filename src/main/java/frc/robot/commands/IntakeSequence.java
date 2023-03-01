@@ -4,34 +4,44 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.Wrist.SetWristCommand;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TelescopeWrist extends ParallelCommandGroup {
-  /** Creates a new TopPosition. */
-  private final Telescope m_Telescope;
+public class IntakeSequence extends SequentialCommandGroup {
+  /** Creates a new IntakeSequence. */
+  private final Arm m_Arm;
 
+  private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
-  public TelescopeWrist(Telescope telescope, Wrist wrist, int i) {
+  public IntakeSequence(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
+    this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    // Funnel = 0
-    // IntakeCONE = 1
-    // IntakeCUBE = 2
-    // mid = 3
-    // High = 4
+    //CUBE INTAKE == laying down 
+    // CONE INTAKE == upright
+
+    Rotation2d[] armPos = {
+      Constants.Arm.ARM_SETPOINT_FUNNEL,
+      Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
+      Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
+      Constants.Arm.ARM_SETPOINT_MID,
+      Constants.Arm.ARM_SETPOINT_HIGH
+    };
 
     double[] telePos = {
       Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
@@ -48,6 +58,18 @@ public class TelescopeWrist extends ParallelCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    addCommands(new SetWristCommand(wrist, wristPos[i]), new SetTelescope(telescope, telePos[i]));
+    if(m_Arm.cone){
+      addCommands(
+        new SetWristCommand(wrist, wristPos[1]),
+        new SetTelescope(telescope, telePos[1]),
+        new SetArm(arm, armPos[1]));
+    }
+    else{
+      addCommands(
+        new SetWristCommand(wrist, wristPos[2]),
+        new SetTelescope(telescope, telePos[2]),
+        new SetArm(arm, armPos[2]));
+    }
+    
   }
 }

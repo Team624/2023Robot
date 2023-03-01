@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -82,6 +81,7 @@ public class Wrist extends SubsystemBase {
     // wristMotor.setSoftLimit(SoftLimitDirection.kReverse, -228);
 
     rotationReference = getAbsoluteRotation();
+    wristController.setTolerance(Units.degreesToRadians(6));
   }
 
   @Override
@@ -97,8 +97,11 @@ public class Wrist extends SubsystemBase {
     wristController.reset(getAbsoluteRotation().getRadians());
   }
 
+  public ProfiledPIDController getContoller() {
+    return wristController;
+  }
+
   public void setReference(double rotation) {
-    wristController.setTolerance(Units.degreesToRadians(3));
 
     // 3.85 radians = mid
     // 4.24 raidans = high
@@ -106,14 +109,8 @@ public class Wrist extends SubsystemBase {
     // 5.54 raidans ground intake
     double voltage = wristController.calculate(getAbsoluteRotation().getRadians(), rotation);
 
-    System.out.println("Voltage: " + voltage);
-
     wristMotor.setVoltage(-voltage);
-    System.out.println("Bore: " + getAbsoluteRotation().getRadians());
-    System.out.println("Setpoint: " + rotation);
-    if (wristController.atGoal()) {
-      this.stopWrist();
-    }
+  
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -123,7 +120,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getBoreEncoder() {
-    return (MathUtil.inputModulus(WristboreEncoder.getAbsolutePosition()- 0.39, 0, 1));
+    return (MathUtil.inputModulus(WristboreEncoder.getAbsolutePosition() - 0.39, 0, 1));
   }
 
   public void zeroBoreEncoder() {

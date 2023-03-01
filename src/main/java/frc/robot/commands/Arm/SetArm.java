@@ -41,7 +41,5 @@ public class SetArm extends CommandBase {
   @Override
   public boolean isFinished() {
     return m_Arm.getController().atGoal();
-
-    
   }
 }

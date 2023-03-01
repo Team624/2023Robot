@@ -19,13 +19,13 @@ public class IdleIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_Intake.stopIntake();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_Intake.runIntake(-0.1);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

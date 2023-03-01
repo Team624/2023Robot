@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.Arm.SetArm;
+import frc.robot.commands.ArmTelescopeWrist;
+import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -27,11 +27,11 @@ import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
-import frc.robot.commands.Wrist.SetWristCommand;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -184,6 +184,7 @@ public class RobotContainer {
     // cancelling on release.
 
     // changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
+    changePiece4LED.onTrue(new InstantCommand(() -> m_arm.pieceChange()));
 
     // changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
 
@@ -211,8 +212,6 @@ public class RobotContainer {
     manual.and(armMove).whileTrue(new ControlArm(m_arm, m_controller));
     manual.and(armMove2).whileTrue(new ControlArm(m_arm, m_controller));
 
-
-
     /** Telescope */
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));
     manual.and(telescopeMove2).whileTrue(new ControlTelescope(m_telescope, m_controller));
@@ -238,27 +237,15 @@ public class RobotContainer {
     // setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CONE_INTAKE));
     // setBotFunnel.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_FUNNEL));
 
-    // if(m_LedControl.cone){
-    //   setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CONE_INTAKE));
-    // }
-    // else{
-    //   setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CUBE_INTAKE));
-    // }
 
     /** WRIST TESTING */
     // setBotHigh.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
     // setBotMid.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_MID));
-    // setBotIntake.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
+    // setBotIntake.onTrue(new SetWristCommand(m_wrist,
+    // Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
     // setBotFunnel.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_FUNNEL));
 
-    // if(m_LedControl.cone){
-    //   setBotIntake.onTrue(new SetWristCommand(m_wrist,
-    // Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
-    // }
-    // else{
-    //   setBotIntake.onTrue(new SetWristCommand(m_wrist,
-    // Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE));
-    // }
+
 
     /** TELESCOPE TESTING */
 
@@ -270,14 +257,7 @@ public class RobotContainer {
     // setBotFunnel.onTrue(new SetTelescope(m_telescope,
     // Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL));
 
-    // if(m_LedControl.cone){
-    //   setBotIntake.onTrue(new SetTelescope(m_telescope,
-    // Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE));
-    // }
-    // else{
-    //   setBotIntake.onTrue(new SetTelescope(m_telescope,
-    // Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE));
-    // }
+
 
     // Funnel = 0
     // IntakeCONE = 1
@@ -285,19 +265,15 @@ public class RobotContainer {
     // mid = 3
     // High = 4
 
-    setBotHigh.whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
-    // setBotHigh.whileTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
-    // setBotMid.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
-    // if(m_LedControl.cone){
-    //   setBotIntake.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
-    // }
-    // else{
-    //   setBotIntake.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
-    // }
-    // setBotFunnel.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
+    manual.and(setBotHigh).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
+    manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
+    manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+    manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
+
+
 
     runIntake.whileTrue(new RunIntake(m_intake));
-    reverseIntake.whileTrue(new ReverseIntake(m_intake));
+    reverseIntake.whileTrue(new ReverseIntake(m_intake,m_arm));
   }
 
   /**
