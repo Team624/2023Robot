@@ -79,8 +79,8 @@ public class Telescope extends SubsystemBase {
 
   public void setTelescope(double position) {
     telescopePID.setReference(position, ControlType.kPosition);
-    telescopePID.setReference(
-        position, ControlType.kPosition, 0, telescopFeedforward.calculate(0.0));
+    // telescopePID.setReference(
+    //     position, ControlType.kPosition, 0, telescopFeedforward.calculate(0.0));
   }
 
   public void resetEncoder() {

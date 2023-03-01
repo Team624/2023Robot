@@ -36,6 +36,7 @@ public class Arm extends ProfiledPIDSubsystem {
   private ShuffleboardTab armTab;
 
   private double voltage = 0;
+  public boolean recentFunnel = false;
 
   private GenericEntry positionEntry;
   private GenericEntry enabledEntry;
@@ -43,7 +44,6 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry voltageEntry;
 
   public Arm() {
-
 
     super(
         new ProfiledPIDController(
@@ -55,7 +55,6 @@ public class Arm extends ProfiledPIDSubsystem {
                 Constants.Arm.kMaxAccelerationRadiansPerSecondSquared)));
 
     getController().setTolerance(Units.degreesToRadians(3));
-    
 
     armMotorRight = new CANSparkMax(Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.restoreFactoryDefaults();
@@ -81,8 +80,6 @@ public class Arm extends ProfiledPIDSubsystem {
         armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
     setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
-
-    
   }
 
   @Override
@@ -97,8 +94,8 @@ public class Arm extends ProfiledPIDSubsystem {
   }
 
   public double getBore() {
-    return MathUtil.inputModulus(//
-        (1-boreEncoder.getAbsolutePosition())+ Constants.Arm.BORE_ENCODER_OFFSET , 0.0, 1.0);
+    return MathUtil.inputModulus( //
+        (1 - boreEncoder.getAbsolutePosition()) + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -112,9 +109,9 @@ public class Arm extends ProfiledPIDSubsystem {
     System.out.println("RUNNING!!!!!!!!!!!!!!!!\n");
     if (this.m_enabled) {
       // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
-      
+
       voltage =
-      output +armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
+          output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
       System.out.println("Voltage: " + voltage);
       voltageEntry.setDouble(voltage);
       armMotorLeft.setVoltage(voltage);

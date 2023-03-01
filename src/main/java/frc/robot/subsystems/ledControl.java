@@ -50,8 +50,9 @@ public class ledControl extends SubsystemBase {
   }
 
   public void periodic() {
+    System.out.println(DriverStation.getAlliance());
     if (_default) {
-      if (DriverStation.getAlliance() == Alliance.Red) {
+      if (DriverStation.getAlliance().equals(Alliance.Red)) {
         m_led.setPattern(m_redChasePattern);
       } else {
         m_led.setPattern(m_blueChasePattern);

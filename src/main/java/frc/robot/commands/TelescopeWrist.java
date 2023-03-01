@@ -48,6 +48,6 @@ public class TelescopeWrist extends ParallelCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    addCommands(new SetTelescope(telescope, telePos[i]), new SetWristCommand(wrist, wristPos[i]));
+    addCommands(new SetWristCommand(wrist, wristPos[i]), new SetTelescope(telescope, telePos[i]));
   }
 }

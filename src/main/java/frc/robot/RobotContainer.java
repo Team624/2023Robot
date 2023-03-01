@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.Arm.SetArm;
+import frc.robot.commands.ArmTelescopeWrist;
+import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -31,7 +31,6 @@ import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
-import frc.robot.commands.Wrist.SetWristCommand;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -40,6 +39,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.ledControl;
+import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -144,8 +145,8 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
-  // private final ledControl m_LedControl =
-  //     new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
+  private final ledControl m_LedControl =
+      new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -183,9 +184,9 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    // changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
+    changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
 
-    // changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
+    changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
@@ -210,8 +211,6 @@ public class RobotContainer {
     /** Arm */
     manual.and(armMove).whileTrue(new ControlArm(m_arm, m_controller));
     manual.and(armMove2).whileTrue(new ControlArm(m_arm, m_controller));
-
-
 
     /** Telescope */
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));
@@ -248,7 +247,8 @@ public class RobotContainer {
     /** WRIST TESTING */
     // setBotHigh.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
     // setBotMid.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_MID));
-    // setBotIntake.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
+    // setBotIntake.onTrue(new SetWristCommand(m_wrist,
+    // Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
     // setBotFunnel.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_FUNNEL));
 
     // if(m_LedControl.cone){
@@ -286,8 +286,10 @@ public class RobotContainer {
     // High = 4
 
     setBotHigh.whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
-    // setBotHigh.whileTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
-    // setBotMid.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
+    setBotMid.whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
+    setBotIntake.whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist, 2));
+
+
     // if(m_LedControl.cone){
     //   setBotIntake.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
     // }

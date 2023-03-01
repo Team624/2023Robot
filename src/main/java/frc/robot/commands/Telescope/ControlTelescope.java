@@ -30,7 +30,6 @@ public class ControlTelescope extends CommandBase {
   @Override
   public void execute() {
 
-
     m_Telescope.controlTelescope(-m_Controller.getRightY());
   }
 

@@ -254,11 +254,11 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(35);
     public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(27);
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(100);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(112);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(118);
   }
 
   public static final class Telescope {
-    public static final double P = 0.03;
+    public static final double P = 0.025;
     public static final double I = 0.0001;
     public static final double D = 0;
     public static final int telescopemotor = 5;
@@ -267,7 +267,7 @@ public final class Constants {
     public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 3.4;
     public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 7.785;
     public static final double TELESCOPE_SETPOINT_MID = 5.7;
-    public static final double TELESCOPE_SETPOINT_HIGH = 29.5;
+    public static final double TELESCOPE_SETPOINT_HIGH = 23.5;
 
     // FF constants
     public static final double kS = 0.0;
@@ -276,12 +276,12 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 3;
+    public static final double P = 9;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
 
-    public static final Constraints wristCONSTRAINTS = new Constraints(1, 1.5);
+    public static final Constraints wristCONSTRAINTS = new Constraints(6, 5);
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -298,11 +298,11 @@ public final class Constants {
     ;
     public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.72;
     public static final double WRIST_SETPOINT_MID = 1.5;
-    public static final double WRIST_SETPOINT_HIGH = 1.55;
+    public static final double WRIST_SETPOINT_HIGH = 1.32;
   }
 
   public static final class LED {
-    public static final int LEDPort = 0;
-    public static final int LENGTH = 5;
+    public static final int LEDPort = 1;
+    public static final int LENGTH = 16;
   }
 }
