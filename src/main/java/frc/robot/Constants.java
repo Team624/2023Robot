@@ -288,10 +288,6 @@ public final class Constants {
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    // 3.85 radians = mid
-    // 4.24 raidans = high
-
-    // 5.54 raidans ground intake
 
     public static final double WRIST_SETPOINT_FUNNEL = 0.0;
     public static final double WRIST_SETPOINT_CONE_INTAKE = 2.5;

@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -42,6 +43,9 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry enabledEntry;
   private GenericEntry setpointEntry;
   private GenericEntry voltageEntry;
+  private GenericEntry coneEntry;
+
+  public boolean cone = false;
 
   public Arm() {
 
@@ -75,11 +79,14 @@ public class Arm extends ProfiledPIDSubsystem {
 
     armTab = Shuffleboard.getTab("Arm");
 
+    
+
     positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     enabledEntry =
         armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
     setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
+    coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
   }
 
   @Override
@@ -90,7 +97,12 @@ public class Arm extends ProfiledPIDSubsystem {
     enabledEntry.setBoolean(m_enabled);
     setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
-    SmartDashboard.putNumber("/Arm/Bore/Abs", getBore());
+    if(cone){
+      coneEntry.setBoolean(true);
+    }
+    else{
+      coneEntry.setBoolean(false);
+    }
   }
 
   public double getBore() {
@@ -135,7 +147,7 @@ public class Arm extends ProfiledPIDSubsystem {
   public void setArmCommand(double setpoint) {
     System.out.println("setpoint in command: " + setpoint);
     Rotation2d angle = new Rotation2d(setpoint);
-    // feedforward.calculate(angle.getRadians(), 0)
+    
 
     armMotorLeft.setVoltage(setpoint);
     armMotorRight.setVoltage(setpoint);
@@ -146,4 +158,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorLeft.set(speed);
     armMotorRight.set(speed);
   }
+  public void pieceChange(){
+    cone= !cone;
+  }
+
 }

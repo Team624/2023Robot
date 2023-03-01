@@ -24,13 +24,16 @@ public class IntakeSequence extends SequentialCommandGroup {
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
-  public IntakeSequence(Arm arm, Telescope telescope, Wrist wrist, int i) {
+  public IntakeSequence(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
+
+    //CUBE INTAKE == laying down 
+    // CONE INTAKE == upright
 
     Rotation2d[] armPos = {
       Constants.Arm.ARM_SETPOINT_FUNNEL,
@@ -54,9 +57,19 @@ public class IntakeSequence extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_MID,
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
-    addCommands(
-        new SetWristCommand(wrist, wristPos[i]),
-        new SetTelescope(telescope, telePos[i]),
-        new SetArm(arm, armPos[i]));
+
+    if(m_Arm.cone){
+      addCommands(
+        new SetWristCommand(wrist, wristPos[1]),
+        new SetTelescope(telescope, telePos[1]),
+        new SetArm(arm, armPos[1]));
+    }
+    else{
+      addCommands(
+        new SetWristCommand(wrist, wristPos[2]),
+        new SetTelescope(telescope, telePos[2]),
+        new SetArm(arm, armPos[2]));
+    }
+    
   }
 }
