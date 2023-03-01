@@ -18,6 +18,14 @@ import frc.robot.subsystems.Wrist;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ArmTelescopeWrist extends SequentialCommandGroup {
+  public enum Setpoint {
+    FUNNEL,
+    CONE_INTAKE,
+    CUBE_INTAKE,
+    MID,
+    HIGH
+  }
+
   /** Creates a new ArmTelescopeWrist. */
   private final Arm m_Arm;
 

@@ -112,6 +112,13 @@ public class Arm extends ProfiledPIDSubsystem {
       radians = -(0.5 * Math.PI - excess);
     }
 
+    // Handle encoder looping around
+    if (radians > 1.5 * Math.PI) { 
+      double excess = radians - 1.5 * Math.PI;
+
+      radians = -(0.5 * Math.PI - excess);
+    }
+
     return new Rotation2d(radians);
   }
 
