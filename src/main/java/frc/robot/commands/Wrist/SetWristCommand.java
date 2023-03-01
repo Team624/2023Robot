@@ -40,6 +40,7 @@ public class SetWristCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("IN WRIST SET");
     return m_Wrist.getContoller().atGoal();
   }
 }

@@ -11,6 +11,7 @@ import frc.robot.subsystems.Intake;
 public class ReverseIntake extends CommandBase {
   /** Creates a new ReverseIntake. */
   private final Intake m_intake;
+
   private final Arm m_Arm;
 
   public ReverseIntake(Intake intake, Arm arm) {
@@ -27,11 +28,11 @@ public class ReverseIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_Arm.cone){
-    m_intake.runIntake(-0.6);
-  }
-  else{
-    m_intake.runIntake(-0.3);
+    if (m_Arm.cone) {
+      m_intake.runIntake(-0.6);
+    } else {
+      m_intake.runIntake(-0.3);
+    }
   }
 
   // Called once the command ends or is interrupted.

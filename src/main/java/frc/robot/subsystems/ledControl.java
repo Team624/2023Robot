@@ -13,11 +13,8 @@ import frc.robot.trobot5013lib.led.ChasePattern;
 import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 import frc.robot.trobot5013lib.led.TrobotAddressableLEDPattern;
 
-
-
-public class ledControl extends SubsystemBase {
+public class LedControl extends SubsystemBase {
   /** Creates a new ledControl. */
-
   private final ColorMatch colorMatcher = new ColorMatch();
 
   private final Color kPurpleTarget = new Color(0.54, 0.17, 0.89);
@@ -50,7 +47,7 @@ public class ledControl extends SubsystemBase {
   public boolean cone = false;
   private boolean double_substation = false;
 
-  public ledControl(TrobotAddressableLED m_led_strip) {
+  public LedControl(TrobotAddressableLED m_led_strip) {
     m_led = m_led_strip;
     colorMatcher.addColorMatch(kPurpleTarget);
     colorMatcher.addColorMatch(kYellowTarget);
@@ -61,35 +58,34 @@ public class ledControl extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-
-public void update(){
-  if (_default) {
-    if (DriverStation.getAlliance().equals(Alliance.Red)) {
-      m_led.setPattern(m_redChasePattern);
+  public void update() {
+    if (_default) {
+      if (DriverStation.getAlliance().equals(Alliance.Red)) {
+        m_led.setPattern(m_redChasePattern);
+      } else {
+        m_led.setPattern(m_blueChasePattern);
+        ;
+      }
+    } else if (!cone && double_substation) {
+      m_led.setPattern(m_purpleChasePattern);
+    } else if (!cone && !double_substation) {
+      m_led.setPattern(m_purpleWhiteChasePattern);
+    } else if (cone && double_substation) {
+      m_led.setPattern(m_yellowChasePattern);
     } else {
-      m_led.setPattern(m_blueChasePattern);
-      ;
+      m_led.setPattern(m_yellowWhiteChasePattern);
     }
-  } else if (!cone && double_substation) {
-    m_led.setPattern(m_purpleChasePattern);
-  } else if (!cone && !double_substation) {
-    m_led.setPattern(m_purpleWhiteChasePattern);
-  } else if (cone && double_substation) {
-    m_led.setPattern(m_yellowChasePattern);
-  } else {
-    m_led.setPattern(m_yellowWhiteChasePattern);
   }
-}
-public void updateCargo() {
-  _default = false;
-  cone = !cone;
-  update();
-}
 
-public void updateStation() {
-  _default = false;
-  double_substation = !double_substation;
-  update();
-}
+  public void updateCargo() {
+    _default = false;
+    cone = !cone;
+    update();
+  }
 
+  public void updateStation() {
+    _default = false;
+    double_substation = !double_substation;
+    update();
+  }
 }

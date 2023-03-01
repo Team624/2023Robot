@@ -123,7 +123,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
-    poseEstimator.update(getYaw(), getModulePositions()); 
+    poseEstimator.update(getYaw(), getModulePositions());
 
     updateNT();
   }
@@ -188,7 +188,6 @@ public class Drivetrain extends SubsystemBase {
     Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
     poseEstimator.addVisionMeasurement(newPose, Timer.getFPGATimestamp());
   }
-  
 
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -220,8 +219,7 @@ public class Drivetrain extends SubsystemBase {
   public void zeroGyroscope() {
     ahrs.setAngleAdjustment(0);
     ahrs.reset();
-    poseEstimator.resetPosition(
-        new Rotation2d(0), getModulePositions(), getPose());
+    poseEstimator.resetPosition(new Rotation2d(0), getModulePositions(), getPose());
   }
 
   public Pose2d getPose() {

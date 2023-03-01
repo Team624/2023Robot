@@ -17,36 +17,19 @@ import frc.robot.subsystems.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ArmTelescopeWrist extends SequentialCommandGroup {
-  /** Creates a new ArmTelescopeWrist. */
+public class UprightConeIntake extends SequentialCommandGroup {
+  /** Creates a new UprightConeIntake. */
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
-  // private final ledControl m_led;
 
-  public ArmTelescopeWrist(
-      /** ledControl led, */
-      Arm arm, Telescope telescope, Wrist wrist, int i) {
+  public UprightConeIntake(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
-    // this.m_led = led;
-
-    // retract = 0
-    // IntakeCONE = 1
-    // IntakeCUBE = 2
-    // mid = 3
-    // High = 4
-
-    // if(!m_led.cone){
-    //   if(i==1){
-    //     i=2;
-    //   }
-    // }
 
     Rotation2d[] armPos = {
       Constants.Arm.ARM_SETPOINT_FUNNEL,
@@ -71,17 +54,9 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    if (m_Arm.recentFunnel) {
-      addCommands(
-          new SetTelescope(telescope, 0.5),
-          new SetWristCommand(wrist, 0.8),
-          new SetArm(arm, armPos[i]),
-          new SetWristCommand(wrist, wristPos[i]),
-          new SetTelescope(telescope, telePos[i]));
-    } else {
-      addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
-    }
-
-    m_Arm.recentFunnel = false;
+    addCommands(
+        new SetWristCommand(wrist, wristPos[1]),
+        new SetTelescope(telescope, telePos[1]),
+        new SetArm(arm, armPos[1]));
   }
 }

@@ -17,19 +17,21 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.ArmTelescopeWrist;
-import frc.robot.commands.FunnelSequence;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
+import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
+import frc.robot.commands.UprightConeIntake;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
 import frc.robot.commands.auton.AutonManager;
@@ -131,11 +133,11 @@ public class RobotContainer {
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-  private final JoystickButton creepMode =
-      new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+  // private final JoystickButton creepMode =
+  //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
-  // private final JoystickButton balance =
-  //     new JoystickButton(d_controller, XboxController.Button.kX.value);
+  private final JoystickButton balance =
+      new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -190,7 +192,7 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    // balance.onTrue(new Balance(m_drivetrain));
+    balance.onTrue(new Balance(m_drivetrain));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
     // uncomment this
@@ -237,15 +239,12 @@ public class RobotContainer {
     // setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CONE_INTAKE));
     // setBotFunnel.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_FUNNEL));
 
-
     /** WRIST TESTING */
     // setBotHigh.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
     // setBotMid.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_MID));
     // setBotIntake.onTrue(new SetWristCommand(m_wrist,
     // Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
     // setBotFunnel.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_FUNNEL));
-
-
 
     /** TELESCOPE TESTING */
 
@@ -257,8 +256,6 @@ public class RobotContainer {
     // setBotFunnel.onTrue(new SetTelescope(m_telescope,
     // Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL));
 
-
-
     // Funnel = 0
     // IntakeCONE = 1
     // IntakeCUBE = 2
@@ -267,13 +264,17 @@ public class RobotContainer {
 
     manual.and(setBotHigh).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
     manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
-    manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+
     manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
 
-
+    if (m_arm.cone) {
+      manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+    } else {
+      manual.and(setBotIntake).whileTrue(new UprightConeIntake(m_arm, m_telescope, m_wrist));
+    }
 
     runIntake.whileTrue(new RunIntake(m_intake));
-    reverseIntake.whileTrue(new ReverseIntake(m_intake,m_arm));
+    reverseIntake.whileTrue(new ReverseIntake(m_intake, m_arm));
   }
 
   /**
