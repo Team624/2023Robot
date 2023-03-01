@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.trobot5013lib.led.ChasePattern;
@@ -28,9 +30,17 @@ public class ledControl extends SubsystemBase {
   private Color[] yellowArray = {Color.kYellow};
   private TrobotAddressableLEDPattern m_yellowChasePattern = new ChasePattern(yellowArray, 3);
 
+  private Color[] redArray = {Color.kRed, Color.kWhite};
+  private TrobotAddressableLEDPattern m_redChasePattern = new ChasePattern(redArray, 3);
+
+  private Color[] blueArray = {Color.kBlue, Color.kWhite};
+  private TrobotAddressableLEDPattern m_blueChasePattern = new ChasePattern(blueArray, 3);
+
   private TrobotAddressableLED m_led;
 
-  private boolean cone = false;
+  private boolean _default = true;
+
+  public boolean cone = false;
   private boolean double_substation = false;
 
   public ledControl(TrobotAddressableLED m_led_strip) {
@@ -40,7 +50,14 @@ public class ledControl extends SubsystemBase {
   }
 
   public void periodic() {
-    if (!cone && double_substation) {
+    if (_default) {
+      if (DriverStation.getAlliance() == Alliance.Red) {
+        m_led.setPattern(m_redChasePattern);
+      } else {
+        m_led.setPattern(m_blueChasePattern);
+        ;
+      }
+    } else if (!cone && double_substation) {
       m_led.setPattern(m_purpleChasePattern);
     } else if (!cone && !double_substation) {
       m_led.setPattern(m_purpleWhiteChasePattern);
@@ -52,10 +69,12 @@ public class ledControl extends SubsystemBase {
   }
 
   public void updateCargo() {
+    _default = false;
     cone = !cone;
   }
 
   public void updateStation() {
+    _default = false;
     double_substation = !double_substation;
   }
 }

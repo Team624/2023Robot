@@ -10,6 +10,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -87,7 +89,7 @@ public class Wrist extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("/Wrist/Encoder", getWristEncoder());
     SmartDashboard.putNumber("/Arm/BoreEncoder/get", WristboreEncoder.get());
-    SmartDashboard.putNumber("/Wrist/BoreEncoder/Absolute", WristboreEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("/Wrist/BoreEncoder/Absolute", getBoreEncoder());
     SmartDashboard.putNumber("/Wrist/BoreEncoder/radians", getAbsoluteRotation().getRadians());
   }
 
@@ -121,7 +123,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getBoreEncoder() {
-    return (WristboreEncoder.getAbsolutePosition() + 0.02);
+    return (MathUtil.inputModulus(WristboreEncoder.getAbsolutePosition()- 0.39, 0, 1));
   }
 
   public void zeroBoreEncoder() {

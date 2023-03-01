@@ -31,7 +31,7 @@ public class ControlArm extends CommandBase {
   @Override
   public void execute() {
     m_Arm.disable();
-    m_Arm.setSpeed(m_Controller.getLeftY());
+    m_Arm.setSpeed(-m_Controller.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

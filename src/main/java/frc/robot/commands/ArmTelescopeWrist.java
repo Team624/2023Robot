@@ -21,20 +21,30 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
+  // private final ledControl m_led;
 
-  public ArmTelescopeWrist(Arm arm, Telescope telescope, Wrist wrist, int i) {
+  public ArmTelescopeWrist(
+      /** ledControl led, */
+      Arm arm, Telescope telescope, Wrist wrist, int i) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
+    // this.m_led = led;
 
     // retract = 0
     // IntakeCONE = 1
     // IntakeCUBE = 2
     // mid = 3
     // High = 4
+
+    // if(!m_led.cone){
+    //   if(i==1){
+    //     i=2;
+    //   }
+    // }
 
     Rotation2d[] armPos = {
       Constants.Arm.ARM_SETPOINT_FUNNEL,

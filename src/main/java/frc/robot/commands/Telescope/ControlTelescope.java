@@ -29,22 +29,7 @@ public class ControlTelescope extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double encoderValue = m_Telescope.getTelescopeEncoder();
 
-    // if(encoderValue>=0.01 && encoderValue<=35){
-    //   m_Telescope.controlTelescope(-m_Controller.getRightY());
-    // }
-    // if(encoderValue<0.01){
-    //   if(m_Controller.getRightY()<0){
-    //     m_Telescope.controlTelescope(-m_Controller.getRightY());
-    //   }
-
-    // }
-    // if(encoderValue>35){
-    //   if(m_Controller.getRightY()>0){
-    //     m_Telescope.controlTelescope(-m_Controller.getRightY());
-    //   }
-    // }
 
     m_Telescope.controlTelescope(-m_Controller.getRightY());
   }

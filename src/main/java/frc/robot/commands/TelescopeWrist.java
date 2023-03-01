@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Telescope.SetTelescope;
@@ -47,13 +46,6 @@ public class TelescopeWrist extends ParallelCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_MID,
       Constants.Wrist.WRIST_SETPOINT_HIGH
-    };
-    Rotation2d[] RotWristPos = {
-      Constants.Wrist.WRIST_RotSETPOINT_FUNNEL,
-      Constants.Wrist.WRIST_RotSETPOINT_CONE_INTAKE,
-      Constants.Wrist.WRIST_RotSETPOINT_CUBE_INTAKE,
-      Constants.Wrist.WRIST_RotSETPOINT_MID,
-      Constants.Wrist.WRIST_RotSETPOINT_HIGH
     };
 
     addCommands(new SetTelescope(telescope, telePos[i]), new SetWristCommand(wrist, wristPos[i]));

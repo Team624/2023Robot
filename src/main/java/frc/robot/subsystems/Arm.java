@@ -13,11 +13,13 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 
@@ -41,6 +43,8 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry voltageEntry;
 
   public Arm() {
+
+
     super(
         new ProfiledPIDController(
             Constants.Arm.kP,
@@ -49,6 +53,9 @@ public class Arm extends ProfiledPIDSubsystem {
             new TrapezoidProfile.Constraints(
                 Constants.Arm.kMaxVelocityRadiansPerSecond,
                 Constants.Arm.kMaxAccelerationRadiansPerSecondSquared)));
+
+    getController().setTolerance(Units.degreesToRadians(3));
+    
 
     armMotorRight = new CANSparkMax(Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.restoreFactoryDefaults();
@@ -59,6 +66,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorLeft.restoreFactoryDefaults();
     armMotorLeft.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
+
+    armMotorLeft.setInverted(true);
 
     boreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_PORT);
 
@@ -72,6 +81,8 @@ public class Arm extends ProfiledPIDSubsystem {
         armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
     setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
+
+    
   }
 
   @Override
@@ -81,11 +92,13 @@ public class Arm extends ProfiledPIDSubsystem {
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     enabledEntry.setBoolean(m_enabled);
     setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
+
+    SmartDashboard.putNumber("/Arm/Bore/Abs", getBore());
   }
 
   public double getBore() {
-    return MathUtil.inputModulus(
-        boreEncoder.getAbsolutePosition() - Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+    return MathUtil.inputModulus(//
+        (1-boreEncoder.getAbsolutePosition())+ Constants.Arm.BORE_ENCODER_OFFSET , 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -99,9 +112,9 @@ public class Arm extends ProfiledPIDSubsystem {
     System.out.println("RUNNING!!!!!!!!!!!!!!!!\n");
     if (this.m_enabled) {
       // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
-
+      
       voltage =
-          output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
+      output +armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
       System.out.println("Voltage: " + voltage);
       voltageEntry.setDouble(voltage);
       armMotorLeft.setVoltage(voltage);

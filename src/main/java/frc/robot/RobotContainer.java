@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
@@ -22,6 +23,7 @@ import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
+import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
@@ -38,8 +40,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.ledControl;
-import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -97,13 +97,13 @@ public class RobotContainer {
 
   /* Full setpoints */
 
-  private final POVButton setBotTop = new POVButton(m_controller, 0);
+  private final POVButton setBotHigh = new POVButton(m_controller, 0);
 
   private final POVButton setBotMid = new POVButton(m_controller, 90);
 
-  private final POVButton setBotLower = new POVButton(m_controller, 180);
+  private final POVButton setBotIntake = new POVButton(m_controller, 180);
 
-  private final POVButton setBot0 = new POVButton(m_controller, 270);
+  private final POVButton setBotFunnel = new POVButton(m_controller, 270);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -144,8 +144,8 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
-  private final ledControl m_LedControl =
-      new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
+  // private final ledControl m_LedControl =
+  //     new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -160,12 +160,10 @@ public class RobotContainer {
             () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
-
     m_intake.setDefaultCommand(new IdleIntake(m_intake));
     m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
-
-    // m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
     configureBindings();
   }
@@ -185,9 +183,9 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
+    // changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
 
-    changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
+    // changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
@@ -213,9 +211,7 @@ public class RobotContainer {
     manual.and(armMove).whileTrue(new ControlArm(m_arm, m_controller));
     manual.and(armMove2).whileTrue(new ControlArm(m_arm, m_controller));
 
-    // resetArmEncoder.onTrue(new InstantCommand(() -> m_arm.resetEncoder()));
 
-    // setArmZero.whileTrue(new SetArm(m_arm, Constants.Arm.SETPOINT_RETRACT));
 
     /** Telescope */
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));
@@ -235,22 +231,70 @@ public class RobotContainer {
     // mid = 3
     // top = 4
 
-    // Arm Testing
-    setBotLower.onTrue(new SetArm(m_arm, null));
+    /** ARM TESTING */
 
-    // Wrist Testing
+    // setBotHigh.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_HIGH));
+    // setBotMid.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_MID));
+    // setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CONE_INTAKE));
+    // setBotFunnel.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_FUNNEL));
 
-    setBotLower.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
+    // if(m_LedControl.cone){
+    //   setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CONE_INTAKE));
+    // }
+    // else{
+    //   setBotIntake.onTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_CUBE_INTAKE));
+    // }
 
-    // Telescope Testing
-    // setBotTop.onTrue(new SetTelescope(m_telescope, Constants.Telescope.TELESCOPE_SETPOINT_HIGH));
+    /** WRIST TESTING */
+    // setBotHigh.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
+    // setBotMid.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_MID));
+    // setBotIntake.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
+    // setBotFunnel.onTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_FUNNEL));
+
+    // if(m_LedControl.cone){
+    //   setBotIntake.onTrue(new SetWristCommand(m_wrist,
+    // Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE));
+    // }
+    // else{
+    //   setBotIntake.onTrue(new SetWristCommand(m_wrist,
+    // Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE));
+    // }
+
+    /** TELESCOPE TESTING */
+
+    // setBotHigh.onTrue(new SetTelescope(m_telescope,
+    // Constants.Telescope.TELESCOPE_SETPOINT_HIGH));
     // setBotMid.onTrue(new SetTelescope(m_telescope, Constants.Telescope.TELESCOPE_SETPOINT_MID));
-    // setBot0.onTrue(new SetTelescope(m_telescope, Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL));
+    // setBotIntake.onTrue(new SetTelescope(m_telescope,
+    // Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE));
+    // setBotFunnel.onTrue(new SetTelescope(m_telescope,
+    // Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL));
 
-    // setBotTop.onTrue(new TelescopeWrist(m_telescope, m_wrist, 4));
-    // setBotMid.onTrue(new TelescopeWrist(m_telescope, m_wrist, 3));
+    // if(m_LedControl.cone){
+    //   setBotIntake.onTrue(new SetTelescope(m_telescope,
+    // Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE));
+    // }
+    // else{
+    //   setBotIntake.onTrue(new SetTelescope(m_telescope,
+    // Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE));
+    // }
 
-    // toggleLED.onTrue(new InstantCommand(() -> m_LedControl.switchLED()));
+    // Funnel = 0
+    // IntakeCONE = 1
+    // IntakeCUBE = 2
+    // mid = 3
+    // High = 4
+
+    setBotHigh.whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
+    // setBotHigh.whileTrue(new SetWristCommand(m_wrist, Constants.Wrist.WRIST_SETPOINT_HIGH));
+    // setBotMid.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
+    // if(m_LedControl.cone){
+    //   setBotIntake.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
+    // }
+    // else{
+    //   setBotIntake.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
+    // }
+    // setBotFunnel.onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
 
     runIntake.whileTrue(new RunIntake(m_intake));
     reverseIntake.whileTrue(new ReverseIntake(m_intake));
