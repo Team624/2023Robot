@@ -29,9 +29,10 @@ public class ReverseIntake extends CommandBase {
   public void execute() {
     if(m_Arm.cone){
     m_intake.runIntake(-0.6);
-  }
-  else{
-    m_intake.runIntake(-0.3);
+    }
+    else{
+      m_intake.runIntake(-0.3);
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -135,7 +135,7 @@ public class AutonManager extends CommandBase {
         break;
 
       case "place":
-        this.currentArmCommand = new ReverseIntake(intake);
+        this.currentArmCommand = new ReverseIntake(intake, arm);
         break;
 
       case "retract":
