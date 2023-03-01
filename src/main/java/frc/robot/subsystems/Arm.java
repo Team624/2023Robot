@@ -15,12 +15,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 
@@ -79,12 +77,10 @@ public class Arm extends ProfiledPIDSubsystem {
 
     armTab = Shuffleboard.getTab("Arm");
 
-    
-
-    positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
+    // positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     enabledEntry =
         armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
-    setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
+    // setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
     coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
   }
@@ -93,25 +89,28 @@ public class Arm extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
     // This method will be called once per scheduler run
-    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    // positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     enabledEntry.setBoolean(m_enabled);
-    setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
+    // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
-    if(cone){
+    if (cone) {
       coneEntry.setBoolean(true);
-    }
-    else{
+    } else {
       coneEntry.setBoolean(false);
     }
   }
 
   public double getBore() {
-    return MathUtil.inputModulus( //
+    return MathUtil.inputModulus(
         (1 - boreEncoder.getAbsolutePosition()) + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBore();
+    if (radians > 1.5 * Math.PI) {
+      double excess = radians - 1.5 * Math.PI;
+      radians = -(0.5 * Math.PI - excess);
+    }
 
     // Handle encoder looping around
     if (radians > 1.5 * Math.PI) { 
@@ -131,7 +130,15 @@ public class Arm extends ProfiledPIDSubsystem {
 
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
+
+      voltage = MathUtil.clamp(voltage, -9, 9);
+
+      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+        voltage = 0;
+      }
+
       voltageEntry.setDouble(voltage);
+
       armMotorLeft.setVoltage(voltage);
       armMotorRight.setVoltage(voltage);
     }
@@ -154,7 +161,6 @@ public class Arm extends ProfiledPIDSubsystem {
   public void setArmCommand(double setpoint) {
     System.out.println("setpoint in command: " + setpoint);
     Rotation2d angle = new Rotation2d(setpoint);
-    
 
     armMotorLeft.setVoltage(setpoint);
     armMotorRight.setVoltage(setpoint);
@@ -165,8 +171,9 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorLeft.set(speed);
     armMotorRight.set(speed);
   }
-  public void pieceChange(){
-    cone= !cone;
-  }
 
+  public void pieceChange() {
+    cone = !cone;
+    System.out.println(cone);
+  }
 }

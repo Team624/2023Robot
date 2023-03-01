@@ -32,7 +32,7 @@ public class IntakeSequence extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    //CUBE INTAKE == laying down 
+    // CUBE INTAKE == laying down
     // CONE INTAKE == upright
 
     Rotation2d[] armPos = {
@@ -58,18 +58,10 @@ public class IntakeSequence extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    if(m_Arm.cone){
-      addCommands(
-        new SetWristCommand(wrist, wristPos[1]),
-        new SetTelescope(telescope, telePos[1]),
-        new SetArm(arm, armPos[1]));
-    }
-    else{
-      addCommands(
+    System.out.println("CUBE INTAKE");
+    addCommands(
         new SetWristCommand(wrist, wristPos[2]),
         new SetTelescope(telescope, telePos[2]),
         new SetArm(arm, armPos[2]));
-    }
-    
   }
 }

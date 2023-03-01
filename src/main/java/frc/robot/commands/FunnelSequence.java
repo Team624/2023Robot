@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.hal.simulation.ConstBufferCallback;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
@@ -19,11 +18,11 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FunnelSequence extends SequentialCommandGroup {
   /** Creates a new FunnelSequence. */
-
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
+
   public FunnelSequence(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -33,6 +32,9 @@ public class FunnelSequence extends SequentialCommandGroup {
     this.m_Wrist = wrist;
 
     m_Arm.recentFunnel = true;
-    addCommands(new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL),new SetWristCommand(wrist,Constants.Wrist.WRIST_SETPOINT_FUNNEL),new SetArm(arm, Constants.Arm.ARM_SETPOINT_FUNNEL));
+    addCommands(
+        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL),
+        new SetWristCommand(wrist, Constants.Wrist.WRIST_SETPOINT_FUNNEL),
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_FUNNEL));
   }
 }

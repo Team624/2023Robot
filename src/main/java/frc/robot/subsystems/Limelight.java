@@ -112,10 +112,8 @@ public class Limelight extends SubsystemBase {
     return botpose;
   }
 
-
   public double getYofTag() {
     if (!hasTarget()) return 0;
     return id_json.get(getID());
   }
-
 }

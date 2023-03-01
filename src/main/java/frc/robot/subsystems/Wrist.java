@@ -110,7 +110,6 @@ public class Wrist extends SubsystemBase {
     double voltage = wristController.calculate(getAbsoluteRotation().getRadians(), rotation);
 
     wristMotor.setVoltage(-voltage);
-  
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -120,7 +119,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getBoreEncoder() {
-    return (MathUtil.inputModulus(WristboreEncoder.getAbsolutePosition() - 0.39, 0, 1));
+    return (MathUtil.inputModulus(WristboreEncoder.getAbsolutePosition() - 0.6, 0, 1));
   }
 
   public void zeroBoreEncoder() {

@@ -240,8 +240,8 @@ public final class Constants {
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
-    public static final double kMaxVelocityRadiansPerSecond = 2.4;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 3.1;
+    public static final double kMaxVelocityRadiansPerSecond = 3.2;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 4.1;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -265,8 +265,8 @@ public final class Constants {
 
     public static final double TELESCOPE_SETPOINT_FUNNEL = 0.0;
     public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 3.4;
-    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 7.785;
-    public static final double TELESCOPE_SETPOINT_MID = 5.7;
+    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 9.1;
+    public static final double TELESCOPE_SETPOINT_MID = 14.5;
     public static final double TELESCOPE_SETPOINT_HIGH = 23.5;
 
     // FF constants
@@ -276,7 +276,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 9;
+    public static final double P = 11;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
@@ -288,12 +288,11 @@ public final class Constants {
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-
     public static final double WRIST_SETPOINT_FUNNEL = 0.0;
-    public static final double WRIST_SETPOINT_CONE_INTAKE = 2.5;
+    public static final double WRIST_SETPOINT_CONE_INTAKE = 2.64;
     ;
-    public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.72;
-    public static final double WRIST_SETPOINT_MID = 1.5;
+    public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.8;
+    public static final double WRIST_SETPOINT_MID = 0.48;
     public static final double WRIST_SETPOINT_HIGH = 1.32;
   }
 
