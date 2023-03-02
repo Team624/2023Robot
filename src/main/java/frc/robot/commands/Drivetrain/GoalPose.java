@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -36,9 +38,9 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(6, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(6, 0.000001, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(5, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(3.5, 0, 0, OMEGA_CONSTRAINTS);
 
   public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -97,25 +99,52 @@ public class GoalPose extends CommandBase {
 
     Pose2d pose2d = m_drivetrain.getPose();
 
-    if (m_node == 0) {
-      goal = 0.41621 - 4.01;
+    if(DriverStation.getAlliance()==Alliance.Blue){
+      if (m_node == 0) {
+        goal = 0.41621 - 4.01;
+  
+      } else if (m_node == 1) {
+        goal = -1.26019 - 4.01;
+  
+      } else if (m_node == 2) {
+        goal = -2.93659 - 4.01;
+      } else {
+        goal = m_limelight.getYofTag();
+      }
+  
+      if (m_right == 0) {
+        yController.setGoal(goal + (22 / 39.37));
+      } else if (m_right == 1) {
+        yController.setGoal(goal - (22 / 39.37));
+      } else {
+        yController.setGoal(goal);
+      }
+    }
+    else{
+      if (m_node == 0) {
 
-    } else if (m_node == 1) {
-      goal = -1.26019 - 4.01;
 
-    } else if (m_node == 2) {
-      goal = -2.93659 - 4.01;
-    } else {
-      goal = m_limelight.getYofTag();
+        goal = -2.93659 - 4.01;
+  
+      } else if (m_node == 1) {
+        goal = -1.26019 - 4.01;
+  
+      } else if (m_node == 2) {
+        goal = 0.41621 - 4.01;
+      } else {
+        goal = m_limelight.getYofTag();
+      }
+  
+      if (m_right == 0) {
+        yController.setGoal(goal - (22 / 39.37));
+      } else if (m_right == 1) {
+        yController.setGoal(goal + (22 / 39.37));
+      } else {
+        yController.setGoal(goal);
+      }
     }
 
-    if (m_right == 0) {
-      yController.setGoal(goal + (22 / 39.37));
-    } else if (m_right == 1) {
-      yController.setGoal(goal - (22 / 39.37));
-    } else {
-      yController.setGoal(goal);
-    }
+    
 
     omegaController.setGoal(-Math.PI);
 
