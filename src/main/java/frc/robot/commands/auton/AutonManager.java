@@ -42,6 +42,7 @@ public class AutonManager extends CommandBase {
   private Command currentBalanceCommand;
   private Command currentArmCommand;
   private Command currentIntakeCommand;
+  
 
   public AutonManager(
       Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake) {
