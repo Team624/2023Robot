@@ -45,7 +45,7 @@ public class Balance extends CommandBase {
     System.out.println(angle + "° : " + pid_val);
 
     if (Math.abs(angle) < 9) {
-      m_drivetrain.drive(new Translation2d(2.0, 0), 0, true, true);
+      m_drivetrain.drive(new Translation2d(1.8, 0), 0, true, true);
     }
 
     if (Math.abs(angle) > 9) {
@@ -53,7 +53,7 @@ public class Balance extends CommandBase {
     }
 
     if (!ground) {
-      m_drivetrain.drive(new Translation2d(pidController.calculate(angle), 0), 0, true, true);
+      m_drivetrain.drive(new Translation2d(pidController.calculate(-Math.abs(angle)), 0), 0, true, true);
     }
   }
 

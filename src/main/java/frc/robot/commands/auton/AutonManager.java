@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmTelescopeWrist;
+import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Intake.IdleIntake;
@@ -46,6 +47,7 @@ public class AutonManager extends CommandBase {
     this.arm = arm;
     this.telescope = telescope;
     this.wrist = wrist;
+    this.intake = intake;
   }
 
   // Called when the command is initially scheduled.
@@ -65,6 +67,7 @@ public class AutonManager extends CommandBase {
     startNTPath();
     startNTBalance();
     updateNTArm();
+    updateNTIntake();
   }
 
   // Called once the command ends or is interrupted.
@@ -104,21 +107,36 @@ public class AutonManager extends CommandBase {
   }
 
   private void updateNTIntake() {
-    String state = SmartDashboard.getEntry("auto/intake/set").getString("idle");
+    String state = SmartDashboard.getEntry("/auto/intake/set").getString("idle");
+
+    System.out.println("State : " + state);
 
     switch (state) {
       case "intake":
+        if (currentIntakeCommand != null && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled())) break;
+        currentIntakeCommand.end(true);
         currentIntakeCommand = new RunIntake(intake);
+        currentIntakeCommand.schedule();
         break;
       case "cone":
+        if (currentIntakeCommand != null && (currentIntakeCommand instanceof ReverseIntake && currentIntakeCommand.isScheduled())) break;
+        currentIntakeCommand.end(true);
         arm.cone = true;
         currentIntakeCommand = new ReverseIntake(intake, arm);
+        currentIntakeCommand.schedule();
+        break;
+        
       case "cube":
+        if (currentIntakeCommand != null && (currentIntakeCommand instanceof ReverseIntake && currentIntakeCommand.isScheduled())) break;
+        currentIntakeCommand.end(true);
         arm.cone = false;
         currentIntakeCommand = new ReverseIntake(intake, arm);
+        currentIntakeCommand.schedule();
+        break;
       case "idle":
       default:
         currentIntakeCommand = new IdleIntake(intake);
+        currentIntakeCommand.schedule();
     }
   }
 
@@ -167,7 +185,7 @@ public class AutonManager extends CommandBase {
 
       case "retract":
       default:
-        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 0);
+        this.currentArmCommand = new FunnelSequence(arm, telescope, wrist);
         SmartDashboard.getEntry("/auto/arm/state").setString("retract");
     }
 

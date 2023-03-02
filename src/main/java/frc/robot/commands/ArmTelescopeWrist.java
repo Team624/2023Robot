@@ -79,17 +79,17 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    if (m_Arm.recentFunnel) {
-      addCommands(
-          new SetTelescope(telescope, 0.5),
-          new SetWristCommand(wrist, 0.8),
-          new SetArm(arm, armPos[i]),
-          new SetWristCommand(wrist, wristPos[i]),
-          new SetTelescope(telescope, telePos[i]));
-    } else {
-      addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
-    }
+    // if (m_Arm.recentFunnel) {
+    //   addCommands(
+    //       new SetTelescope(telescope, 0.5),
+    //       new SetWristCommand(wrist, 0.8),
+    //       new SetArm(arm, armPos[i]),
+    //       new SetWristCommand(wrist, wristPos[i]),
+    //       new SetTelescope(telescope, telePos[i]));
 
-    m_Arm.recentFunnel = false;
+      addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
+    
+
+    // m_Arm.recentFunnel = false;
   }
 }

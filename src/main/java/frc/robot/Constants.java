@@ -250,11 +250,11 @@ public final class Constants {
     public static final double kA = 0.0;
 
     // Setpoints
-    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(0);
+    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(15);
     public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(35);
     public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(27);
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(100);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(118);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(110);
   }
 
   public static final class Telescope {
@@ -263,7 +263,7 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_FUNNEL = 0.0;
+    public static final double TELESCOPE_SETPOINT_FUNNEL = 1;
     public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 3.4;
     public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 9.1;
     public static final double TELESCOPE_SETPOINT_MID = 14.5;
@@ -288,7 +288,7 @@ public final class Constants {
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final double WRIST_SETPOINT_FUNNEL = 0.0;
+    public static final double WRIST_SETPOINT_FUNNEL = 0.2;
     public static final double WRIST_SETPOINT_CONE_INTAKE = 2.64;
     ;
     public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.8;
