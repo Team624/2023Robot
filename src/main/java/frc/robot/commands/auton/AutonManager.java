@@ -96,18 +96,24 @@ public class AutonManager extends CommandBase {
   private boolean startNTBalance() {
     if (currentBalanceCommand != null) return false;
 
-    boolean startBalance = SmartDashboard.getEntry("/auto/balance/set").getBoolean(false);
+    String balanceSet = SmartDashboard.getEntry("/auto/balance/set").getString("false false");
 
-    if (startBalance) {
-      currentFollowPathCommand.end(true);
+    String[] balanceSetArr = balanceSet.split(" ");
 
-      currentBalanceCommand = new Balance(drivetrain);
-      currentBalanceCommand.schedule();
+    if (balanceSetArr.length != 2) return false;
 
-      System.out.println("Starting balance!!!");
-    }
+    boolean startBalance = Boolean.parseBoolean(balanceSetArr[0]);
+    boolean reversed = Boolean.parseBoolean(balanceSetArr[1]);
 
-    return startBalance;
+    if (!startBalance) return false;
+
+    currentFollowPathCommand.end(true);
+
+    currentBalanceCommand = new Balance(drivetrain, reversed);
+    currentBalanceCommand.schedule();
+
+    System.out.println("Starting balance!!!");
+    return true;
   }
 
   private void updateNTVision() {
