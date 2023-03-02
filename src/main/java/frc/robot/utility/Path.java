@@ -91,9 +91,6 @@ public class Path {
 
     // direction = new Rotation2d(Math.PI - direction.getRadians());
 
-    System.out.println(" ====> Direction " + direction.getRadians());
-    SmartDashboard.putNumber("Direction", direction.getRadians());
-
     return new Pose2d(translation, direction);
   }
 
@@ -135,16 +132,6 @@ public class Path {
 
       double areaT = timeSeconds * timeSeconds * .5 * goofyArnavMaxAccel - xEx;
       // v2=vo2+2ax
-      System.out.println(
-          goofyArnavMaxAccel
-              + " "
-              + timeSeconds
-              + " "
-              + startVelocity
-              + " "
-              + goofyArnavMaxAccel
-              + " "
-              + areaT);
 
       double tnew = Math.sqrt(areaT * 2 / goofyArnavMaxAccel);
       return startVelocity + (goofyArnavMaxAccel * (timeSeconds - tnew));
@@ -175,12 +162,6 @@ public class Path {
   public State getState(double seconds) {
     TrapezoidProfile.State profileState =
         profile.calculate(MathUtil.clamp(seconds, 0, this.timeSeconds));
-
-    System.out.println(
-        "Distance: "
-            + profileState.position / curve.getDistance()
-            + " Time: "
-            + seconds / timeSeconds);
 
     Pose2d pose = interpolate(seconds / this.timeSeconds);
 

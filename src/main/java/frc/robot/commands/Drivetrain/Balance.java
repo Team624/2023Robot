@@ -1,8 +1,12 @@
 package frc.robot.commands.Drivetrain;
 
+import java.sql.Driver;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -39,13 +43,18 @@ public class Balance extends CommandBase {
   @Override
   public void execute() {
     // x component of charge station = 3.88745 meters away from alliance wall
+    double vel=1.8;
+    double mult = 1;
 
     angle = m_drivetrain.getPitch();
-    double pid_val = pidController.calculate(angle);
-    System.out.println(angle + "° : " + pid_val);
+
+    if(DriverStation.getAlliance()==Alliance.Red){
+       vel=-1.8;
+      mult = -1;
+    }
 
     if (Math.abs(angle) < 9) {
-      m_drivetrain.drive(new Translation2d(1.8, 0), 0, true, true);
+      m_drivetrain.drive(new Translation2d(vel, 0), 0, true, true);
     }
 
     if (Math.abs(angle) > 9) {
@@ -53,7 +62,7 @@ public class Balance extends CommandBase {
     }
 
     if (!ground) {
-      m_drivetrain.drive(new Translation2d(pidController.calculate(-Math.abs(angle)), 0), 0, true, true);
+      m_drivetrain.drive(new Translation2d(pidController.calculate(-Math.abs(angle) * mult), 0) , 0, true, true);
     }
   }
 
@@ -63,7 +72,7 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    if (Math.abs(angle) < 9 && !ground) {
+    if (Math.abs(angle) < 7 && !ground) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
       // m_drivetrain.swerveXposition();
       setNTState(true);

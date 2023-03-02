@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Wrist;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Wrist;
 
@@ -28,6 +29,11 @@ public class SetWristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_Wrist.getAbsoluteRotation().getRadians() > 2 * Math.PI - Units.degreesToRadians(15)) {
+      m_Wrist.stopWrist();
+      this.end(true);
+      return;
+    }
     m_Wrist.setReference(m_setpoint);
   }
 
@@ -40,7 +46,6 @@ public class SetWristCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("IN WRIST SET");
     return m_Wrist.getContoller().atGoal();
   }
 }

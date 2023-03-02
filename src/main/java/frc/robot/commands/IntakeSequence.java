@@ -58,7 +58,6 @@ public class IntakeSequence extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    System.out.println("CUBE INTAKE");
     addCommands(
         new SetWristCommand(wrist, wristPos[2]),
         new SetTelescope(telescope, telePos[2]),

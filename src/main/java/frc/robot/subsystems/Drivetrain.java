@@ -88,8 +88,6 @@ public class Drivetrain extends SubsystemBase {
       m_chassisSpeeds = chassisSpeeds;
     }
 
-    System.out.println(m_chassisSpeeds.vyMetersPerSecond);
-
     m_chassisSpeeds =
         new ChassisSpeeds(
             m_chassisSpeeds.vxMetersPerSecond,

@@ -133,11 +133,11 @@ public class RobotContainer {
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-  // private final JoystickButton creepMode =
-  //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
-
-  private final JoystickButton balance =
+  private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+
+  // private final JoystickButton balance =
+  //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -192,7 +192,10 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    balance.onTrue(new Balance(m_drivetrain));
+    // balance.onTrue(new Balance(m_drivetrain));
+
+    creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
+    creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
     // uncomment this
@@ -267,11 +270,13 @@ public class RobotContainer {
 
     manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
 
-    if (m_arm.cone) {
-      manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
-    } else {
-      manual.and(setBotIntake).whileTrue(new UprightConeIntake(m_arm, m_telescope, m_wrist));
-    }
+    // if (m_arm.cone) {
+    //   manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+    // } else {
+    //   manual.and(setBotIntake).whileTrue(new UprightConeIntake(m_arm, m_telescope, m_wrist));
+    // }
+
+    manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
 
     runIntake.whileTrue(new RunIntake(m_intake));
     reverseIntake.whileTrue(new ReverseIntake(m_intake, m_arm));

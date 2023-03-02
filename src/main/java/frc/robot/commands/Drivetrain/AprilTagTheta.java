@@ -63,8 +63,6 @@ public class AprilTagTheta extends CommandBase {
     xVelocity = filterX.calculate(xVelocity);
     yVelocity = filterY.calculate(yVelocity);
 
-    System.out.println("this is the turning velocity  : " + thVelocity);
-
     m_drivetrain.drive(new Translation2d(xVelocity, yVelocity), thVelocity, true, false);
   }
 

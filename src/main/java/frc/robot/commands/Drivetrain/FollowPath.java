@@ -75,18 +75,6 @@ public class FollowPath extends CommandBase {
 
     var state = path.getState(timeSeconds);
 
-    System.out.println(state.velocity);
-
-    System.out.println(
-        timeSeconds
-            + "s = ("
-            + state.pose.getX()
-            + ", "
-            + state.pose.getY()
-            + ") at "
-            + state.velocity
-            + "m/s");
-
     SmartDashboard.getEntry("Auton Velocity").setNumber(state.velocity);
 
     ChassisSpeeds chassisSpeeds =

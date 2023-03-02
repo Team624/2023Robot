@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -115,10 +116,10 @@ public class Wrist extends SubsystemBase {
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBoreEncoder();
 
-    if (radians > 1.5 * Math.PI) {
-      double excess = radians - 1.5 * Math.PI;
-      radians = -(0.5 * Math.PI - excess);
-    }
+    // if (radians > 1.5 * Math.PI) {
+    //   double excess = radians - 1.5 * Math.PI;
+    //   radians = -(0.5 * Math.PI - excess);
+    // }
 
     return new Rotation2d(radians);
   }

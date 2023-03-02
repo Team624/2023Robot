@@ -38,9 +38,6 @@ public class Limelight extends SubsystemBase {
     id_json.put(6.0, -3.59379);
     id_json.put(7.0, -5.2701);
     id_json.put(8.0, -6.94659);
-
-    CameraServer.startAutomaticCapture(
-        "camera name", "deploy/Pipeline-Name-5"); // Change camera name
   }
 
   public boolean hasTarget() {

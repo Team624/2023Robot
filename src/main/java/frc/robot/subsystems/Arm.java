@@ -37,11 +37,10 @@ public class Arm extends ProfiledPIDSubsystem {
   private double voltage = 0;
   public boolean recentFunnel = false;
 
-  private GenericEntry positionEntry;
   private GenericEntry enabledEntry;
-  private GenericEntry setpointEntry;
   private GenericEntry voltageEntry;
   private GenericEntry coneEntry;
+  private GenericEntry positionEntry;
 
   public boolean cone = false;
 
@@ -77,10 +76,12 @@ public class Arm extends ProfiledPIDSubsystem {
 
     armTab = Shuffleboard.getTab("Arm");
 
-    positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     enabledEntry =
         armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
     // setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
+
+    positionEntry = armTab.add("Position", getAbsoluteRotation().getDegrees()).getEntry();
+
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
     coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
   }
@@ -89,8 +90,8 @@ public class Arm extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
     // This method will be called once per scheduler run
-    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     enabledEntry.setBoolean(m_enabled);
+    positionEntry.setDouble(getBore());
     // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
     if (cone) {
@@ -131,7 +132,7 @@ public class Arm extends ProfiledPIDSubsystem {
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = MathUtil.clamp(voltage, -9, 9);
+      voltage = MathUtil.clamp(voltage, -8, 8);
 
       if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
         voltage = 0;
@@ -159,7 +160,6 @@ public class Arm extends ProfiledPIDSubsystem {
   }
 
   public void setArmCommand(double setpoint) {
-    System.out.println("setpoint in command: " + setpoint);
     Rotation2d angle = new Rotation2d(setpoint);
 
     armMotorLeft.setVoltage(setpoint);
@@ -174,6 +174,5 @@ public class Arm extends ProfiledPIDSubsystem {
 
   public void pieceChange() {
     cone = !cone;
-    System.out.println(cone);
   }
 }

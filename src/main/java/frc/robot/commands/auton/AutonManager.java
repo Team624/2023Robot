@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.FunnelSequence;
+import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Intake.IdleIntake;
@@ -57,6 +58,7 @@ public class AutonManager extends CommandBase {
     updatePaths();
     drivetrain.setPose();
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
+    SmartDashboard.getEntry("/auto/arm/state").setString("none");
 
     SmartDashboard.putBoolean("/auto/state", true);
   }
@@ -110,8 +112,6 @@ public class AutonManager extends CommandBase {
   private void updateNTIntake() {
     String state = SmartDashboard.getEntry("/auto/intake/set").getString("idle");
 
-    System.out.println("State : " + state);
-
     switch (state) {
       case "intake":
         if (currentIntakeCommand != null && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled())) break;
@@ -144,18 +144,22 @@ public class AutonManager extends CommandBase {
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("none");
 
+    System.out.println("State: " + state);
+
     if (state.equals("none")
-        || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) return;
+        || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) {
+          if (state.equals("move_intake")) {
+            System.out.println("Canceling arm command!!!");
+          }
+          return;
+        }
 
     switch (state) {
       case "move_intake":
-        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 2).deadlineWith(new RunIntake(intake)).andThen(() -> {
+        this.currentArmCommand = new IntakeSequence(arm, telescope, wrist).andThen(() -> {
           SmartDashboard.getEntry("/auto/arm/state").setString("intake");
         });
-        break;
-
-      case "intake":
-        this.currentArmCommand = new RunIntake(intake);
+        System.out.println("RUNNING INTAKE!!!\n\n\n");
         break;
 
       case "move_cube_high":
@@ -181,10 +185,6 @@ public class AutonManager extends CommandBase {
 
         break;
 
-      case "place":
-        this.currentArmCommand = new ReverseIntake(intake, arm);
-        break;
-
       case "retract":
       default:
         this.currentArmCommand = new FunnelSequence(arm, telescope, wrist);
@@ -193,7 +193,7 @@ public class AutonManager extends CommandBase {
 
     this.currentArmCommand.schedule();
 
-    SmartDashboard.getEntry("/autl/arm/set").setString("none");
+    SmartDashboard.getEntry("/auto/arm/set").setString("none");
   }
 
   // Starts the path specified by ROS in NetworkTables
