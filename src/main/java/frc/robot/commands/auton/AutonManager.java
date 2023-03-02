@@ -38,7 +38,8 @@ public class AutonManager extends CommandBase {
   private Command currentBalanceCommand;
   private Command currentArmCommand;
 
-  public AutonManager(Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake) {
+  public AutonManager(
+      Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake) {
     this.drivetrain = drivetrain;
     this.arm = arm;
     this.telescope = telescope;
@@ -103,7 +104,8 @@ public class AutonManager extends CommandBase {
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("retract");
 
-    if (state.equals("none") || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) return;
+    if (state.equals("none")
+        || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) return;
 
     switch (state) {
       case "move_intake":
