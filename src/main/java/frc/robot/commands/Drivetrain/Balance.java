@@ -27,9 +27,11 @@ public class Balance extends CommandBase {
       new TrapezoidProfile.Constraints(MaxVel, 2);
 
   boolean ground;
+  private final boolean m_front;
 
-  public Balance(Drivetrain drivetrain) {
+  public Balance(Drivetrain drivetrain,boolean front) {
     this.m_drivetrain = drivetrain;
+    this.m_front=front;
     angle = 0;
     pidController = new PIDController(0.066, 0, 0);
     addRequirements(drivetrain);
@@ -51,6 +53,9 @@ public class Balance extends CommandBase {
     if(DriverStation.getAlliance()==Alliance.Red){
        vel=-1.8;
       mult = -1;
+    }
+    if(m_front){
+      vel = -vel;
     }
 
     if (Math.abs(angle) < 9) {
