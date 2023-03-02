@@ -26,8 +26,6 @@ import frc.robot.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
-  public SwerveDriveOdometry swerveOdometry;
-
   private boolean m_isOpenLoop;
   public boolean isCreepin = false;
 
@@ -56,9 +54,6 @@ public class Drivetrain extends SubsystemBase {
           new SwerveModule(2, Constants.Swerve.Mod2.constants),
           new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
-
-    swerveOdometry =
-        new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
 
     skewApril_pid = getSkewAprilPID();
 
@@ -215,9 +210,13 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void zeroGyroscope() {
-    ahrs.setAngleAdjustment(0);
+    zeroGyroscope(new Rotation2d(0));
+  }
+
+  public void zeroGyroscope(Rotation2d rotation) {
+    ahrs.setAngleAdjustment(rotation.getDegrees());
     ahrs.reset();
-    poseEstimator.resetPosition(new Rotation2d(0), getModulePositions(), getPose());
+    poseEstimator.resetPosition(rotation, getModulePositions(), new Pose2d(getPose().getTranslation(), rotation));
   }
 
   public Pose2d getPose() {
