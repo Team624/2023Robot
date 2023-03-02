@@ -77,7 +77,7 @@ public class Arm extends ProfiledPIDSubsystem {
 
     armTab = Shuffleboard.getTab("Arm");
 
-    // positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
+    positionEntry = armTab.add("Position (Bore)", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
     enabledEntry =
         armTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
     // setpointEntry = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
@@ -89,7 +89,7 @@ public class Arm extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
     // This method will be called once per scheduler run
-    // positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     enabledEntry.setBoolean(m_enabled);
     // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
@@ -113,7 +113,7 @@ public class Arm extends ProfiledPIDSubsystem {
     }
 
     // Handle encoder looping around
-    if (radians > 1.5 * Math.PI) { 
+    if (radians > 1.5 * Math.PI) {
       double excess = radians - 1.5 * Math.PI;
 
       radians = -(0.5 * Math.PI - excess);
