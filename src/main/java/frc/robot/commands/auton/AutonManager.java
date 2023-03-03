@@ -173,7 +173,7 @@ public class AutonManager extends CommandBase {
     }
 
     // Double Substation = 0
-    // retract = 1
+    // FUNNEL = 1
     // IntakeCONE = 2
     // IntakeCUBE = 3
     // mid = 4
