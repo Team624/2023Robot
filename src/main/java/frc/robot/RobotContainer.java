@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
+import frc.robot.commands.Arm.DisabledArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.ArmTelescopeWrist;
-import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -31,7 +31,6 @@ import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.UprightConeIntake;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
 import frc.robot.commands.auton.AutonManager;
@@ -67,6 +66,7 @@ public class RobotContainer {
   private final int armAxis = XboxController.Axis.kLeftY.value;
   private final int telescopeAxis = XboxController.Axis.kRightY.value;
   private final int wristAxis = XboxController.Axis.kRightX.value;
+  private final int stopArmAxis = XboxController.Axis.kRightTrigger.value;
 
   private final JoystickButton manual =
       new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
@@ -83,6 +83,11 @@ public class RobotContainer {
 
   private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.08);
   private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
+
+  private final JoystickButton stopArm =
+      new JoystickButton(m_controller, XboxController.Axis.kRightTrigger.value);
+
+  private final Trigger stopArm2 = m_controllerCommand.axisGreaterThan(stopArmAxis, 0.01);
 
   /* Telescope */
 
@@ -106,6 +111,9 @@ public class RobotContainer {
   private final POVButton setBotIntake = new POVButton(m_controller, 180);
 
   private final POVButton setBotFunnel = new POVButton(m_controller, 270);
+
+  private final JoystickButton doubleSubstation =
+      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -227,6 +235,9 @@ public class RobotContainer {
     manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
     manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
 
+    stopArm.whileTrue(new DisabledArm(m_arm));
+    stopArm2.whileTrue(new DisabledArm(m_arm));
+
     // Setpoints
 
     // Funnel = 0
@@ -259,14 +270,15 @@ public class RobotContainer {
     // setBotFunnel.onTrue(new SetTelescope(m_telescope,
     // Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL));
 
-    // Funnel = 0
-    // IntakeCONE = 1
-    // IntakeCUBE = 2
-    // mid = 3
-    // High = 4
+    // Double Substation = 0
+    // FUNNEL = 1
+    // IntakeCONE = 2
+    // IntakeCUBE = 3
+    // mid = 4
+    // High = 5
 
-    manual.and(setBotHigh).onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
-    manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 3));
+    manual.and(setBotHigh).onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 5));
+    manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
 
     manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
 
@@ -277,6 +289,8 @@ public class RobotContainer {
     // }
 
     manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+
+    manual.and(doubleSubstation).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
 
     runIntake.whileTrue(new RunIntake(m_intake));
     reverseIntake.whileTrue(new ReverseIntake(m_intake, m_arm));

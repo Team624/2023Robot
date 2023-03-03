@@ -5,25 +5,22 @@
 package frc.robot.commands.auton;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmTelescopeWrist;
-import frc.robot.commands.FunnelSequence;
-import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
+import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseIntake;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.IntakeSequence;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -46,7 +43,6 @@ public class AutonManager extends CommandBase {
   private Command currentBalanceCommand;
   private Command currentArmCommand;
   private Command currentIntakeCommand;
-  
 
   public AutonManager(
       Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake) {
@@ -130,21 +126,27 @@ public class AutonManager extends CommandBase {
 
     switch (state) {
       case "intake":
-        if (currentIntakeCommand != null && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled())) break;
+        if (currentIntakeCommand != null
+            && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled()))
+          break;
         currentIntakeCommand.end(true);
         currentIntakeCommand = new RunIntake(intake);
         currentIntakeCommand.schedule();
         break;
       case "cone":
-        if (currentIntakeCommand != null && (currentIntakeCommand instanceof ReverseIntake && currentIntakeCommand.isScheduled())) break;
+        if (currentIntakeCommand != null
+            && (currentIntakeCommand instanceof ReverseIntake
+                && currentIntakeCommand.isScheduled())) break;
         currentIntakeCommand.end(true);
         arm.cone = true;
         currentIntakeCommand = new ReverseIntake(intake, arm);
         currentIntakeCommand.schedule();
         break;
-        
+
       case "cube":
-        if (currentIntakeCommand != null && (currentIntakeCommand instanceof ReverseIntake && currentIntakeCommand.isScheduled())) break;
+        if (currentIntakeCommand != null
+            && (currentIntakeCommand instanceof ReverseIntake
+                && currentIntakeCommand.isScheduled())) break;
         currentIntakeCommand.end(true);
         arm.cone = false;
         currentIntakeCommand = new ReverseIntake(intake, arm);
@@ -164,40 +166,59 @@ public class AutonManager extends CommandBase {
 
     if (state.equals("none")
         || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) {
-          if (state.equals("move_intake")) {
-            System.out.println("Canceling arm command!!!");
-          }
-          return;
-        }
+      if (state.equals("move_intake")) {
+        System.out.println("Canceling arm command!!!");
+      }
+      return;
+    }
+
+    // Double Substation = 0
+    // retract = 1
+    // IntakeCONE = 2
+    // IntakeCUBE = 3
+    // mid = 4
+    // High = 5
 
     switch (state) {
       case "move_intake":
-        this.currentArmCommand = new IntakeSequence(arm, telescope, wrist).andThen(() -> {
-          SmartDashboard.getEntry("/auto/arm/state").setString("intake");
-        });
+        this.currentArmCommand =
+            new IntakeSequence(arm, telescope, wrist)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("intake");
+                    });
         System.out.println("RUNNING INTAKE!!!\n\n\n");
         break;
 
       case "move_cube_high":
       case "move_cone_high":
-        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 4).andThen(() -> {
-          SmartDashboard.getEntry("/auto/arm/state").setString("high");
-        });
+        this.currentArmCommand =
+            new ArmTelescopeWrist(arm, telescope, wrist, 5)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("high");
+                    });
         break;
 
       case "move_cube_mid":
       case "move_cone_mid":
-        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 3).andThen(() -> {
-          SmartDashboard.getEntry("/auto/arm/state").setString("mid");
-        });
+        this.currentArmCommand =
+            new ArmTelescopeWrist(arm, telescope, wrist, 4)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("mid");
+                    });
         break;
 
       case "move_cube_low":
       case "move_cone_low":
         SmartDashboard.getEntry("/auto/arm/state").setString("cone_intake");
-        this.currentArmCommand = new ArmTelescopeWrist(arm, telescope, wrist, 1).andThen(() -> {
-          SmartDashboard.getEntry("/auto/arm/state").setString("low");
-        });
+        this.currentArmCommand =
+            new ArmTelescopeWrist(arm, telescope, wrist, 3)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("low");
+                    });
 
         break;
 

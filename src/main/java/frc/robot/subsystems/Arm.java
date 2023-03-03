@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.commands.Arm.DisabledArm;
 
 public class Arm extends ProfiledPIDSubsystem {
   /** Creates a new Arm. */
@@ -41,6 +42,8 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry voltageEntry;
   private GenericEntry coneEntry;
   private GenericEntry positionEntry;
+  private GenericEntry setpointEntry;
+  private GenericEntry goalEntry;
 
   public boolean cone = false;
 
@@ -86,14 +89,25 @@ public class Arm extends ProfiledPIDSubsystem {
 
     voltageEntry = armTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
     coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
+    setpointEntry = armTab.add("Setpoint", getController().getSetpoint().position).getEntry();
+    goalEntry = armTab.add("Goal", getController().getGoal().position).getEntry();
   }
 
   @Override
   public void periodic() {
     super.periodic();
-    // This method will be called once per scheduler run
+
     enabledEntry.setBoolean(m_enabled);
     positionEntry.setDouble(getBore());
+    setpointEntry.setDouble(getController().getGoal().position);
+
+    if (getController().getPositionError() > Constants.Arm.ESTOP_TOLERANCE.getRadians()) {
+      armMotorLeft.stopMotor();
+      armMotorRight.stopMotor();
+      new DisabledArm(this).schedule();
+      return;
+    }
+
     // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
     coneEntry.setBoolean(cone);

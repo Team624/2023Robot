@@ -8,8 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.Telescope.SetTelescope;
-import frc.robot.commands.Wrist.SetWristCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -44,11 +42,12 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     this.m_Wrist = wrist;
     // this.m_led = led;
 
-    // retract = 0
-    // IntakeCONE = 1
-    // IntakeCUBE = 2
-    // mid = 3
-    // High = 4
+    // Double Substation = 0
+    // retract = 1
+    // IntakeCONE = 2
+    // IntakeCUBE = 3
+    // mid = 4
+    // High = 5
 
     // if(!m_led.cone){
     //   if(i==1){
@@ -57,6 +56,7 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     // }
 
     Rotation2d[] armPos = {
+      Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Arm.ARM_SETPOINT_FUNNEL,
       Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
       Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
@@ -65,6 +65,7 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     };
 
     double[] telePos = {
+      Constants.Telescope.TELESCOPE_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
       Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE,
       Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE,
@@ -72,6 +73,7 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
       Constants.Telescope.TELESCOPE_SETPOINT_HIGH
     };
     double[] wristPos = {
+      Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Wrist.WRIST_SETPOINT_FUNNEL,
       Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE,
@@ -79,16 +81,7 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
 
-    // if (m_Arm.recentFunnel) {
-    //   addCommands(
-    //       new SetTelescope(telescope, 0.5),
-    //       new SetWristCommand(wrist, 0.8),
-    //       new SetArm(arm, armPos[i]),
-    //       new SetWristCommand(wrist, wristPos[i]),
-    //       new SetTelescope(telescope, telePos[i]));
-
-      addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
-    
+    addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
 
     // m_Arm.recentFunnel = false;
   }

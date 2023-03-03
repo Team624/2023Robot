@@ -1,7 +1,5 @@
 package frc.robot.commands.Drivetrain;
 
-import java.sql.Driver;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -29,9 +27,9 @@ public class Balance extends CommandBase {
   boolean ground;
   private final boolean m_front;
 
-  public Balance(Drivetrain drivetrain,boolean front) {
+  public Balance(Drivetrain drivetrain, boolean front) {
     this.m_drivetrain = drivetrain;
-    this.m_front=front;
+    this.m_front = front;
     angle = 0;
     pidController = new PIDController(0.066, 0, 0);
     addRequirements(drivetrain);
@@ -45,16 +43,16 @@ public class Balance extends CommandBase {
   @Override
   public void execute() {
     // x component of charge station = 3.88745 meters away from alliance wall
-    double vel=1.8;
+    double vel = 1.8;
     double mult = 1;
 
     angle = m_drivetrain.getPitch();
 
-    if(DriverStation.getAlliance()==Alliance.Red){
-       vel=-1.8;
+    if (DriverStation.getAlliance() == Alliance.Red) {
+      vel = -1.8;
       mult = -1;
     }
-    if(m_front){
+    if (m_front) {
       vel = -vel;
     }
 
@@ -67,7 +65,8 @@ public class Balance extends CommandBase {
     }
 
     if (!ground) {
-      m_drivetrain.drive(new Translation2d(pidController.calculate(-Math.abs(angle) * mult), 0) , 0, true, true);
+      m_drivetrain.drive(
+          new Translation2d(pidController.calculate(-Math.abs(angle) * mult), 0), 0, true, true);
     }
   }
 

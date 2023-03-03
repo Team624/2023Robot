@@ -32,6 +32,7 @@ public class UprightConeIntake extends SequentialCommandGroup {
     this.m_Wrist = wrist;
 
     Rotation2d[] armPos = {
+      Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Arm.ARM_SETPOINT_FUNNEL,
       Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
       Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
@@ -40,6 +41,7 @@ public class UprightConeIntake extends SequentialCommandGroup {
     };
 
     double[] telePos = {
+      Constants.Telescope.TELESCOPE_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
       Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE,
       Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE,
@@ -47,6 +49,7 @@ public class UprightConeIntake extends SequentialCommandGroup {
       Constants.Telescope.TELESCOPE_SETPOINT_HIGH
     };
     double[] wristPos = {
+      Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Wrist.WRIST_SETPOINT_FUNNEL,
       Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE,
@@ -55,8 +58,8 @@ public class UprightConeIntake extends SequentialCommandGroup {
     };
 
     addCommands(
-        new SetWristCommand(wrist, wristPos[1]),
-        new SetTelescope(telescope, telePos[1]),
-        new SetArm(arm, armPos[1]));
+        new SetWristCommand(wrist, wristPos[2]),
+        new SetTelescope(telescope, telePos[2]),
+        new SetArm(arm, armPos[2]));
   }
 }

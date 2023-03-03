@@ -235,6 +235,8 @@ public final class Constants {
     // Absolute encoder offset
     public static final double BORE_ENCODER_OFFSET = 0.07;
 
+    public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
+
     // Profiled PID controller gains
     public static final double kP = 8.8;
     public static final double kI = 0.00001;
@@ -250,6 +252,7 @@ public final class Constants {
     public static final double kA = 0.0;
 
     // Setpoints
+    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(0.0);
     public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(3.5);
     public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(35);
     public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(23.9);
@@ -263,6 +266,7 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.0;
     public static final double TELESCOPE_SETPOINT_FUNNEL = 6.7;
     public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 3.4;
     public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 8.3;
@@ -283,14 +287,17 @@ public final class Constants {
 
     public static final Constraints wristCONSTRAINTS = new Constraints(6, 5);
 
+    public static final double boreEncoderOffset = 0.0;
+
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
+    public static final double WRIST_SETPOINT_DOUBLE_SUBSTATION = 0.0;
     public static final double WRIST_SETPOINT_FUNNEL = 0.0744;
     public static final double WRIST_SETPOINT_CONE_INTAKE = 2.64;
-    ;
+
     public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.11;
     public static final double WRIST_SETPOINT_MID = 0.48;
     public static final double WRIST_SETPOINT_HIGH = 1.32;

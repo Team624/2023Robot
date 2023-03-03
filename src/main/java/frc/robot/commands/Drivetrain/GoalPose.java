@@ -99,19 +99,19 @@ public class GoalPose extends CommandBase {
 
     Pose2d pose2d = m_drivetrain.getPose();
 
-    if(DriverStation.getAlliance()==Alliance.Blue){
+    if (DriverStation.getAlliance() == Alliance.Blue) {
       if (m_node == 0) {
         goal = 0.41621 - 4.01;
-  
+
       } else if (m_node == 1) {
         goal = -1.26019 - 4.01;
-  
+
       } else if (m_node == 2) {
         goal = -2.93659 - 4.01;
       } else {
         goal = m_limelight.getYofTag();
       }
-  
+
       if (m_right == 0) {
         yController.setGoal(goal + (22 / 39.37));
       } else if (m_right == 1) {
@@ -119,22 +119,20 @@ public class GoalPose extends CommandBase {
       } else {
         yController.setGoal(goal);
       }
-    }
-    else{
+    } else {
       if (m_node == 0) {
 
-
         goal = -2.93659 - 4.01;
-  
+
       } else if (m_node == 1) {
         goal = -1.26019 - 4.01;
-  
+
       } else if (m_node == 2) {
         goal = 0.41621 - 4.01;
       } else {
         goal = m_limelight.getYofTag();
       }
-  
+
       if (m_right == 0) {
         yController.setGoal(goal - (22 / 39.37));
       } else if (m_right == 1) {
@@ -143,8 +141,6 @@ public class GoalPose extends CommandBase {
         yController.setGoal(goal);
       }
     }
-
-    
 
     omegaController.setGoal(-Math.PI);
 

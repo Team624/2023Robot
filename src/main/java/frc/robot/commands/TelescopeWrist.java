@@ -27,13 +27,15 @@ public class TelescopeWrist extends ParallelCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    // Funnel = 0
-    // IntakeCONE = 1
-    // IntakeCUBE = 2
-    // mid = 3
-    // High = 4
+    // Double Substation = 0
+    // retract = 1
+    // IntakeCONE = 2
+    // IntakeCUBE = 3
+    // mid = 4
+    // High = 5
 
     double[] telePos = {
+      Constants.Telescope.TELESCOPE_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
       Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE,
       Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE,
@@ -41,13 +43,13 @@ public class TelescopeWrist extends ParallelCommandGroup {
       Constants.Telescope.TELESCOPE_SETPOINT_HIGH
     };
     double[] wristPos = {
+      Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Wrist.WRIST_SETPOINT_FUNNEL,
       Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_MID,
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };
-
     addCommands(new SetWristCommand(wrist, wristPos[i]), new SetTelescope(telescope, telePos[i]));
   }
 }

@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,6 +26,7 @@ import frc.robot.SwerveModule;
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
   private boolean m_isOpenLoop;
+
   public boolean isCreepin = false;
 
   public PIDController skewApril_pid;
@@ -216,7 +216,8 @@ public class Drivetrain extends SubsystemBase {
   public void zeroGyroscope(Rotation2d rotation) {
     ahrs.setAngleAdjustment(rotation.getDegrees());
     ahrs.reset();
-    poseEstimator.resetPosition(rotation, getModulePositions(), new Pose2d(getPose().getTranslation(), rotation));
+    poseEstimator.resetPosition(
+        rotation, getModulePositions(), new Pose2d(getPose().getTranslation(), rotation));
   }
 
   public Pose2d getPose() {

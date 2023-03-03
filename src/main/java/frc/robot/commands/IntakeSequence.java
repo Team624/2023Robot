@@ -35,7 +35,15 @@ public class IntakeSequence extends SequentialCommandGroup {
     // CUBE INTAKE == laying down
     // CONE INTAKE == upright
 
+    // Double Substation = 0
+    // retract = 1
+    // IntakeCONE = 2
+    // IntakeCUBE = 3
+    // mid = 4
+    // High = 5
+
     Rotation2d[] armPos = {
+      Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Arm.ARM_SETPOINT_FUNNEL,
       Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
       Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
@@ -44,6 +52,7 @@ public class IntakeSequence extends SequentialCommandGroup {
     };
 
     double[] telePos = {
+      Constants.Telescope.TELESCOPE_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
       Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE,
       Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE,
@@ -51,6 +60,7 @@ public class IntakeSequence extends SequentialCommandGroup {
       Constants.Telescope.TELESCOPE_SETPOINT_HIGH
     };
     double[] wristPos = {
+      Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Wrist.WRIST_SETPOINT_FUNNEL,
       Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE,
@@ -59,8 +69,8 @@ public class IntakeSequence extends SequentialCommandGroup {
     };
 
     addCommands(
-        new SetWristCommand(wrist, wristPos[2]),
-        new SetTelescope(telescope, telePos[2]),
-        new SetArm(arm, armPos[2]));
+        new SetWristCommand(wrist, wristPos[3]),
+        new SetTelescope(telescope, telePos[3]),
+        new SetArm(arm, armPos[3]));
   }
 }
