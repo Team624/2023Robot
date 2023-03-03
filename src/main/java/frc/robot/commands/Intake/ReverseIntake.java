@@ -29,7 +29,7 @@ public class ReverseIntake extends CommandBase {
   @Override
   public void execute() {
     if (m_Arm.cone) {
-      m_intake.runIntake(-0.6);
+      m_intake.runIntake(-1.0);
     } else {
       m_intake.runIntake(-0.3);
     }
