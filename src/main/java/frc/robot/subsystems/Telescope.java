@@ -51,7 +51,7 @@ public class Telescope extends SubsystemBase {
     telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-    telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 30);
+    telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 26);
     telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
 
     telescopFeedforward =
