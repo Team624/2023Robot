@@ -93,8 +93,8 @@ public class RobotContainer {
   private final Trigger telescopeMove = m_controllerCommand.axisLessThan(telescopeAxis, -0.08);
   private final Trigger telescopeMove2 = m_controllerCommand.axisGreaterThan(telescopeAxis, 0.08);
 
-  private final JoystickButton resetTelescopeEncoder =
-      new JoystickButton(m_controller, XboxController.Button.kA.value);
+  // private final JoystickButton resetTelescopeEncoder =
+  //     new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   /* Wrist */
 
@@ -226,7 +226,7 @@ public class RobotContainer {
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));
     manual.and(telescopeMove2).whileTrue(new ControlTelescope(m_telescope, m_controller));
 
-    resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
+    // resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
 
     /** Wrist */
     manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));

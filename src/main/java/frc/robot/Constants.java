@@ -288,6 +288,9 @@ public final class Constants {
 
     public static final Constraints wristCONSTRAINTS = new Constraints(6, 5);
 
+    public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
+    public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
+
     public static final double boreEncoderOffset = 0.405;
 
     public static final double kS = 0.0;

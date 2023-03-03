@@ -12,9 +12,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.Telescope.ResetEncoder;
 
 public class Telescope extends SubsystemBase {
   /** Creates a new Telescope. */
@@ -32,7 +34,6 @@ public class Telescope extends SubsystemBase {
 
   public Telescope() {
     telescopeMotor = new CANSparkMax(Constants.Telescope.telescopemotor, MotorType.kBrushless);
-    telescopeMotor.restoreFactoryDefaults();
     telescopeEncoder = telescopeMotor.getEncoder();
     telescopePID = telescopeMotor.getPIDController();
     telescopeMotor.setIdleMode(IdleMode.kBrake);
@@ -57,6 +58,8 @@ public class Telescope extends SubsystemBase {
     telescopFeedforward =
         new ElevatorFeedforward(
             Constants.Telescope.kS, Constants.Telescope.kG, Constants.Telescope.kV);
+
+    Shuffleboard.getTab("Telescope").add("Reset Encoder", new ResetEncoder(this));
   }
 
   @Override

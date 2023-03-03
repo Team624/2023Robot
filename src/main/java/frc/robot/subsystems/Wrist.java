@@ -30,18 +30,7 @@ public class Wrist extends SubsystemBase {
 
   private RelativeEncoder wristEncoder;
 
-  private SparkMaxPIDController wristPidController;
-
-  private double WristP;
-  private double WristI;
-  private double WristD;
-
   private DutyCycleEncoder WristboreEncoder;
-
-  private Rotation2d rotationReference;
-
-  private ArmFeedforward wristfeedforward =
-      new ArmFeedforward(Constants.Wrist.kS, Constants.Arm.kG, Constants.Arm.kV);
 
   private ProfiledPIDController wristController;
 
@@ -56,25 +45,11 @@ public class Wrist extends SubsystemBase {
 
     wristMotor = new CANSparkMax(Constants.Wrist.WristMotor, MotorType.kBrushless);
 
-    wristMotor.restoreFactoryDefaults();
-
     wristEncoder = wristMotor.getEncoder();
 
     wristMotor.setIdleMode(IdleMode.kBrake);
 
-    wristPidController = wristMotor.getPIDController();
-
-    WristP = frc.robot.Constants.Wrist.P;
-    WristI = frc.robot.Constants.Wrist.I;
-    WristD = frc.robot.Constants.Wrist.D;
-
-    wristPidController.setP(WristP);
-    wristPidController.setI(WristI);
-    wristPidController.setD(WristD);
-
     wristMotor.setCANTimeout(500);
-
-    wristPidController.setOutputRange(-1, 1);
 
     WristboreEncoder = new DutyCycleEncoder(1);
 
@@ -161,15 +136,6 @@ public class Wrist extends SubsystemBase {
   public void stopWrist() {
     // rotationReference = getAbsoluteRotation();
     wristMotor.stopMotor();
-  }
-
-  // Unused
-  public void setWristCommand(double setpoint) {
-    this.enabledFeedback = false;
-
-    Rotation2d angle = new Rotation2d(setpoint);
-
-    wristPidController.setReference(setpoint, ControlType.kPosition, 0);
   }
 
   public double getWristEncoder() {
