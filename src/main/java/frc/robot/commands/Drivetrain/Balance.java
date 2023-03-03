@@ -31,7 +31,7 @@ public class Balance extends CommandBase {
     this.m_drivetrain = drivetrain;
     this.m_front = front;
     angle = 0;
-    pidController = new PIDController(0.066, 0, 0);
+    pidController = new PIDController(0.053, 0, 0);
     addRequirements(drivetrain);
   }
 
@@ -52,16 +52,12 @@ public class Balance extends CommandBase {
       vel = -1.8;
       mult = -1;
     }
-    if (m_front) {
-      vel = -vel;
-      mult *= -1;
-    }
 
-    if (Math.abs(angle) < 9) {
+    if (Math.abs(angle) < 15) {
       m_drivetrain.drive(new Translation2d(vel, 0), 0, true, true);
     }
 
-    if (Math.abs(angle) > 9) {
+    if (Math.abs(angle) > 15) {
       ground = false;
     }
 
@@ -77,8 +73,10 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    if (Math.abs(angle) < 7 && !ground) {
+    System.out.println("the angle: "+angle);
+    if (Math.abs(angle) < 13.8 && !ground) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
+      
       // m_drivetrain.swerveXposition();
       setNTState(true);
 

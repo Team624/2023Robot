@@ -33,7 +33,10 @@ public class ControlWrist extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Wrist.getContoller().reset(m_Wrist.getAbsoluteRotation().getRadians());
+    m_Wrist.setReference(m_Wrist.getAbsoluteRotation().getRadians());
+  }
 
   // Returns true when the command should end.
   @Override

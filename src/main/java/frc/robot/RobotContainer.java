@@ -18,6 +18,7 @@ import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.DisabledArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.ArmTelescopeWrist;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -26,7 +27,8 @@ import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Intake.IdleIntake;
-import frc.robot.commands.Intake.ReverseIntake;
+import frc.robot.commands.Intake.ReverseCone;
+import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
@@ -60,7 +62,7 @@ public class RobotContainer {
 
   /* LEDs */
 
-  private final JoystickButton changePiece4LED =
+  private final JoystickButton reverseCone =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
 
   private final int armAxis = XboxController.Axis.kLeftY.value;
@@ -76,7 +78,7 @@ public class RobotContainer {
   private final JoystickButton runIntake =
       new JoystickButton(m_controller, XboxController.Button.kX.value);
 
-  private final JoystickButton reverseIntake =
+  private final JoystickButton reverseIntakeCube =
       new JoystickButton(m_controller, XboxController.Button.kB.value);
 
   /* Arm */
@@ -139,8 +141,8 @@ public class RobotContainer {
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
-  // private final JoystickButton balance =
-  //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+  private final JoystickButton balance =
+      new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -189,16 +191,16 @@ public class RobotContainer {
     // cancelling on release.
 
     // changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
-    changePiece4LED.onTrue(new InstantCommand(() -> m_arm.pieceChange()));
+    // changePiece4LED.onTrue(new InstantCommand(() -> m_arm.pieceChange()));
 
     // changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    // balance.onTrue(new Balance(m_drivetrain));
+    balance.whileTrue(new Balance(m_drivetrain,false));
 
-    creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
-    creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
+    // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
+    // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
     // uncomment this
@@ -283,7 +285,9 @@ public class RobotContainer {
     manual.and(doubleSubstation).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
 
     runIntake.whileTrue(new RunIntake(m_intake));
-    reverseIntake.whileTrue(new ReverseIntake(m_intake, m_arm));
+    reverseCone.whileTrue(new ReverseCone(m_intake, m_arm));
+    reverseCone.whileTrue(new ReverseCone(m_intake, m_arm));
+    reverseIntakeCube.whileTrue(new ReverseCube(m_intake));
   }
 
   /**

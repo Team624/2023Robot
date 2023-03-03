@@ -15,7 +15,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -40,6 +44,13 @@ public class Wrist extends SubsystemBase {
       new ArmFeedforward(Constants.Wrist.kS, Constants.Arm.kG, Constants.Arm.kV);
 
   private ProfiledPIDController wristController;
+
+  private boolean enabledFeedback = true;
+
+  private ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist");
+  private GenericEntry setpointEntry = wristTab.add("Setpoint", 0).getEntry();
+  private GenericEntry positionEntry = wristTab.add("Position", 0).getEntry();
+  private GenericEntry enabledEntry = wristTab.add("Enabled Feedback", true).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
 
   public Wrist() {
 
@@ -80,7 +91,7 @@ public class Wrist extends SubsystemBase {
     // wristMotor.setSoftLimit(SoftLimitDirection.kForward, 0.01f);
     // wristMotor.setSoftLimit(SoftLimitDirection.kReverse, -228);
 
-    rotationReference = getAbsoluteRotation();
+    wristController.setGoal(getAbsoluteRotation().getRadians());
     wristController.setTolerance(Units.degreesToRadians(6));
   }
 
@@ -91,6 +102,15 @@ public class Wrist extends SubsystemBase {
     SmartDashboard.putNumber("/Arm/BoreEncoder/get", WristboreEncoder.get());
     SmartDashboard.putNumber("/Wrist/BoreEncoder/Absolute", getBoreEncoder());
     SmartDashboard.putNumber("/Wrist/BoreEncoder/radians", getAbsoluteRotation().getRadians());
+    
+    setpointEntry.setDouble(wristController.getGoal().position);
+    enabledEntry.setBoolean(enabledFeedback);
+    positionEntry.setDouble(getAbsoluteRotation().getRadians());
+
+    if (enabledFeedback) {
+      double voltage = wristController.calculate(getAbsoluteRotation().getRadians());
+      wristMotor.setVoltage(-voltage);
+    }
   }
 
   public void resetController() {
@@ -107,9 +127,10 @@ public class Wrist extends SubsystemBase {
     // 4.24 raidans = high
 
     // 5.54 raidans ground intake
-    double voltage = wristController.calculate(getAbsoluteRotation().getRadians(), rotation);
 
-    wristMotor.setVoltage(-voltage);
+    enabledFeedback = true;
+
+    wristController.setGoal(rotation);
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -128,6 +149,8 @@ public class Wrist extends SubsystemBase {
   }
 
   public void moveWrist(double speed) {
+    this.enabledFeedback = false;
+
     wristMotor.set(speed);
   }
 
@@ -140,7 +163,9 @@ public class Wrist extends SubsystemBase {
     wristMotor.stopMotor();
   }
 
+  // Unused
   public void setWristCommand(double setpoint) {
+    this.enabledFeedback = false;
 
     Rotation2d angle = new Rotation2d(setpoint);
 

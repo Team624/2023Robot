@@ -18,7 +18,8 @@ import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Intake.IdleIntake;
-import frc.robot.commands.Intake.ReverseIntake;
+import frc.robot.commands.Intake.ReverseCone;
+import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.IntakeSequence;
 import frc.robot.subsystems.Arm;
@@ -135,21 +136,21 @@ public class AutonManager extends CommandBase {
         break;
       case "cone":
         if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof ReverseIntake
+            && (currentIntakeCommand instanceof ReverseCone
                 && currentIntakeCommand.isScheduled())) break;
         currentIntakeCommand.end(true);
         arm.cone = true;
-        currentIntakeCommand = new ReverseIntake(intake, arm);
+        currentIntakeCommand = new ReverseCone(intake, arm);
         currentIntakeCommand.schedule();
         break;
 
       case "cube":
         if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof ReverseIntake
+            && (currentIntakeCommand instanceof ReverseCone
                 && currentIntakeCommand.isScheduled())) break;
         currentIntakeCommand.end(true);
         arm.cone = false;
-        currentIntakeCommand = new ReverseIntake(intake, arm);
+        currentIntakeCommand = new ReverseCube(intake);
         currentIntakeCommand.schedule();
         break;
       case "idle":

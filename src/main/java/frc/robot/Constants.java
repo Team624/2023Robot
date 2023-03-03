@@ -233,7 +233,7 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = 0.07;
+    public static final double BORE_ENCODER_OFFSET = 0.03;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
@@ -242,8 +242,8 @@ public final class Constants {
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
-    public static final double kMaxVelocityRadiansPerSecond = 4.2;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 6;
+    public static final double kMaxVelocityRadiansPerSecond = 5.2;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 6.8;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -253,10 +253,10 @@ public final class Constants {
 
     // Setpoints
     public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(0.0);
-    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(3.5);
-    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(35);
-    public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(23.9);
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(100);
+    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(10.8);
+    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(37.8);
+    public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(36.6);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(104.4);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(115);
   }
 
@@ -267,15 +267,16 @@ public final class Constants {
     public static final int telescopemotor = 5;
 
     public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.0;
-    public static final double TELESCOPE_SETPOINT_FUNNEL = 6.7;
-    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 3.4;
-    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 8.3;
-    public static final double TELESCOPE_SETPOINT_MID = 14.5;
-    public static final double TELESCOPE_SETPOINT_HIGH = 22.2;
+    public static final double TELESCOPE_SETPOINT_FUNNEL = 7.1;
+    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 0.57;
+    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 9.57;
+    public static final double TELESCOPE_SETPOINT_MID = 9.07;
+    public static final double TELESCOPE_SETPOINT_HIGH = 25.8;
 
     // FF constants
     public static final double kS = 0.0;
     public static final double kG = 0.0;
+    
     public static final double kV = 0.0;
   }
 
@@ -287,7 +288,7 @@ public final class Constants {
 
     public static final Constraints wristCONSTRAINTS = new Constraints(6, 5);
 
-    public static final double boreEncoderOffset = 0.41;
+    public static final double boreEncoderOffset = 0.405;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -295,13 +296,12 @@ public final class Constants {
     public static final double kA = 0.0;
 
     public static final double WRIST_SETPOINT_DOUBLE_SUBSTATION = 0.0;
-    public static final double WRIST_SETPOINT_FUNNEL = 0.0744;
-    public static final double WRIST_SETPOINT_CONE_INTAKE = 2.64;
+    public static final double WRIST_SETPOINT_FUNNEL = 0.15;
+    public static final double WRIST_SETPOINT_CONE_INTAKE = 2.29;
 
-    public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.11;
-    public static final double WRIST_SETPOINT_MID = 0.48;
+    public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.27;
+    public static final double WRIST_SETPOINT_MID = 1.25;
     public static final double WRIST_SETPOINT_HIGH = 1.32;
-    
   }
 
   public static final class LED {

@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
-import frc.robot.commands.Arm.DisabledArm;
 
 public class Arm extends ProfiledPIDSubsystem {
   /** Creates a new Arm. */
@@ -101,12 +100,14 @@ public class Arm extends ProfiledPIDSubsystem {
     positionEntry.setDouble(getBore());
     setpointEntry.setDouble(getController().getGoal().position);
 
-    if (getController().getPositionError() > Constants.Arm.ESTOP_TOLERANCE.getRadians()) {
-      armMotorLeft.stopMotor();
-      armMotorRight.stopMotor();
-      new DisabledArm(this).schedule();
-      return;
-    }
+
+
+    // if (getController().getSet() > Constants.Arm.ESTOP_TOLERANCE.getRadians()) {
+    //   armMotorLeft.stopMotor();
+    //   armMotorRight.stopMotor();
+    //   new DisabledArm(this).schedule();
+    //   return;
+    // }
 
     // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
@@ -137,14 +138,13 @@ public class Arm extends ProfiledPIDSubsystem {
 
   @Override
   protected void useOutput(double output, State setpoint) {
-
     if (this.m_enabled) {
       // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
 
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = MathUtil.clamp(voltage, -8, 8);
+      voltage = MathUtil.clamp(voltage, -8.5, 8.5);
 
       if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
         voltage = 0;
@@ -154,6 +154,11 @@ public class Arm extends ProfiledPIDSubsystem {
 
       armMotorLeft.setVoltage(voltage);
       armMotorRight.setVoltage(voltage);
+    } else {
+      armMotorLeft.stopMotor();
+      armMotorRight.stopMotor();
+
+      voltage = 0;
     }
   }
 
