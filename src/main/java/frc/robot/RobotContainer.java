@@ -84,10 +84,7 @@ public class RobotContainer {
   private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.08);
   private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
 
-  private final JoystickButton stopArm =
-      new JoystickButton(m_controller, XboxController.Axis.kRightTrigger.value);
-
-  private final Trigger stopArm2 = m_controllerCommand.axisGreaterThan(stopArmAxis, 0.01);
+  private final Trigger stopArm = m_controllerCommand.axisGreaterThan(stopArmAxis, 0.1);
 
   /* Telescope */
 
@@ -119,8 +116,6 @@ public class RobotContainer {
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-  private final POVButton changeStation4LED = new POVButton(d_controller, 0);
 
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
@@ -236,7 +231,6 @@ public class RobotContainer {
     manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
 
     stopArm.whileTrue(new DisabledArm(m_arm));
-    stopArm2.whileTrue(new DisabledArm(m_arm));
 
     // Setpoints
 
@@ -278,17 +272,13 @@ public class RobotContainer {
     // High = 5
 
     manual.and(setBotHigh).onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 5));
+
     manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
 
     manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
 
-    // if (m_arm.cone) {
-    //   manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
-    // } else {
-    //   manual.and(setBotIntake).whileTrue(new UprightConeIntake(m_arm, m_telescope, m_wrist));
-    // }
-
     manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+    // manual.and(setBotIntake).whileTrue(new SelectIntake(m_arm, m_telescope, m_wrist));
 
     manual.and(doubleSubstation).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
 
