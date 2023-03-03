@@ -287,7 +287,7 @@ public final class Constants {
 
     public static final Constraints wristCONSTRAINTS = new Constraints(6, 5);
 
-    public static final double boreEncoderOffset = 0.0;
+    public static final double boreEncoderOffset = 0.41;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -301,6 +301,7 @@ public final class Constants {
     public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.11;
     public static final double WRIST_SETPOINT_MID = 0.48;
     public static final double WRIST_SETPOINT_HIGH = 1.32;
+    
   }
 
   public static final class LED {
