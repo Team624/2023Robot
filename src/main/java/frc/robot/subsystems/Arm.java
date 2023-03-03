@@ -96,11 +96,7 @@ public class Arm extends ProfiledPIDSubsystem {
     positionEntry.setDouble(getBore());
     // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
 
-    if (cone) {
-      coneEntry.setBoolean(true);
-    } else {
-      coneEntry.setBoolean(false);
-    }
+    coneEntry.setBoolean(cone);
   }
 
   public double getBore() {
