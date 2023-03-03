@@ -54,6 +54,7 @@ public class Balance extends CommandBase {
     }
     if (m_front) {
       vel = -vel;
+      mult *= -1;
     }
 
     if (Math.abs(angle) < 9) {
