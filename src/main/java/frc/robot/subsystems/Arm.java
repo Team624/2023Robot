@@ -61,11 +61,13 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight.restoreFactoryDefaults();
     armMotorRight.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
+    armMotorRight.setSmartCurrentLimit(5);
 
     armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
     armMotorLeft.restoreFactoryDefaults();
     armMotorLeft.setIdleMode(IdleMode.kBrake);
-    armMotorRight.setCANTimeout(500);
+    armMotorLeft.setCANTimeout(500);
+    armMotorLeft.setSmartCurrentLimit(5);
 
     armMotorLeft.setInverted(true);
 
