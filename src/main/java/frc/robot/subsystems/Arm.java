@@ -43,6 +43,8 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry positionEntry;
   private GenericEntry setpointEntry;
   private GenericEntry goalEntry;
+  private GenericEntry currentLeftEntry;
+  private GenericEntry currentRightEntry;
 
   public boolean cone = false;
 
@@ -62,12 +64,12 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight = new CANSparkMax(Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
-    armMotorRight.setSmartCurrentLimit(9);
+    armMotorRight.setSmartCurrentLimit(20);
 
     armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
     armMotorLeft.setIdleMode(IdleMode.kBrake);
     armMotorLeft.setCANTimeout(500);
-    armMotorLeft.setSmartCurrentLimit(9);
+    armMotorLeft.setSmartCurrentLimit(20);
 
     armMotorLeft.setInverted(true);
 
@@ -88,6 +90,8 @@ public class Arm extends ProfiledPIDSubsystem {
     coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
     setpointEntry = armTab.add("Setpoint", getController().getSetpoint().position).getEntry();
     goalEntry = armTab.add("Goal", getController().getGoal().position).getEntry();
+    currentLeftEntry = armTab.add("Current Draw (Left)", armMotorLeft.getOutputCurrent()).getEntry();
+    currentRightEntry = armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
   }
 
   @Override
@@ -97,6 +101,12 @@ public class Arm extends ProfiledPIDSubsystem {
     enabledEntry.setBoolean(m_enabled);
     positionEntry.setDouble(getBore());
     setpointEntry.setDouble(getController().getGoal().position);
+    goalEntry.setDouble(getController().getGoal().position);
+    currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
+    currentRightEntry.setDouble(armMotorRight.getOutputCurrent());
+
+    // System.out.println(armMotorLeft.getOutputCurrent() + " " + armMotorRight.getOutputCurrent());
+    
 
 
 
@@ -142,9 +152,10 @@ public class Arm extends ProfiledPIDSubsystem {
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = MathUtil.clamp(voltage, -8.5, 8.5);
+      voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
       if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+        // System.out.println("Stopping arm!");
         voltage = 0;
       }
 
@@ -152,11 +163,6 @@ public class Arm extends ProfiledPIDSubsystem {
 
       armMotorLeft.setVoltage(voltage);
       armMotorRight.setVoltage(voltage);
-    } else {
-      armMotorLeft.stopMotor();
-      armMotorRight.stopMotor();
-
-      voltage = 0;
     }
   }
 

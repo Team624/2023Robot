@@ -16,7 +16,7 @@ public class DisabledArm extends CommandBase {
   @Override
   public void execute() {
     m_arm.disable();
-    System.out.println("IN disabled arm!!!!");
+    m_arm.stopArm();
   }
 
   @Override
