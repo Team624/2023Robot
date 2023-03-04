@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.CANifier.GeneralPin;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -12,6 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +33,8 @@ public class Telescope extends SubsystemBase {
   private double P;
   private double I;
   private double D;
+
+  private GenericEntry positionEntry;
 
   public Telescope() {
     telescopeMotor = new CANSparkMax(Constants.Telescope.telescopemotor, MotorType.kBrushless);
@@ -60,6 +64,7 @@ public class Telescope extends SubsystemBase {
             Constants.Telescope.kS, Constants.Telescope.kG, Constants.Telescope.kV);
 
     Shuffleboard.getTab("Telescope").add("Reset Encoder", new ResetEncoder(this));
+    positionEntry = Shuffleboard.getTab("Telescope").add("Position", getTelescopeEncoder()).getEntry();
   }
 
   @Override
@@ -70,6 +75,7 @@ public class Telescope extends SubsystemBase {
     // System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
 
     SmartDashboard.putNumber("/Telescope/Encoder", getTelescopeEncoder());
+    positionEntry.setDouble(getTelescopeEncoder());
   }
 
   public void controlTelescope(double speed) {
