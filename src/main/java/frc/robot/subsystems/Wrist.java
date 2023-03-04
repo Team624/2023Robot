@@ -51,6 +51,8 @@ public class Wrist extends SubsystemBase {
 
     wristMotor.setCANTimeout(500);
 
+    wristMotor.setSmartCurrentLimit(5);
+
     WristboreEncoder = new DutyCycleEncoder(1);
 
     wristController =
@@ -84,7 +86,10 @@ public class Wrist extends SubsystemBase {
 
     if (enabledFeedback) {
       double voltage = wristController.calculate(getAbsoluteRotation().getRadians());
-      wristMotor.setVoltage(-voltage);
+      
+      if (!softLimit(-voltage)) {
+        wristMotor.setVoltage(-voltage);
+      }
     }
   }
 
@@ -114,6 +119,20 @@ public class Wrist extends SubsystemBase {
     return new Rotation2d(radians);
   }
 
+  public boolean softLimit(double value) {
+    if (value > 0 && getAbsoluteRotation().getRadians() <= 0.1) {
+      System.out.println("SOFT LIMIT!");
+      wristMotor.stopMotor();
+      return true;
+    }
+
+    // if (value > 0 && getAbsoluteRotation().getRadians() >= 10.0) {
+    //   return true;
+    // }
+
+    return false;
+  }
+
   public double getBoreEncoder() {
     return (MathUtil.inputModulus(
         WristboreEncoder.getAbsolutePosition() - Constants.Wrist.boreEncoderOffset, 0, 1));
@@ -126,7 +145,9 @@ public class Wrist extends SubsystemBase {
   public void moveWrist(double speed) {
     this.enabledFeedback = false;
 
-    wristMotor.set(speed);
+    if (!softLimit(speed)) {
+      wristMotor.set(speed);
+    }
   }
 
   public void zeroWrist() {
