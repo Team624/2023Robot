@@ -108,6 +108,11 @@ public class Wrist extends SubsystemBase {
 
     // 5.54 raidans ground intake
 
+    // Prevent setpoints at unreachable points
+    if (rotation > 4.9) {
+      rotation = 0.15;
+    }
+
     enabledFeedback = true;
 
     wristController.setGoal(rotation);
@@ -120,7 +125,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public boolean softLimit(double value) {
-    if (value > 0 && getAbsoluteRotation().getRadians() <= 0.1) {
+    if (value > 0 && (getAbsoluteRotation().getRadians() <= 0.15 || getAbsoluteRotation().getRadians() > 4.9)) {
       System.out.println("SOFT LIMIT!");
       wristMotor.stopMotor();
       return true;
@@ -129,6 +134,15 @@ public class Wrist extends SubsystemBase {
     // if (value > 0 && getAbsoluteRotation().getRadians() >= 10.0) {
     //   return true;
     // }
+
+    return false;
+  }
+
+  public boolean slowZone(double value) {
+    if (value > 0 && getAbsoluteRotation().getRadians() <= 0.25) {
+      System.out.println("SLOW ZONE!");
+      return true;
+    }
 
     return false;
   }
@@ -146,6 +160,9 @@ public class Wrist extends SubsystemBase {
     this.enabledFeedback = false;
 
     if (!softLimit(speed)) {
+      if (slowZone(speed)) {
+        speed = MathUtil.clamp(speed, -0.5, 0.5);
+      }
       wristMotor.set(speed);
     }
   }
