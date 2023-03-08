@@ -113,15 +113,6 @@ public class AutonManager extends CommandBase {
     return true;
   }
 
-  private void updateNTVision() {
-    String state = SmartDashboard.getEntry("/auto/vision/set").getString("-1 -1");
-
-    int grid = Integer.parseInt(state.split(" ")[0]);
-    int column = Integer.parseInt(state.split(" ")[0]);
-
-    System.out.println("Aligning with grid " + grid + " column " + column + " (in my imagination)");
-  }
-
   private void updateNTIntake() {
     String state = SmartDashboard.getEntry("/auto/intake/set").getString("idle");
 
