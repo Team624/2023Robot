@@ -127,8 +127,8 @@ public class AutonManager extends CommandBase {
         break;
       case "cone":
         if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof ReverseCone
-                && currentIntakeCommand.isScheduled())) break;
+            && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
+          break;
         currentIntakeCommand.end(true);
         arm.cone = true;
         currentIntakeCommand = new ReverseCone(intake, arm);
@@ -137,8 +137,8 @@ public class AutonManager extends CommandBase {
 
       case "cube":
         if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof ReverseCone
-                && currentIntakeCommand.isScheduled())) break;
+            && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
+          break;
         currentIntakeCommand.end(true);
         arm.cone = false;
         currentIntakeCommand = new ReverseCube(intake);

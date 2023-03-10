@@ -10,6 +10,7 @@ import frc.robot.subsystems.Intake;
 public class ReverseCube extends CommandBase {
   /** Creates a new ReverseCube. */
   private final Intake m_intake;
+
   public ReverseCube(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_intake = intake;

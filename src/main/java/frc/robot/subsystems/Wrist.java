@@ -5,13 +5,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -39,7 +36,8 @@ public class Wrist extends SubsystemBase {
   private ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist");
   private GenericEntry setpointEntry = wristTab.add("Setpoint", 0).getEntry();
   private GenericEntry positionEntry = wristTab.add("Position", 0).getEntry();
-  private GenericEntry enabledEntry = wristTab.add("Enabled Feedback", true).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+  private GenericEntry enabledEntry =
+      wristTab.add("Enabled Feedback", true).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
 
   public Wrist() {
 
@@ -79,14 +77,14 @@ public class Wrist extends SubsystemBase {
     SmartDashboard.putNumber("/Arm/BoreEncoder/get", WristboreEncoder.get());
     SmartDashboard.putNumber("/Wrist/BoreEncoder/Absolute", getBoreEncoder());
     SmartDashboard.putNumber("/Wrist/BoreEncoder/radians", getAbsoluteRotation().getRadians());
-    
+
     setpointEntry.setDouble(wristController.getGoal().position);
     enabledEntry.setBoolean(enabledFeedback);
     positionEntry.setDouble(getAbsoluteRotation().getRadians());
 
     if (enabledFeedback) {
       double voltage = wristController.calculate(getAbsoluteRotation().getRadians());
-      
+
       if (!softLimit(-voltage)) {
         wristMotor.setVoltage(-voltage);
       }
@@ -125,7 +123,9 @@ public class Wrist extends SubsystemBase {
   }
 
   public boolean softLimit(double value) {
-    if (value > 0 && (getAbsoluteRotation().getRadians() <= 0.15 || getAbsoluteRotation().getRadians() > 4.9)) {
+    if (value > 0
+        && (getAbsoluteRotation().getRadians() <= 0.15
+            || getAbsoluteRotation().getRadians() > 4.9)) {
       System.out.println("SOFT LIMIT!");
       wristMotor.stopMotor();
       return true;

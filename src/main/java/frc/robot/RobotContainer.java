@@ -197,7 +197,7 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    balance.whileTrue(new Balance(m_drivetrain,false));
+    balance.whileTrue(new Balance(m_drivetrain, false));
 
     // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
     // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));

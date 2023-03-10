@@ -29,19 +29,6 @@ public class Intake extends SubsystemBase {
     intakeMotor = new PWMSparkMax(0);
 
     intakeMotor.setInverted(true);
-
-    // intakePidController = intakeMotor.getPIDController();
-    // intakeMotor.setIdleMode(IdleMode.kBrake);
-    // IntakeP = frc.robot.Constants.Intake.P;
-    // IntakeI = frc.robot.Constants.Intake.I;
-    // IntakeD = frc.robot.Constants.Intake.D;
-
-    // intakePidController.setP(IntakeP);
-    // intakePidController.setI(IntakeI);
-    // intakePidController.setD(IntakeD);
-
-    // intakePidController.setOutputRange(-1, 1);
-
   }
 
   @Override

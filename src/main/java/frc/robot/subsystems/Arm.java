@@ -90,8 +90,10 @@ public class Arm extends ProfiledPIDSubsystem {
     coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
     setpointEntry = armTab.add("Setpoint", getController().getSetpoint().position).getEntry();
     goalEntry = armTab.add("Goal", getController().getGoal().position).getEntry();
-    currentLeftEntry = armTab.add("Current Draw (Left)", armMotorLeft.getOutputCurrent()).getEntry();
-    currentRightEntry = armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
+    currentLeftEntry =
+        armTab.add("Current Draw (Left)", armMotorLeft.getOutputCurrent()).getEntry();
+    currentRightEntry =
+        armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
   }
 
   @Override
@@ -106,9 +108,6 @@ public class Arm extends ProfiledPIDSubsystem {
     currentRightEntry.setDouble(armMotorRight.getOutputCurrent());
 
     // System.out.println(armMotorLeft.getOutputCurrent() + " " + armMotorRight.getOutputCurrent());
-    
-
-
 
     // if (getController().getSet() > Constants.Arm.ESTOP_TOLERANCE.getRadians()) {
     //   armMotorLeft.stopMotor();

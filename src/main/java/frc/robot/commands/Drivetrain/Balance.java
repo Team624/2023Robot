@@ -73,10 +73,10 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    System.out.println("the angle: "+angle);
+    System.out.println("the angle: " + angle);
     if (Math.abs(angle) < 13.8 && !ground) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
-      
+
       // m_drivetrain.swerveXposition();
       setNTState(true);
 

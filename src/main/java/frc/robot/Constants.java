@@ -276,7 +276,7 @@ public final class Constants {
     // FF constants
     public static final double kS = 0.0;
     public static final double kG = 0.0;
-    
+
     public static final double kV = 0.0;
   }
 
@@ -305,6 +305,16 @@ public final class Constants {
     public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.27;
     public static final double WRIST_SETPOINT_MID = 1.25;
     public static final double WRIST_SETPOINT_HIGH = 1.32;
+  }
+
+  public static final class Shooter {
+    public static final int shooterMotorLeft = 0;
+    public static final int shooterMotorRight = 0;
+    public static final double P = 0.0;
+    public static final double I = 0.0;
+    public static final double D = 0.0;
+    public static final double F = 0.0;
+    public static final double Izone = 0.0;
   }
 
   public static final class LED {

@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.CANifier.GeneralPin;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -64,7 +63,8 @@ public class Telescope extends SubsystemBase {
             Constants.Telescope.kS, Constants.Telescope.kG, Constants.Telescope.kV);
 
     Shuffleboard.getTab("Telescope").add("Reset Encoder", new ResetEncoder(this));
-    positionEntry = Shuffleboard.getTab("Telescope").add("Position", getTelescopeEncoder()).getEntry();
+    positionEntry =
+        Shuffleboard.getTab("Telescope").add("Position", getTelescopeEncoder()).getEntry();
   }
 
   @Override
