@@ -46,7 +46,6 @@ public class TelescopeWrist extends ParallelCommandGroup {
       Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
       Constants.Wrist.WRIST_SETPOINT_FUNNEL,
       Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
-      Constants.Wrist.WRIST_SETPOINT_CUBE_INTAKE,
       Constants.Wrist.WRIST_SETPOINT_MID,
       Constants.Wrist.WRIST_SETPOINT_HIGH
     };

@@ -33,7 +33,7 @@ public class Wrist extends SubsystemBase {
 
   private boolean enabledFeedback = true;
 
-  private ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist");
+  private ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist0");
   private GenericEntry setpointEntry = wristTab.add("Setpoint", 0).getEntry();
   private GenericEntry positionEntry = wristTab.add("Position", 0).getEntry();
   private GenericEntry enabledEntry =
@@ -60,14 +60,8 @@ public class Wrist extends SubsystemBase {
             Constants.Wrist.D,
             Constants.Wrist.wristCONSTRAINTS);
 
-    // wristMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    // wristMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-
-    // wristMotor.setSoftLimit(SoftLimitDirection.kForward, 0.01f);
-    // wristMotor.setSoftLimit(SoftLimitDirection.kReverse, -228);
-
     wristController.setGoal(getAbsoluteRotation().getRadians());
-    wristController.setTolerance(Units.degreesToRadians(6));
+    wristController.setTolerance(Units.degreesToRadians(4));
   }
 
   @Override

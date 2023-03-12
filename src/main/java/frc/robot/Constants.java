@@ -233,7 +233,7 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = 0.03;
+    public static final double BORE_ENCODER_OFFSET = 0.82;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
@@ -291,7 +291,7 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = 0.405;
+    public static final double boreEncoderOffset = 0.1755;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -302,9 +302,14 @@ public final class Constants {
     public static final double WRIST_SETPOINT_FUNNEL = 0.15;
     public static final double WRIST_SETPOINT_CONE_INTAKE = 2.29;
 
-    public static final double WRIST_SETPOINT_CUBE_INTAKE = 2.27;
+    public static final double WRIST2_SETPOINT_CUBE_INTAKE = 2.27;
     public static final double WRIST_SETPOINT_MID = 1.25;
     public static final double WRIST_SETPOINT_HIGH = 1.32;
+
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(0.0);
+    public static final Rotation2d wrist_upright_cone_Score = Rotation2d.fromDegrees(-180);
+    public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(1);
+    public static final Rotation2d wrist_cone_rightScore = Rotation2d.fromDegrees(90);
   }
 
   public static final class Shooter {

@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.DisabledArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -25,16 +24,15 @@ import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
-import frc.robot.commands.FunnelSequence;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
-import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.Wrist.ControlWrist;
-import frc.robot.commands.Wrist.IdleWrist;
+import frc.robot.commands.Wrist2.ControlWrist2;
+import frc.robot.commands.Wrist2.IdleWrist2;
+import frc.robot.commands.Wrist2.SetWrist2;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -43,6 +41,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Wrist2;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -62,7 +61,7 @@ public class RobotContainer {
 
   /* LEDs */
 
-  private final JoystickButton reverseCone =
+  private final JoystickButton upRightCone =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
 
   private final int armAxis = XboxController.Axis.kLeftY.value;
@@ -93,8 +92,6 @@ public class RobotContainer {
   private final Trigger telescopeMove = m_controllerCommand.axisLessThan(telescopeAxis, -0.08);
   private final Trigger telescopeMove2 = m_controllerCommand.axisGreaterThan(telescopeAxis, 0.08);
 
-  // private final JoystickButton resetTelescopeEncoder =
-  //     new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   /* Wrist */
 
@@ -138,8 +135,11 @@ public class RobotContainer {
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-  private final JoystickButton creepMode =
-      new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+      private final JoystickButton coneFlip =
+      new JoystickButton(m_controller, XboxController.Button.kA.value);
+
+  // private final JoystickButton creepMode =
+  //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
   private final JoystickButton balance =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
@@ -149,7 +149,10 @@ public class RobotContainer {
   private final Limelight m_limelight = new Limelight();
   private final Arm m_arm = new Arm();
   private final Intake m_intake = new Intake();
-  private final Wrist m_wrist = new Wrist();
+
+  // private final Wrist m_wrist = new Wrist();
+  private final Wrist2 m_wrist2 = new Wrist2();
+
   private final Telescope m_telescope = new Telescope();
   // private final ledControl m_LedControl =
   //     new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
@@ -168,7 +171,8 @@ public class RobotContainer {
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     m_intake.setDefaultCommand(new IdleIntake(m_intake));
-    m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
+    // m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
+    m_wrist2.setDefaultCommand(new IdleWrist2(m_wrist2));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
@@ -229,8 +233,11 @@ public class RobotContainer {
     // resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
 
     /** Wrist */
-    manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
-    manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
+    // manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
+    // manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
+
+    manual.and(wristMove).whileTrue(new ControlWrist2(m_wrist2, m_controller));
+    manual.and(wristMove2).whileTrue(new ControlWrist2(m_wrist2, m_controller));
 
     stopArm.whileTrue(new DisabledArm(m_arm));
 
@@ -273,21 +280,24 @@ public class RobotContainer {
     // mid = 4
     // High = 5
 
-    manual.and(setBotHigh).onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 5));
+    // manual.and(setBotHigh).onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 5));
 
-    manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
+    // manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
 
-    manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
+    // manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
 
-    manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
-    // manual.and(setBotIntake).whileTrue(new SelectIntake(m_arm, m_telescope, m_wrist));
+    // manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
 
-    manual.and(doubleSubstation).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 0));
+    manual
+        .and(doubleSubstation)
+        .whileTrue(new SetWrist2(m_wrist2, Constants.Wrist.wrist_upright_cone_Score));
 
     runIntake.whileTrue(new RunIntake(m_intake));
-    reverseCone.whileTrue(new ReverseCone(m_intake, m_arm));
-    reverseCone.whileTrue(new ReverseCone(m_intake, m_arm));
-    reverseIntakeCube.whileTrue(new ReverseCube(m_intake));
+
+    manual.and(upRightCone).whileTrue(new SetWrist2(m_wrist2, Constants.Wrist.wrist_cone_rightScore));
+    manual.and(coneFlip).whileTrue(new SetWrist2(m_wrist2, Constants.Wrist.wrist_cone_leftScore));
+
+    reverseIntakeCube.whileTrue(new ReverseCone(m_intake,m_arm));
   }
 
   /**
@@ -299,9 +309,9 @@ public class RobotContainer {
     return m_drivetrain;
   }
 
-  public Command getAutonManager() {
-    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake);
-  }
+  // public Command getAutonManager() {
+  //   return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist2, m_intake);
+  // }
 
   public Command getAutonSelectionCommand() {
     return new AutonSelection();

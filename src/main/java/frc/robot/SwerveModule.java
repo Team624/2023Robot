@@ -101,6 +101,10 @@ public class SwerveModule {
     mAngleMotor.setSelectedSensorPosition(absolutePosition);
   }
 
+  public double getAngleOffset() {
+    return angleOffset.getDegrees();
+  }
+
   private void configAngleEncoder() {
     angleEncoder.configFactoryDefault();
     angleEncoder.configAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);

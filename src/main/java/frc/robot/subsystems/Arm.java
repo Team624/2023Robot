@@ -123,22 +123,22 @@ public class Arm extends ProfiledPIDSubsystem {
 
   public double getBore() {
     return MathUtil.inputModulus(
-        (1 - boreEncoder.getAbsolutePosition()) + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+        boreEncoder.getAbsolutePosition() + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBore();
-    if (radians > 1.5 * Math.PI) {
-      double excess = radians - 1.5 * Math.PI;
-      radians = -(0.5 * Math.PI - excess);
-    }
+    // if (radians > 1.5 * Math.PI) {
+    //   double excess = radians - 1.5 * Math.PI;
+    //   radians = -(0.5 * Math.PI - excess);
+    // }
 
-    // Handle encoder looping around
-    if (radians > 1.5 * Math.PI) {
-      double excess = radians - 1.5 * Math.PI;
+    // // Handle encoder looping around
+    // if (radians > 1.5 * Math.PI) {
+    //   double excess = radians - 1.5 * Math.PI;
 
-      radians = -(0.5 * Math.PI - excess);
-    }
+    //   radians = -(0.5 * Math.PI - excess);
+    // }
 
     return new Rotation2d(radians);
   }

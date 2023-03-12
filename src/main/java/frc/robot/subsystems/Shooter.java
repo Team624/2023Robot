@@ -90,4 +90,11 @@ public class Shooter extends SubsystemBase {
     shooterPidControllerRight.setReference(goalRPM, ControlType.kVelocity);
     dashBoardGoalRPM.setDouble(goalRPM);
   }
+
+  public void setRPM(double RPM) {
+    goalRPM = RPM;
+    shooterPidControllerLeft.setReference(goalRPM, ControlType.kVelocity);
+    shooterPidControllerRight.setReference(goalRPM, ControlType.kVelocity);
+    dashBoardGoalRPM.setDouble(goalRPM);
+  }
 }

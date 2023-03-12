@@ -79,7 +79,7 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
 
     m_robotContainer.setDisabledDrivetrainDefault();
-    this.m_autonomousCommand = m_robotContainer.getAutonManager();
+    // this.m_autonomousCommand = m_robotContainer.getAutonManager();
 
     m_autonomousCommand.schedule();
   }
