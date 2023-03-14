@@ -20,8 +20,8 @@ public class IdleArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.enable();
-    m_arm.setGoal(m_arm.getAbsoluteRotation().getRadians());
+    m_arm.disable();
+    // m_arm.setGoal(m_arm.getAbsoluteRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

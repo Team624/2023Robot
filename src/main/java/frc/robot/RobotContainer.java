@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.DisabledArm;
 import frc.robot.commands.Arm.IdleArm;
+import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -24,15 +25,16 @@ import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
+import frc.robot.commands.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
-import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.IntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.Wrist2.ControlWrist2;
-import frc.robot.commands.Wrist2.IdleWrist2;
-import frc.robot.commands.Wrist2.SetWrist2;
+import frc.robot.commands.Wrist.ControlWrist;
+import frc.robot.commands.Wrist.IdleWrist;
+import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -41,7 +43,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.Wrist2;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -92,7 +93,6 @@ public class RobotContainer {
   private final Trigger telescopeMove = m_controllerCommand.axisLessThan(telescopeAxis, -0.08);
   private final Trigger telescopeMove2 = m_controllerCommand.axisGreaterThan(telescopeAxis, 0.08);
 
-
   /* Wrist */
 
   private final Trigger wristMove = m_controllerCommand.axisLessThan(wristAxis, -0.08);
@@ -106,9 +106,9 @@ public class RobotContainer {
 
   private final POVButton setBotIntake = new POVButton(m_controller, 180);
 
-  private final POVButton setBotFunnel = new POVButton(m_controller, 270);
+  private final POVButton setBotInside = new POVButton(m_controller, 270);
 
-  private final JoystickButton doubleSubstation =
+  private final JoystickButton coneIntake =
       new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
 
   /* Drive Controls */
@@ -135,7 +135,7 @@ public class RobotContainer {
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-      private final JoystickButton coneFlip =
+  private final JoystickButton coneFlip =
       new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   // private final JoystickButton creepMode =
@@ -149,9 +149,7 @@ public class RobotContainer {
   private final Limelight m_limelight = new Limelight();
   private final Arm m_arm = new Arm();
   private final Intake m_intake = new Intake();
-
-  // private final Wrist m_wrist = new Wrist();
-  private final Wrist2 m_wrist2 = new Wrist2();
+  private final Wrist m_wrist = new Wrist();
 
   private final Telescope m_telescope = new Telescope();
   // private final ledControl m_LedControl =
@@ -172,7 +170,7 @@ public class RobotContainer {
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     m_intake.setDefaultCommand(new IdleIntake(m_intake));
     // m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
-    m_wrist2.setDefaultCommand(new IdleWrist2(m_wrist2));
+    m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
 
@@ -236,8 +234,8 @@ public class RobotContainer {
     // manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
     // manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
 
-    manual.and(wristMove).whileTrue(new ControlWrist2(m_wrist2, m_controller));
-    manual.and(wristMove2).whileTrue(new ControlWrist2(m_wrist2, m_controller));
+    manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
+    manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
 
     stopArm.whileTrue(new DisabledArm(m_arm));
 
@@ -280,24 +278,20 @@ public class RobotContainer {
     // mid = 4
     // High = 5
 
-    // manual.and(setBotHigh).onTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 5));
+    manual.and(setBotHigh).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
 
-    // manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 4));
+    manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
 
-    // manual.and(setBotFunnel).whileTrue(new FunnelSequence(m_arm, m_telescope, m_wrist));
+    manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
 
-    // manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+    manual.and(setBotInside).whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
 
-    manual
-        .and(doubleSubstation)
-        .whileTrue(new SetWrist2(m_wrist2, Constants.Wrist.wrist_upright_cone_Score));
+    manual.and(coneIntake).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_zero));
+    manual.and(coneFlip).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_leftScore));
+    manual.and(upRightCone).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_upright_cone_Score));
 
     runIntake.whileTrue(new RunIntake(m_intake));
-
-    manual.and(upRightCone).whileTrue(new SetWrist2(m_wrist2, Constants.Wrist.wrist_cone_rightScore));
-    manual.and(coneFlip).whileTrue(new SetWrist2(m_wrist2, Constants.Wrist.wrist_cone_leftScore));
-
-    reverseIntakeCube.whileTrue(new ReverseCone(m_intake,m_arm));
+    reverseIntakeCube.whileTrue(new ReverseCone(m_intake, m_arm));
   }
 
   /**
@@ -309,9 +303,9 @@ public class RobotContainer {
     return m_drivetrain;
   }
 
-  // public Command getAutonManager() {
-  //   return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist2, m_intake);
-  // }
+  public Command getAutonManager() {
+    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake);
+  }
 
   public Command getAutonSelectionCommand() {
     return new AutonSelection();

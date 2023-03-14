@@ -2,24 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Wrist2;
+package frc.robot.commands.Hood;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Wrist;
-import frc.robot.subsystems.Wrist2;
 
-public class ControlWrist2 extends CommandBase {
-  /** Creates a new ControlWrist2. */
-  private final Wrist2 m_wrist2;
-
-  private final XboxController m_Controller;
-
-  public ControlWrist2(Wrist2 wrist2, XboxController controller) {
+public class SetHood extends CommandBase {
+  /** Creates a new SetHood. */
+  public SetHood() {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_wrist2 = wrist2;
-    this.m_Controller = controller;
-    addRequirements(m_wrist2);
   }
 
   // Called when the command is initially scheduled.
@@ -28,16 +18,11 @@ public class ControlWrist2 extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_wrist2.disable();
-    m_wrist2.set(-m_Controller.getRightX());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_wrist2.stopWrist();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

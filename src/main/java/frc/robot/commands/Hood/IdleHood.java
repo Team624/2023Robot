@@ -2,27 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Wrist2;
+package frc.robot.commands.Hood;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Wrist2;
 
-public class IdleWrist2 extends CommandBase {
-  /** Creates a new IdleWrist2. */
-  private final Wrist2 m_wrist2;
-
-  public IdleWrist2(Wrist2 wrist2) {
+public class IdleHood extends CommandBase {
+  /** Creates a new IdleHood. */
+  public IdleHood() {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_wrist2 = wrist2;
-    addRequirements(wrist2);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_wrist2.enable();
-    m_wrist2.setGoal(m_wrist2.getAbsoluteRotation().getRadians());
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -2,36 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Wrist2;
+package frc.robot.commands.Hood;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Wrist2;
 
-public class SetWrist2 extends CommandBase {
-  /** Creates a new SetWrist. */
-  private final Wrist2 m_wrist2;
-
-  private final Rotation2d m_setPoint;
-
-  public SetWrist2(Wrist2 wrist2, Rotation2d setpoint) {
+public class ControlHood extends CommandBase {
+  /** Creates a new ControlHood. */
+  public ControlHood() {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_wrist2 = wrist2;
-    this.m_setPoint = setpoint;
-    addRequirements(m_wrist2);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_wrist2.enable();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_wrist2.setGoal(m_setPoint);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -40,6 +27,6 @@ public class SetWrist2 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_wrist2.getController().atGoal();
+    return false;
   }
 }

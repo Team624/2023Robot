@@ -11,36 +11,57 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 
-public class Wrist extends SubsystemBase {
-  /** Creates a new Wrist. */
+public class Wrist extends ProfiledPIDSubsystem {
+  /** Creates a new Wrist2. */
   private CANSparkMax wristMotor;
 
   private RelativeEncoder wristEncoder;
 
   private DutyCycleEncoder WristboreEncoder;
 
-  private ProfiledPIDController wristController;
+  private ShuffleboardTab wristTab;
 
-  private boolean enabledFeedback = true;
+  private GenericEntry voltageEntry;
+  private GenericEntry positionEntry;
+  private GenericEntry setpointEntry;
+  private GenericEntry goalEntry;
 
-  private ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist0");
-  private GenericEntry setpointEntry = wristTab.add("Setpoint", 0).getEntry();
-  private GenericEntry positionEntry = wristTab.add("Position", 0).getEntry();
-  private GenericEntry enabledEntry =
-      wristTab.add("Enabled Feedback", true).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+  private boolean check;
+
+  /** If 0 Can go -180 to 180 */
+
+  /** If 90 180 - Counter clockwise -180 - Clock wise 90 0 - counter clockwise */
+
+  /** If 180 0 - Clockwise 90 - clockwise 180 -90 - ClockWise -180 - Clockwise */
+
+  /**
+   * If -90 0 - Counter clock wise 90 - Counter clock wise 180 - Counter clock wise -90 - -180 -
+   * Clockwise
+   */
+
+  /** If -180 0 - clock wise 90 - clock wise 180 - clock wise -90 - clock wise -180 - */
+  private double voltage = 0;
 
   public Wrist() {
-
+    super(
+        // The ProfiledPIDController used by the subsystem
+        new ProfiledPIDController(
+            Constants.Wrist.P,
+            Constants.Wrist.I,
+            Constants.Wrist.D,
+            // The motion profile constraints
+            new TrapezoidProfile.Constraints(6, 5)));
+    getController().setTolerance(Units.degreesToRadians(3));
     wristMotor = new CANSparkMax(Constants.Wrist.WristMotor, MotorType.kBrushless);
 
     wristEncoder = wristMotor.getEncoder();
@@ -53,92 +74,41 @@ public class Wrist extends SubsystemBase {
 
     WristboreEncoder = new DutyCycleEncoder(1);
 
-    wristController =
-        new ProfiledPIDController(
-            Constants.Wrist.P,
-            Constants.Wrist.I,
-            Constants.Wrist.D,
-            Constants.Wrist.wristCONSTRAINTS);
+    wristTab = Shuffleboard.getTab("Wrist");
+    positionEntry = wristTab.add("Positionning degrees", getBoreEncoder()).getEntry();
 
-    wristController.setGoal(getAbsoluteRotation().getRadians());
-    wristController.setTolerance(Units.degreesToRadians(4));
+    voltageEntry = wristTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
+    setpointEntry = wristTab.add("Setpoint", getController().getSetpoint().position).getEntry();
+    goalEntry = wristTab.add("Goal", getController().getGoal().position).getEntry();
+
+    boolean check = true;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("/Wrist/Encoder", getWristEncoder());
-    SmartDashboard.putNumber("/Arm/BoreEncoder/get", WristboreEncoder.get());
-    SmartDashboard.putNumber("/Wrist/BoreEncoder/Absolute", getBoreEncoder());
-    SmartDashboard.putNumber("/Wrist/BoreEncoder/radians", getAbsoluteRotation().getRadians());
+    super.periodic();
 
-    setpointEntry.setDouble(wristController.getGoal().position);
-    enabledEntry.setBoolean(enabledFeedback);
-    positionEntry.setDouble(getAbsoluteRotation().getRadians());
+    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    setpointEntry.setDouble(getController().getGoal().position);
+    goalEntry.setDouble(getController().getGoal().position);
+  }
 
-    if (enabledFeedback) {
-      double voltage = wristController.calculate(getAbsoluteRotation().getRadians());
+  @Override
+  public void useOutput(double output, TrapezoidProfile.State setpoint) {
+    // Use the output (and optionally the setpoint) here
 
-      if (!softLimit(-voltage)) {
-        wristMotor.setVoltage(-voltage);
+    if (this.m_enabled) {
+      voltage = output;
+
+      voltage = MathUtil.clamp(voltage, -9.0, 9.0);
+
+      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+        voltage = 0;
       }
+
+      wristMotor.setVoltage(voltage);
+      voltageEntry.setDouble(voltage);
     }
-  }
-
-  public void resetController() {
-    wristController.reset(getAbsoluteRotation().getRadians());
-  }
-
-  public ProfiledPIDController getContoller() {
-    return wristController;
-  }
-
-  public void setReference(double rotation) {
-
-    // 3.85 radians = mid
-    // 4.24 raidans = high
-
-    // 5.54 raidans ground intake
-
-    // Prevent setpoints at unreachable points
-    if (rotation > 4.9) {
-      rotation = 0.15;
-    }
-
-    enabledFeedback = true;
-
-    wristController.setGoal(rotation);
-  }
-
-  public Rotation2d getAbsoluteRotation() {
-    double radians = 2 * Math.PI * getBoreEncoder();
-
-    return new Rotation2d(radians);
-  }
-
-  public boolean softLimit(double value) {
-    if (value > 0
-        && (getAbsoluteRotation().getRadians() <= 0.15
-            || getAbsoluteRotation().getRadians() > 4.9)) {
-      System.out.println("SOFT LIMIT!");
-      wristMotor.stopMotor();
-      return true;
-    }
-
-    // if (value > 0 && getAbsoluteRotation().getRadians() >= 10.0) {
-    //   return true;
-    // }
-
-    return false;
-  }
-
-  public boolean slowZone(double value) {
-    if (value > 0 && getAbsoluteRotation().getRadians() <= 0.25) {
-      System.out.println("SLOW ZONE!");
-      return true;
-    }
-
-    return false;
   }
 
   public double getBoreEncoder() {
@@ -146,31 +116,51 @@ public class Wrist extends SubsystemBase {
         WristboreEncoder.getAbsolutePosition() - Constants.Wrist.boreEncoderOffset, 0, 1));
   }
 
-  public void zeroBoreEncoder() {
-    WristboreEncoder.reset();
-  }
-
-  public void moveWrist(double speed) {
-    this.enabledFeedback = false;
-
-    if (!softLimit(speed)) {
-      if (slowZone(speed)) {
-        speed = MathUtil.clamp(speed, -0.5, 0.5);
-      }
-      wristMotor.set(speed);
+  public Rotation2d getAbsoluteRotation() {
+    double radians = 2 * Math.PI * getBoreEncoder();
+    if (radians > 1.8 * Math.PI) {
+      double excess = radians - 1.8 * Math.PI;
+      radians = -(0.5 * Math.PI - excess);
     }
+
+    return new Rotation2d(radians);
   }
 
-  public void zeroWrist() {
-    wristEncoder.setPosition(0.0);
+  @Override
+  public double getMeasurement() {
+    // Return the process variable measurement here
+    return getAbsoluteRotation().getRadians();
+  }
+
+  public void setGoal(Rotation2d rotation) {
+    this.setGoal(rotation.getRadians());
+  }
+
+  public void set(double speed) {
+    disable();
+    // if (!softLimit(speed)) {
+    //   wristMotor.set(speed);
+    // }
+    wristMotor.set(speed);
+  }
+
+  public double AbsoluteRadians() {
+    double radians = 2 * Math.PI * getBoreEncoder();
+    return radians;
+  }
+
+  public boolean softLimit(double value) {
+
+    if (value > 0 && (getAbsoluteRotation().getDegrees() > 340)) {
+
+      wristMotor.stopMotor();
+      return true;
+    }
+
+    return false;
   }
 
   public void stopWrist() {
-    // rotationReference = getAbsoluteRotation();
     wristMotor.stopMotor();
-  }
-
-  public double getWristEncoder() {
-    return wristEncoder.getPosition();
   }
 }

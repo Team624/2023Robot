@@ -101,7 +101,7 @@ public class Arm extends ProfiledPIDSubsystem {
     super.periodic();
 
     enabledEntry.setBoolean(m_enabled);
-    positionEntry.setDouble(getBore());
+    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     setpointEntry.setDouble(getController().getGoal().position);
     goalEntry.setDouble(getController().getGoal().position);
     currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
@@ -123,7 +123,7 @@ public class Arm extends ProfiledPIDSubsystem {
 
   public double getBore() {
     return MathUtil.inputModulus(
-        boreEncoder.getAbsolutePosition() + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+        (1 - boreEncoder.getAbsolutePosition()) + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
@@ -148,20 +148,20 @@ public class Arm extends ProfiledPIDSubsystem {
     if (this.m_enabled) {
       // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage =
-          output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
+      voltage = output
+       + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
-      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
-        // System.out.println("Stopping arm!");
-        voltage = 0;
-      }
+      // if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+      //   // System.out.println("Stopping arm!");
+      //   voltage = 0;
+      // }
 
-      voltageEntry.setDouble(voltage);
+      voltageEntry.setDouble(-voltage);
 
-      armMotorLeft.setVoltage(voltage);
-      armMotorRight.setVoltage(voltage);
+      armMotorLeft.setVoltage(-voltage);
+      armMotorRight.setVoltage(-voltage);
     }
   }
 

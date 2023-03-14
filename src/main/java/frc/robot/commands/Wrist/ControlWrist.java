@@ -9,16 +9,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Wrist;
 
 public class ControlWrist extends CommandBase {
-  /** Creates a new ControlWrist. */
-  private final Wrist m_Wrist;
+  /** Creates a new ControlWrist2. */
+  private final Wrist m_wrist2;
 
-  private final XboxController controller;
+  private final XboxController m_Controller;
 
-  public ControlWrist(Wrist wrist, XboxController mController) {
+  public ControlWrist(Wrist wrist2, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Wrist = wrist;
-    this.controller = mController;
-    addRequirements(wrist);
+    this.m_wrist2 = wrist2;
+    this.m_Controller = controller;
+    addRequirements(m_wrist2);
   }
 
   // Called when the command is initially scheduled.
@@ -28,14 +28,14 @@ public class ControlWrist extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Wrist.moveWrist(controller.getRightX());
+    m_wrist2.disable();
+    m_wrist2.set(-m_Controller.getRightX());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Wrist.getContoller().reset(m_Wrist.getAbsoluteRotation().getRadians());
-    m_Wrist.setReference(m_Wrist.getAbsoluteRotation().getRadians());
+    m_wrist2.stopWrist();
   }
 
   // Returns true when the command should end.

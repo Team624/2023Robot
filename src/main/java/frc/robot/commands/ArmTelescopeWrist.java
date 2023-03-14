@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
+import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -16,13 +17,6 @@ import frc.robot.subsystems.Wrist;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ArmTelescopeWrist extends SequentialCommandGroup {
-  public enum Setpoint {
-    FUNNEL,
-    CONE_INTAKE,
-    CUBE_INTAKE,
-    MID,
-    HIGH
-  }
 
   /** Creates a new ArmTelescopeWrist. */
   private final Arm m_Arm;
@@ -56,31 +50,26 @@ public class ArmTelescopeWrist extends SequentialCommandGroup {
     // }
 
     Rotation2d[] armPos = {
-      Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION,
-      Constants.Arm.ARM_SETPOINT_FUNNEL,
       Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
-      Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
       Constants.Arm.ARM_SETPOINT_MID,
       Constants.Arm.ARM_SETPOINT_HIGH
     };
 
     double[] telePos = {
-      Constants.Telescope.TELESCOPE_SETPOINT_DOUBLE_SUBSTATION,
-      Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
       Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE,
-      Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE,
       Constants.Telescope.TELESCOPE_SETPOINT_MID,
       Constants.Telescope.TELESCOPE_SETPOINT_HIGH
     };
-    double[] wristPos = {
-      Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
-      Constants.Wrist.WRIST_SETPOINT_FUNNEL,
-      Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
-      Constants.Wrist.WRIST_SETPOINT_MID,
-      Constants.Wrist.WRIST_SETPOINT_HIGH
+    Rotation2d[] wristPos = {
+      Constants.Wrist.wrist_zero,
+      Constants.Wrist.wrist_upright_cone_Score,
+      Constants.Wrist.wrist_cone_intake
     };
 
-    addCommands(new SetArm(arm, armPos[i]), new TelescopeWrist(telescope, wrist, i));
+    addCommands(
+        new SetTelescope(m_Telescope, 0.0),
+        new SetArm(arm, armPos[i]),
+        new SetTelescope(telescope, telePos[i]));
 
     // m_Arm.recentFunnel = false;
   }

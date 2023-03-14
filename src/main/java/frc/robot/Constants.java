@@ -233,7 +233,7 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = 0.82;
+    public static final double BORE_ENCODER_OFFSET = 0.3;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
@@ -252,12 +252,11 @@ public final class Constants {
     public static final double kA = 0.0;
 
     // Setpoints
-    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(0.0);
-    public static final Rotation2d ARM_SETPOINT_FUNNEL = Rotation2d.fromDegrees(10.8);
-    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(37.8);
-    public static final Rotation2d ARM_SETPOINT_CUBE_INTAKE = Rotation2d.fromDegrees(36.6);
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(104.4);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(115);
+    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(100);
+    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(122.5);
+    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(105.5);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(316);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(304);
   }
 
   public static final class Telescope {
@@ -266,12 +265,10 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.0;
-    public static final double TELESCOPE_SETPOINT_FUNNEL = 7.1;
-    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 0.57;
-    public static final double TELESCOPE_SETPOINT_CUBE_INTAKE = 9.57;
-    public static final double TELESCOPE_SETPOINT_MID = 9.07;
-    public static final double TELESCOPE_SETPOINT_HIGH = 25.8;
+    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 31;
+
+    public static final double TELESCOPE_SETPOINT_MID = 0.01;
+    public static final double TELESCOPE_SETPOINT_HIGH = 37;
 
     // FF constants
     public static final double kS = 0.0;
@@ -291,25 +288,17 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = 0.1755;
+    public static final double boreEncoderOffset = 0.66;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final double WRIST_SETPOINT_DOUBLE_SUBSTATION = 0.0;
-    public static final double WRIST_SETPOINT_FUNNEL = 0.15;
-    public static final double WRIST_SETPOINT_CONE_INTAKE = 2.29;
-
-    public static final double WRIST2_SETPOINT_CUBE_INTAKE = 2.27;
-    public static final double WRIST_SETPOINT_MID = 1.25;
-    public static final double WRIST_SETPOINT_HIGH = 1.32;
-
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(0.0);
-    public static final Rotation2d wrist_upright_cone_Score = Rotation2d.fromDegrees(-180);
-    public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(1);
-    public static final Rotation2d wrist_cone_rightScore = Rotation2d.fromDegrees(90);
+    public static final Rotation2d wrist_upright_cone_Score = Rotation2d.fromDegrees(180);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
+    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(272.5);
+    public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
 
   public static final class Shooter {
@@ -320,6 +309,20 @@ public final class Constants {
     public static final double D = 0.0;
     public static final double F = 0.0;
     public static final double Izone = 0.0;
+  }
+
+  public static final class Hood {
+    public static final int hoodMotor = 0;
+
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double kS = 0.0;
+    public static final double kG = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
+    public static final double BORE_ENCODER_OFFSET = 0.0;
   }
 
   public static final class LED {

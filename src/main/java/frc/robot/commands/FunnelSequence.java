@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Telescope.SetTelescope;
-import frc.robot.commands.Wrist.SetWristCommand;
+import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -33,8 +33,8 @@ public class FunnelSequence extends SequentialCommandGroup {
 
     m_Arm.recentFunnel = true;
     addCommands(
-        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL),
-        new SetWristCommand(wrist, Constants.Wrist.WRIST_SETPOINT_FUNNEL),
-        new SetArm(arm, Constants.Arm.ARM_SETPOINT_FUNNEL));
+        new SetTelescope(telescope, 0.0),
+        new SetWrist(wrist, Constants.Wrist.wrist_zero),
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_CONE_INTAKE));
   }
 }

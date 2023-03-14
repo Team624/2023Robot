@@ -8,8 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.Telescope.SetTelescope;
-import frc.robot.commands.Wrist.SetWristCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -43,33 +41,20 @@ public class IntakeSequence extends SequentialCommandGroup {
     // High = 5
 
     Rotation2d[] armPos = {
-      Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION,
-      Constants.Arm.ARM_SETPOINT_FUNNEL,
       Constants.Arm.ARM_SETPOINT_CONE_INTAKE,
-      Constants.Arm.ARM_SETPOINT_CUBE_INTAKE,
       Constants.Arm.ARM_SETPOINT_MID,
       Constants.Arm.ARM_SETPOINT_HIGH
     };
 
     double[] telePos = {
-      Constants.Telescope.TELESCOPE_SETPOINT_DOUBLE_SUBSTATION,
-      Constants.Telescope.TELESCOPE_SETPOINT_FUNNEL,
       Constants.Telescope.TELESCOPE_SETPOINT_CONE_INTAKE,
-      Constants.Telescope.TELESCOPE_SETPOINT_CUBE_INTAKE,
       Constants.Telescope.TELESCOPE_SETPOINT_MID,
       Constants.Telescope.TELESCOPE_SETPOINT_HIGH
     };
-    double[] wristPos = {
-      Constants.Wrist.WRIST_SETPOINT_DOUBLE_SUBSTATION,
-      Constants.Wrist.WRIST_SETPOINT_FUNNEL,
-      Constants.Wrist.WRIST_SETPOINT_CONE_INTAKE,
-      Constants.Wrist.WRIST_SETPOINT_MID,
-      Constants.Wrist.WRIST_SETPOINT_HIGH
-    };
 
     addCommands(
-        new SetWristCommand(wrist, wristPos[3]),
-        new SetTelescope(telescope, telePos[3]),
-        new SetArm(arm, armPos[3]));
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_PREINTAKE),
+        new TelescopeWrist(telescope, wrist),
+        new SetArm(arm, armPos[0]));
   }
 }
