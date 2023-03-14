@@ -254,7 +254,8 @@ public final class Constants {
     // Setpoints
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(100);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(122.5);
-    public static final Rotation2d ARM_SETPOINT_CONE_INTAKE = Rotation2d.fromDegrees(105.5);
+    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(115);
+    public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE = Rotation2d.fromDegrees(105.5);
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(316);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(304);
   }
@@ -265,8 +266,8 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_CONE_INTAKE = 31;
-
+    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 31;
+    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 31;
     public static final double TELESCOPE_SETPOINT_MID = 0.01;
     public static final double TELESCOPE_SETPOINT_HIGH = 37;
 
@@ -297,7 +298,7 @@ public final class Constants {
 
     public static final Rotation2d wrist_upright_cone_Score = Rotation2d.fromDegrees(180);
     public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
-    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(272.5);
+    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(273);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
 

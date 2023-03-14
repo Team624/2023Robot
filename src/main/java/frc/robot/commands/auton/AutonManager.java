@@ -13,15 +13,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
-import frc.robot.commands.FunnelSequence;
+import frc.robot.commands.InsideBot.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
-import frc.robot.commands.IntakeSequence;
+import frc.robot.commands.SideCone.Intake.SideIntakeSequence;
+import frc.robot.commands.SideCone.Score.SideScoringSequence;
+import frc.robot.commands.UprightCone.Score.SetpointUprightScore;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -174,7 +175,7 @@ public class AutonManager extends CommandBase {
     switch (state) {
       case "move_intake":
         this.currentArmCommand =
-            new IntakeSequence(arm, telescope, wrist)
+            new SideIntakeSequence(arm, telescope, wrist)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("intake");
@@ -185,7 +186,7 @@ public class AutonManager extends CommandBase {
       case "move_cube_high":
       case "move_cone_high":
         this.currentArmCommand =
-            new ArmTelescopeWrist(arm, telescope, wrist, 5)
+            new SideScoringSequence(arm, telescope, wrist, 2, true)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("high");
@@ -195,7 +196,7 @@ public class AutonManager extends CommandBase {
       case "move_cube_mid":
       case "move_cone_mid":
         this.currentArmCommand =
-            new ArmTelescopeWrist(arm, telescope, wrist, 4)
+            new SetpointUprightScore(arm, telescope, wrist, 4)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("mid");
@@ -206,7 +207,7 @@ public class AutonManager extends CommandBase {
       case "move_cone_low":
         SmartDashboard.getEntry("/auto/arm/state").setString("cone_intake");
         this.currentArmCommand =
-            new ArmTelescopeWrist(arm, telescope, wrist, 3)
+            new SetpointUprightScore(arm, telescope, wrist, 3)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("low");
@@ -216,7 +217,7 @@ public class AutonManager extends CommandBase {
 
       case "retract":
       default:
-        this.currentArmCommand = new FunnelSequence(arm, telescope, wrist);
+        this.currentArmCommand = new InsideBot(arm, telescope, wrist);
         SmartDashboard.getEntry("/auto/arm/state").setString("retract");
     }
 

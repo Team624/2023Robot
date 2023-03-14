@@ -2,13 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.InsideBot;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
-import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Telescope.SetTelescope;
-import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -16,14 +13,14 @@ import frc.robot.subsystems.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FunnelSequence extends SequentialCommandGroup {
-  /** Creates a new FunnelSequence. */
+public class InsideBot extends SequentialCommandGroup {
+  /** Creates a new InsideBot. */
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
-  public FunnelSequence(Arm arm, Telescope telescope, Wrist wrist) {
+  public InsideBot(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -31,10 +28,6 @@ public class FunnelSequence extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    m_Arm.recentFunnel = true;
-    addCommands(
-        new SetTelescope(telescope, 0.0),
-        new SetWrist(wrist, Constants.Wrist.wrist_zero),
-        new SetArm(arm, Constants.Arm.ARM_SETPOINT_BOT));
+    addCommands(new SetTelescope(telescope, 0.0), new InsideBotArmWrist(arm, wrist));
   }
 }

@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.DisabledArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.ArmTelescopeWrist;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -25,13 +24,14 @@ import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
-import frc.robot.commands.InsideBot;
+import frc.robot.commands.InsideBot.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
-import frc.robot.commands.IntakeSequence;
+import frc.robot.commands.SideCone.Intake.SideIntakeSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
+import frc.robot.commands.UprightCone.Score.SetpointUprightScore;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
 import frc.robot.commands.Wrist.SetWrist;
@@ -62,8 +62,8 @@ public class RobotContainer {
 
   /* LEDs */
 
-  private final JoystickButton upRightCone =
-      new JoystickButton(m_controller, XboxController.Button.kY.value);
+  private final JoystickButton coneFlip =
+      new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   private final int armAxis = XboxController.Axis.kLeftY.value;
   private final int telescopeAxis = XboxController.Axis.kRightY.value;
@@ -108,9 +108,6 @@ public class RobotContainer {
 
   private final POVButton setBotInside = new POVButton(m_controller, 270);
 
-  private final JoystickButton coneIntake =
-      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
-
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -134,9 +131,6 @@ public class RobotContainer {
 
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
-
-  private final JoystickButton coneFlip =
-      new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   // private final JoystickButton creepMode =
   //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
@@ -278,17 +272,16 @@ public class RobotContainer {
     // mid = 4
     // High = 5
 
-    manual.and(setBotHigh).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 2));
+    manual.and(setBotHigh).whileTrue(new SetpointUprightScore(m_arm, m_telescope, m_wrist, 1));
 
-    manual.and(setBotMid).whileTrue(new ArmTelescopeWrist(m_arm, m_telescope, m_wrist, 1));
+    manual.and(setBotMid).whileTrue(new SetpointUprightScore(m_arm, m_telescope, m_wrist, 0));
 
-    manual.and(setBotIntake).whileTrue(new IntakeSequence(m_arm, m_telescope, m_wrist));
+    setBotIntake.and(coneFlip).whileTrue(new SideIntakeSequence(m_arm, m_telescope, m_wrist));
 
+    setBotInside.whileTrue(new SideIntakeSequence(m_arm, m_telescope, m_wrist));
     manual.and(setBotInside).whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
 
-    manual.and(coneIntake).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_zero));
     manual.and(coneFlip).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_leftScore));
-    manual.and(upRightCone).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_upright_cone_Score));
 
     runIntake.whileTrue(new RunIntake(m_intake));
     reverseIntakeCube.whileTrue(new ReverseCone(m_intake, m_arm));
