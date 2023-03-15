@@ -266,7 +266,7 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 31;
+    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 28;
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 31;
     public static final double TELESCOPE_SETPOINT_MID = 0.01;
     public static final double TELESCOPE_SETPOINT_HIGH = 37;

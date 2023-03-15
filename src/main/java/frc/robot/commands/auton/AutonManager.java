@@ -22,6 +22,7 @@ import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.SideCone.Intake.SideIntakeSequence;
 import frc.robot.commands.SideCone.Score.SideScoringSequence;
+import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.UprightCone.Score.SetpointUprightScore;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -186,7 +187,7 @@ public class AutonManager extends CommandBase {
       case "move_cube_high":
       case "move_cone_high":
         this.currentArmCommand =
-            new SideScoringSequence(arm, telescope, wrist, 2, true)
+            new SideScoringSequence(arm, telescope, wrist, 1, true)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("high");
@@ -217,7 +218,7 @@ public class AutonManager extends CommandBase {
 
       case "retract":
       default:
-        this.currentArmCommand = new InsideBot(arm, telescope, wrist);
+        this.currentArmCommand = new SetTelescope(telescope,0.0);
         SmartDashboard.getEntry("/auto/arm/state").setString("retract");
     }
 

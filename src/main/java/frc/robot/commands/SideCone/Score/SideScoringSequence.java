@@ -44,7 +44,7 @@ public class SideScoringSequence extends SequentialCommandGroup {
     };
 
     addCommands(
-        new SetTelescope(m_Telescope, 0.0),
+        // new SetTelescope(m_Telescope, 0.0),
         new SideScoringArmWrist(arm, wrist, i, right),
         new SetTelescope(telescope, telePos[i]));
   }

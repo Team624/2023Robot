@@ -278,7 +278,7 @@ public class RobotContainer {
 
     setBotIntake.and(coneFlip).whileTrue(new SideIntakeSequence(m_arm, m_telescope, m_wrist));
 
-    setBotInside.whileTrue(new SideIntakeSequence(m_arm, m_telescope, m_wrist));
+    setBotInside.whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
     manual.and(setBotInside).whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
 
     manual.and(coneFlip).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_leftScore));
