@@ -4,9 +4,10 @@
 
 package frc.robot.commands.SideCone.Intake;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.Arm.SetArm;
+import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -21,6 +22,8 @@ public class SideIntakeSequence extends SequentialCommandGroup {
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
+  private Command command;
+
   public SideIntakeSequence(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -29,19 +32,13 @@ public class SideIntakeSequence extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    // CUBE INTAKE == laying down
-    // CONE INTAKE == upright
-
-    // Double Substation = 0
-    // retract = 1
-    // IntakeCONE = 2
-    // IntakeCUBE = 3
-    // mid = 4
-    // High = 5
+    if (m_Arm.getAbsoluteRotation().getDegrees() > 180) {
+      command = new SetTelescope(telescope, 0.0);
+    }
+    command.schedule();
 
     addCommands(
-        // new SetArm(arm, Constants.Arm.ARM_SETPOINT_PREINTAKE),
-        new SideIntakeTelescopeWrist(telescope, wrist),
-        new SetArm(arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE));
+        new SideIntakeArmWrist(arm, wrist),
+        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE));
   }
 }

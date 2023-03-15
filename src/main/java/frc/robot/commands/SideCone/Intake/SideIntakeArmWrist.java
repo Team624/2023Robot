@@ -6,28 +6,27 @@ package frc.robot.commands.SideCone.Intake;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.Telescope.SetTelescope;
+import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Wrist.SetWrist;
-import frc.robot.subsystems.Telescope;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SideIntakeTelescopeWrist extends ParallelCommandGroup {
-  /** Creates a new TelescopeWrist. */
-  private final Telescope m_Telescope;
+public class SideIntakeArmWrist extends ParallelCommandGroup {
+  /** Creates a new SideIntakeArmWrist. */
+  private final Arm m_Arm;
 
   private final Wrist m_Wrist;
 
-  public SideIntakeTelescopeWrist(Telescope telescope, Wrist wrist) {
+  public SideIntakeArmWrist(Arm arm, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-
-    this.m_Telescope = telescope;
+    this.m_Arm = arm;
     this.m_Wrist = wrist;
     addCommands(
-        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE),
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE),
         new SetWrist(wrist, Constants.Wrist.wrist_cone_intake));
   }
 }

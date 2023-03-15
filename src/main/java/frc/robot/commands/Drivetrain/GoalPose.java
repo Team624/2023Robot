@@ -38,15 +38,11 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(6, 0.000001, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(8.9, 0.03, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(3.5, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(8.5, 0, 0, OMEGA_CONSTRAINTS);
 
   public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
-    // Use addRequirements() here to declare subsystem dependencies.
-
-    // right 1
-    // left 2
 
     this.m_drivetrain = drivetrain;
     this.m_limelight = limelight;
@@ -71,25 +67,6 @@ public class GoalPose extends CommandBase {
 
     xController.reset(pose.getX());
     yController.reset(pose.getY());
-
-    // 0 = left: -3.6031665
-    // 1 = middle: -5.25404
-    // 2 = right: -6.98812
-
-    // id_json.put(1.0, -2.93659);
-    // id_json.put(2.0, -1.26019);
-    // id_json.put(3.0, 0.41621);
-    // id_json.put(4.0, 2.74161);
-    // id_json.put(5.0, 2.74161);
-    // id_json.put(6.0, 0.41621);
-    // id_json.put(7.0, -1.26019);
-    // id_json.put(8.0, -2.93659);
-
-    // -4.01
-
-    // Tag 1: -6.983
-    // Tag 2 y value: -5.2995
-    // Tag 3: 3.61357
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -121,9 +98,7 @@ public class GoalPose extends CommandBase {
       }
     } else {
       if (m_node == 0) {
-
         goal = -2.93659 - 4.01;
-
       } else if (m_node == 1) {
         goal = -1.26019 - 4.01;
 
@@ -147,8 +122,7 @@ public class GoalPose extends CommandBase {
     double yVel = yController.calculate(pose2d.getY());
 
     if (m_limelight.hasTarget()) {
-      double angle = m_limelight.getAlignmentValues()[1];
-      thVel = angle > 0 ? 1 : -1;
+      thVel = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     }
     thVel = omegaController.calculate((m_drivetrain.getPose().getRotation().getRadians()));
     UpdatePose.keepRunning = false;

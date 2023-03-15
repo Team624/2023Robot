@@ -4,29 +4,41 @@
 
 package frc.robot.commands.Hood;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Hood;
 
 public class SetHood extends CommandBase {
   /** Creates a new SetHood. */
-  public SetHood() {
+  private final Hood m_hood;
+  private final Rotation2d m_setPoint;
+  public SetHood(Hood hood, Rotation2d setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.m_hood=hood;
+    this.m_setPoint=setpoint;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_hood.enable();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_hood.setGoal(m_setPoint);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_hood.disable();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_hood.getController().atGoal();
   }
 }

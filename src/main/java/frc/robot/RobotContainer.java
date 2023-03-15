@@ -15,9 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
-import frc.robot.commands.Arm.DisabledArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -29,17 +27,18 @@ import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.SideCone.Intake.SideIntakeSequence;
+import frc.robot.commands.SideCone.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.UprightCone.Score.SetpointUprightScore;
+import frc.robot.commands.UprightCone.Intake.UprightIntakeSequence;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
-import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -62,13 +61,15 @@ public class RobotContainer {
 
   /* LEDs */
 
-  private final JoystickButton coneFlip =
-      new JoystickButton(m_controller, XboxController.Button.kA.value);
+  private final JoystickButton toggleMode =
+      new JoystickButton(m_controller, XboxController.Button.kY.value);
+
+  private boolean coneMode = true;
 
   private final int armAxis = XboxController.Axis.kLeftY.value;
   private final int telescopeAxis = XboxController.Axis.kRightY.value;
   private final int wristAxis = XboxController.Axis.kRightX.value;
-  private final int stopArmAxis = XboxController.Axis.kRightTrigger.value;
+  private final int coneModifyAxis = XboxController.Axis.kRightTrigger.value;
 
   private final JoystickButton manual =
       new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
@@ -86,7 +87,7 @@ public class RobotContainer {
   private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.08);
   private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
 
-  private final Trigger stopArm = m_controllerCommand.axisGreaterThan(stopArmAxis, 0.1);
+  private final Trigger coneModify = m_controllerCommand.axisGreaterThan(coneModifyAxis, 0.1);
 
   /* Telescope */
 
@@ -107,6 +108,9 @@ public class RobotContainer {
   private final POVButton setBotIntake = new POVButton(m_controller, 180);
 
   private final POVButton setBotInside = new POVButton(m_controller, 270);
+
+  private final JoystickButton substationSetpoint =
+      new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -132,10 +136,7 @@ public class RobotContainer {
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-  // private final JoystickButton creepMode =
-  //     new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
-
-  private final JoystickButton balance =
+  private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
   /* Subsystems */
@@ -144,10 +145,8 @@ public class RobotContainer {
   private final Arm m_arm = new Arm();
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
-
   private final Telescope m_telescope = new Telescope();
-  // private final ledControl m_LedControl =
-  //     new ledControl(new TrobotAddressableLED(Constants.LED.LEDPort, Constants.LED.LENGTH));
+  private final LEDs m_leds = new LEDs();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -193,10 +192,8 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    balance.whileTrue(new Balance(m_drivetrain, false));
-
-    // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
-    // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
+    creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
+    creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
     // uncomment this
@@ -207,9 +204,9 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
 
-    left.whileTrue(new ConeAlign(m_drivetrain, false));
+    left.whileTrue(new ConeAlign(m_drivetrain, false, m_limelight));
 
-    right.whileTrue(new ConeAlign(m_drivetrain, true));
+    right.whileTrue(new ConeAlign(m_drivetrain, true, m_limelight));
 
     substationButton.whileTrue(
         new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
@@ -230,8 +227,6 @@ public class RobotContainer {
 
     manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
     manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
-
-    stopArm.whileTrue(new DisabledArm(m_arm));
 
     // Setpoints
 
@@ -272,19 +267,35 @@ public class RobotContainer {
     // mid = 4
     // High = 5
 
-    manual.and(setBotHigh).whileTrue(new SetpointUprightScore(m_arm, m_telescope, m_wrist, 1));
+    setBotHigh.whileTrue(new SideScoringSequence(m_arm, m_telescope, m_wrist, 1, true));
+    setBotHigh
+        .and(coneModify)
+        .whileTrue(new SideScoringSequence(m_arm, m_telescope, m_wrist, 1, false));
 
-    manual.and(setBotMid).whileTrue(new SetpointUprightScore(m_arm, m_telescope, m_wrist, 0));
+    setBotMid.whileTrue(new SideScoringSequence(m_arm, m_telescope, m_wrist, 0, true));
+    setBotMid
+        .and(coneModify)
+        .whileTrue(new SideScoringSequence(m_arm, m_telescope, m_wrist, 0, false));
 
-    setBotIntake.and(coneFlip).whileTrue(new SideIntakeSequence(m_arm, m_telescope, m_wrist));
+    setBotIntake.whileTrue(new SideIntakeSequence(m_arm, m_telescope, m_wrist));
+    setBotIntake.and(coneModify).whileTrue(new UprightIntakeSequence(m_arm, m_telescope, m_wrist));
 
     setBotInside.whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
-    manual.and(setBotInside).whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
 
-    manual.and(coneFlip).whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_leftScore));
+    // substationSetpoint.whileTrue(new )
 
     runIntake.whileTrue(new RunIntake(m_intake));
     reverseIntakeCube.whileTrue(new ReverseCone(m_intake, m_arm));
+
+    toggleMode.onTrue(
+        new InstantCommand(
+            () -> {
+              coneMode = !coneMode;
+              m_leds
+                  .setAnimationCommand(
+                      coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
+                  .schedule();
+            }));
   }
 
   /**

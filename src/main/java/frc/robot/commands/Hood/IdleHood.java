@@ -5,16 +5,23 @@
 package frc.robot.commands.Hood;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Hood;
 
 public class IdleHood extends CommandBase {
   /** Creates a new IdleHood. */
-  public IdleHood() {
+  private final Hood m_hood;
+  public IdleHood(Hood hood) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.m_hood=hood;
+    addRequirements(hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_hood.enable();
+    m_hood.setGoal(m_hood.getAbsoluteRotation().getRadians());
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

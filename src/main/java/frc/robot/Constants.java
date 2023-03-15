@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.I2C;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SdsModuleConfigurations;
 import frc.lib.util.SwerveModuleConstants;
@@ -326,8 +327,8 @@ public final class Constants {
     public static final double BORE_ENCODER_OFFSET = 0.0;
   }
 
-  public static final class LED {
-    public static final int LEDPort = 1;
-    public static final int LENGTH = 16;
+  public static final class LEDs {
+    public static final int LEDS_ID = 0x30;
+    public static final I2C.Port LEDS_PORT = I2C.Port.kMXP;
   }
 }

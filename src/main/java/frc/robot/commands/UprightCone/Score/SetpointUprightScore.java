@@ -5,6 +5,7 @@
 package frc.robot.commands.UprightCone.Score;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Telescope.SetTelescope;
@@ -22,6 +23,7 @@ public class SetpointUprightScore extends SequentialCommandGroup {
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
+  private Command command;
   // private final ledControl m_led;
 
   public SetpointUprightScore(
@@ -33,20 +35,6 @@ public class SetpointUprightScore extends SequentialCommandGroup {
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
-    // this.m_led = led;
-
-    // Double Substation = 0
-    // FUNNEL = 1
-    // IntakeCONE = 2
-    // IntakeCUBE = 3
-    // mid = 4
-    // High = 5
-
-    // if(!m_led.cone){
-    //   if(i==1){
-    //     i=2;
-    //   }
-    // }
 
     Rotation2d[] armPos = {Constants.Arm.ARM_SETPOINT_MID, Constants.Arm.ARM_SETPOINT_HIGH};
 
@@ -59,9 +47,11 @@ public class SetpointUprightScore extends SequentialCommandGroup {
       Constants.Wrist.wrist_cone_intake
     };
 
-    addCommands(
-        new SetTelescope(m_Telescope, 0.0),
-        new UprightScoreArmWrist(arm, wrist, i),
-        new SetTelescope(telescope, telePos[i]));
+    if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
+      command = new SetTelescope(telescope, 0.0);
+    }
+    command.schedule();
+
+    addCommands(new UprightScoreArmWrist(arm, wrist, i), new SetTelescope(telescope, telePos[i]));
   }
 }

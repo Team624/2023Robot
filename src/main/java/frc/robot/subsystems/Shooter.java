@@ -97,4 +97,9 @@ public class Shooter extends SubsystemBase {
     shooterPidControllerRight.setReference(goalRPM, ControlType.kVelocity);
     dashBoardGoalRPM.setDouble(goalRPM);
   }
+
+  public void stopShooter() {
+    shooterMotorLeft.stopMotor();
+    shooterMotorRight.stopMotor();
+  }
 }

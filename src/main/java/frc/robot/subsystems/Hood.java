@@ -114,7 +114,7 @@ public class Hood extends ProfiledPIDSubsystem {
     this.setGoal(rotation.getRadians());
   }
 
-  public void stopArm() {
+  public void stopHood() {
     hoodMotor.stopMotor();
   }
 

@@ -166,13 +166,6 @@ public class AutonManager extends CommandBase {
       return;
     }
 
-    // Double Substation = 0
-    // FUNNEL = 1
-    // IntakeCONE = 2
-    // IntakeCUBE = 3
-    // mid = 4
-    // High = 5
-
     switch (state) {
       case "move_intake":
         this.currentArmCommand =
@@ -197,7 +190,7 @@ public class AutonManager extends CommandBase {
       case "move_cube_mid":
       case "move_cone_mid":
         this.currentArmCommand =
-            new SetpointUprightScore(arm, telescope, wrist, 4)
+            new SideScoringSequence(arm, telescope, wrist, 0, true)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("mid");
@@ -216,10 +209,24 @@ public class AutonManager extends CommandBase {
 
         break;
 
+      case "move_inside_bot":
+        this.currentArmCommand =
+            new InsideBot(arm, telescope, wrist)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("inside");
+                    });
+
+        break;
+
       case "retract":
       default:
-        this.currentArmCommand = new SetTelescope(telescope,0.0);
-        SmartDashboard.getEntry("/auto/arm/state").setString("retract");
+        this.currentArmCommand =
+            new SetTelescope(telescope, 0.0)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("retract");
+                    });
     }
 
     this.currentArmCommand.schedule();
