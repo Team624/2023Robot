@@ -47,6 +47,7 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry currentRightEntry;
 
   public boolean cone = false;
+  public double prevBoreValue;
 
   public Arm() {
 
@@ -94,6 +95,8 @@ public class Arm extends ProfiledPIDSubsystem {
         armTab.add("Current Draw (Left)", armMotorLeft.getOutputCurrent()).getEntry();
     currentRightEntry =
         armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
+
+    prevBoreValue=getBore();
   }
 
   @Override
@@ -128,18 +131,9 @@ public class Arm extends ProfiledPIDSubsystem {
 
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBore();
-    // if (radians > 1.5 * Math.PI) {
-    //   double excess = radians - 1.5 * Math.PI;
-    //   radians = -(0.5 * Math.PI - excess);
-    // }
 
-    // // Handle encoder looping around
-    // if (radians > 1.5 * Math.PI) {
-    //   double excess = radians - 1.5 * Math.PI;
 
-    //   radians = -(0.5 * Math.PI - excess);
-    // }
-
+   
     return new Rotation2d(radians);
   }
 
@@ -152,11 +146,6 @@ public class Arm extends ProfiledPIDSubsystem {
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
-
-      // if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
-      //   // System.out.println("Stopping arm!");
-      //   voltage = 0;
-      // }
 
       voltageEntry.setDouble(-voltage);
 

@@ -19,7 +19,7 @@ public class SideIntakeArmWrist extends ParallelCommandGroup {
   private final Arm m_Arm;
 
   private final Wrist m_Wrist;
-
+  
   public SideIntakeArmWrist(Arm arm, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());

@@ -29,13 +29,20 @@ public class SideScoringArmWrist extends ParallelCommandGroup {
 
     Rotation2d[] armPos = {Constants.Arm.ARM_SETPOINT_MID, Constants.Arm.ARM_SETPOINT_HIGH};
     Rotation2d newWristPos;
+    Rotation2d newArmpos;
 
     if (right) {
       newWristPos = Constants.Wrist.wrist_zero;
     } else {
       newWristPos = Constants.Wrist.wrist_upright_cone_Score;
     }
+    if(i==1){
+       newArmpos = Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE;
+    }
+    else{
+      newArmpos= armPos[i];
+    }
 
-    addCommands(new SetArm(arm, armPos[i]), new SetWrist(wrist, newWristPos));
+    addCommands(new SetArm(arm, newArmpos), new SetWrist(wrist, newWristPos));
   }
 }

@@ -22,7 +22,7 @@ public class SideIntakeSequence extends SequentialCommandGroup {
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
 
-  private Command command;
+  private Command command=null;
 
   public SideIntakeSequence(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
@@ -34,8 +34,9 @@ public class SideIntakeSequence extends SequentialCommandGroup {
 
     if (m_Arm.getAbsoluteRotation().getDegrees() > 180) {
       command = new SetTelescope(telescope, 0.0);
+      command.schedule();
     }
-    command.schedule();
+    
 
     addCommands(
         new SideIntakeArmWrist(arm, wrist),

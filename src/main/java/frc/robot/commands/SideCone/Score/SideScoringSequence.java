@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
@@ -23,7 +24,7 @@ public class SideScoringSequence extends SequentialCommandGroup {
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
-  private Command command;
+  private Command command=null;
   // private final ledControl m_led;
 
   public SideScoringSequence(Arm arm, Telescope telescope, Wrist wrist, int i, boolean right) {
@@ -46,10 +47,11 @@ public class SideScoringSequence extends SequentialCommandGroup {
     };
     if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
       command = new SetTelescope(telescope, 0.0);
+      command.schedule();
     }
-    command.schedule();
+    
 
     addCommands(
-        new SideScoringArmWrist(arm, wrist, i, right), new SetTelescope(telescope, telePos[i]));
+        new SideScoringArmWrist(arm, wrist, i, right), new SetTelescope(telescope, telePos[i]), new SetArm(arm, armPos[i]));
   }
 }

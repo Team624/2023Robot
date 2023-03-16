@@ -11,10 +11,12 @@ import frc.robot.subsystems.Hood;
 public class ControlHood extends CommandBase {
   /** Creates a new ControlHood. */
   private final Hood m_hood;
+
   private final XboxController m_Controller;
-  public ControlHood(Hood hood,XboxController controller) {
+
+  public ControlHood(Hood hood, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_hood=hood;
+    this.m_hood = hood;
     this.m_Controller = controller;
     addRequirements(hood);
   }

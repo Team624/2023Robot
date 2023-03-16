@@ -10,9 +10,10 @@ import frc.robot.subsystems.Hood;
 public class IdleHood extends CommandBase {
   /** Creates a new IdleHood. */
   private final Hood m_hood;
+
   public IdleHood(Hood hood) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_hood=hood;
+    this.m_hood = hood;
     addRequirements(hood);
   }
 

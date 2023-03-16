@@ -11,11 +11,13 @@ import frc.robot.subsystems.Hood;
 public class SetHood extends CommandBase {
   /** Creates a new SetHood. */
   private final Hood m_hood;
+
   private final Rotation2d m_setPoint;
+
   public SetHood(Hood hood, Rotation2d setpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_hood=hood;
-    this.m_setPoint=setpoint;
+    this.m_hood = hood;
+    this.m_setPoint = setpoint;
   }
 
   // Called when the command is initially scheduled.

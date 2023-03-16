@@ -243,8 +243,8 @@ public final class Constants {
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
-    public static final double kMaxVelocityRadiansPerSecond = 5.2;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 6.8;
+    public static final double kMaxVelocityRadiansPerSecond = 7.2;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 7.5;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -255,10 +255,11 @@ public final class Constants {
     // Setpoints
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(100);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(122.5);
+    public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE = Rotation2d.fromDegrees(319-20); //TODO TUNE
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(115);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE = Rotation2d.fromDegrees(105.5);
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(316);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(304);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(319);
   }
 
   public static final class Telescope {
