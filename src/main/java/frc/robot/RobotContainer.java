@@ -4,12 +4,19 @@
 
 package frc.robot;
 
+import java.util.Map;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -22,6 +29,8 @@ import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
+import frc.robot.commands.Hood.ControlHood;
+import frc.robot.commands.Hood.IdleHood;
 import frc.robot.commands.InsideBot.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
@@ -37,6 +46,7 @@ import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
@@ -64,7 +74,7 @@ public class RobotContainer {
   private final JoystickButton toggleMode =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
 
-  private boolean coneMode = true;
+  public boolean coneMode = true;
 
   private final int armAxis = XboxController.Axis.kLeftY.value;
   private final int telescopeAxis = XboxController.Axis.kRightY.value;
@@ -79,13 +89,15 @@ public class RobotContainer {
   private final JoystickButton runIntake =
       new JoystickButton(m_controller, XboxController.Button.kX.value);
 
-  private final JoystickButton reverseIntakeCube =
+  private final JoystickButton reverseIntake =
       new JoystickButton(m_controller, XboxController.Button.kB.value);
 
   /* Arm */
 
   private final Trigger armMove = m_controllerCommand.axisLessThan(armAxis, -0.08);
   private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
+  
+  
 
   private final Trigger coneModify = m_controllerCommand.axisGreaterThan(coneModifyAxis, 0.1);
 
@@ -98,6 +110,8 @@ public class RobotContainer {
 
   private final Trigger wristMove = m_controllerCommand.axisLessThan(wristAxis, -0.08);
   private final Trigger wristMove2 = m_controllerCommand.axisGreaterThan(wristAxis, 0.08);
+
+  
 
   /* Full setpoints */
 
@@ -147,8 +161,33 @@ public class RobotContainer {
   private final Wrist m_wrist = new Wrist();
   private final Telescope m_telescope = new Telescope();
   private final LEDs m_leds = new LEDs();
+  private final Hood m_hood = new Hood();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+
+
+  private enum CommandSelector {
+    ONE,
+    TWO
+  }
+
+  private CommandSelector select() {
+    if(coneMode){
+      return CommandSelector.ONE;
+    }
+    else{
+      return CommandSelector.TWO; 
+
+    }
+    
+  }
+
+  private final Command m_LeftJoystickCommand =
+      new SelectCommand(
+          Map.ofEntries(
+              Map.entry(CommandSelector.ONE, new ControlArm(m_arm, m_controller)),
+              Map.entry(CommandSelector.TWO, new ControlHood(m_hood, m_controller))),
+          this::select);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -162,10 +201,10 @@ public class RobotContainer {
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     m_intake.setDefaultCommand(new IdleIntake(m_intake));
-    // m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    m_hood.setDefaultCommand(new IdleHood(m_hood));
 
     configureBindings();
   }
@@ -185,10 +224,6 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    // changePiece4LED.onTrue(new InstantCommand(() -> m_LedControl.updateCargo()));
-    // changePiece4LED.onTrue(new InstantCommand(() -> m_arm.pieceChange()));
-
-    // changeStation4LED.onTrue(new InstantCommand(() -> m_LedControl.updateStation()));
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
@@ -215,6 +250,11 @@ public class RobotContainer {
     manual.and(armMove).whileTrue(new ControlArm(m_arm, m_controller));
     manual.and(armMove2).whileTrue(new ControlArm(m_arm, m_controller));
 
+    manual.and(armMove).whileTrue(m_LeftJoystickCommand);
+    manual.and(armMove2).whileTrue(m_LeftJoystickCommand);
+
+
+
     /** Telescope */
     manual.and(telescopeMove).whileTrue(new ControlTelescope(m_telescope, m_controller));
     manual.and(telescopeMove2).whileTrue(new ControlTelescope(m_telescope, m_controller));
@@ -222,8 +262,6 @@ public class RobotContainer {
     // resetTelescopeEncoder.onTrue(new InstantCommand(() -> m_telescope.resetEncoder()));
 
     /** Wrist */
-    // manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
-    // manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
 
     manual.and(wristMove).whileTrue(new ControlWrist(m_wrist, m_controller));
     manual.and(wristMove2).whileTrue(new ControlWrist(m_wrist, m_controller));
@@ -282,10 +320,12 @@ public class RobotContainer {
 
     setBotInside.whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
 
-    // substationSetpoint.whileTrue(new )
+    
 
     runIntake.whileTrue(new RunIntake(m_intake));
-    reverseIntakeCube.whileTrue(new ReverseCone(m_intake, m_arm));
+    reverseIntake.whileTrue(new ReverseCone(m_intake, m_arm));
+
+    
 
     toggleMode.onTrue(
         new InstantCommand(
@@ -296,6 +336,7 @@ public class RobotContainer {
                       coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
                   .schedule();
             }));
+    
   }
 
   /**

@@ -23,7 +23,7 @@ public class SetpointUprightScore extends SequentialCommandGroup {
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
-  private Command command=null;
+
   // private final ledControl m_led;
 
   public SetpointUprightScore(
@@ -48,7 +48,8 @@ public class SetpointUprightScore extends SequentialCommandGroup {
     };
 
     if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
-      command = new SetTelescope(telescope, 0.0);
+   
+      Command command = new SetTelescope(telescope, 0.0);
       command.schedule();
     }
     
