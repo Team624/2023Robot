@@ -36,11 +36,10 @@ public class SideScoringArmWrist extends ParallelCommandGroup {
     } else {
       newWristPos = Constants.Wrist.wrist_upright_cone_Score;
     }
-    if(i==1){
-       newArmpos = Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE;
-    }
-    else{
-      newArmpos= armPos[i];
+    if (i == 1) {
+      newArmpos = Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE;
+    } else {
+      newArmpos = armPos[i];
     }
 
     addCommands(new SetArm(arm, newArmpos), new SetWrist(wrist, newWristPos));

@@ -16,6 +16,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
@@ -53,9 +54,8 @@ public class Hood extends ProfiledPIDSubsystem {
     hoodMotor.setCANTimeout(500);
 
     boreEncoder = new DutyCycleEncoder(2);
-    hoodFeedForward =
-        new ArmFeedforward(
-            Constants.Hood.kS, Constants.Hood.kG, Constants.Hood.kV, Constants.Hood.kA);
+
+    hoodTab = Shuffleboard.getTab("Hood");
 
     enabledEntry =
         hoodTab.add("Enabled", m_enabled).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
@@ -101,7 +101,7 @@ public class Hood extends ProfiledPIDSubsystem {
 
   public double getBore() {
     return MathUtil.inputModulus(
-        boreEncoder.getAbsolutePosition() + Constants.Hood.BORE_ENCODER_OFFSET, 0.0, 1.0);
+        (1-boreEncoder.getAbsolutePosition()) + Constants.Hood.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {

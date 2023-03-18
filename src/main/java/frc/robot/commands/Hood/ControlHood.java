@@ -29,7 +29,7 @@ public class ControlHood extends CommandBase {
   @Override
   public void execute() {
     m_hood.disable();
-    m_hood.set(m_Controller.getLeftX());
+    m_hood.set(-m_Controller.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

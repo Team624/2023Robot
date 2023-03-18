@@ -234,7 +234,7 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = 0.3;
+    public static final double BORE_ENCODER_OFFSET = -0.056;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
@@ -255,7 +255,8 @@ public final class Constants {
     // Setpoints
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(100);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(122.5);
-    public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE = Rotation2d.fromDegrees(319-20); //TODO TUNE
+    public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
+        Rotation2d.fromDegrees(319 - 20); // TODO TUNE
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(115);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE = Rotation2d.fromDegrees(105.5);
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(316);
@@ -291,7 +292,7 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = 0.66;
+    public static final double boreEncoderOffset = 0.0;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -305,8 +306,8 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int shooterMotorLeft = 0;
-    public static final int shooterMotorRight = 0;
+    public static final int shooterMotorLeft = 15;
+    public static final int shooterMotorRight = 16;
     public static final double P = 0.0;
     public static final double I = 0.0;
     public static final double D = 0.0;
@@ -315,17 +316,17 @@ public final class Constants {
   }
 
   public static final class Hood {
-    public static final int hoodMotor = 0;
+    public static final int hoodMotor = 14;
 
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static final double kS = 0.0;
-    public static final double kG = 0.0;
-    public static final double kV = 0.0;
-    public static final double kA = 0.0;
     public static final double BORE_ENCODER_OFFSET = 0.0;
+
+    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(0.0);
+    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(0.0);
+    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(0.0);
   }
 
   public static final class LEDs {

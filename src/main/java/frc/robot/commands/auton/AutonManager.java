@@ -141,7 +141,7 @@ public class AutonManager extends CommandBase {
             && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
           break;
         currentIntakeCommand.end(true);
-        currentIntakeCommand = new ReverseCube(intake);
+        currentIntakeCommand = new ReverseCube(intake, 0.2);
         currentIntakeCommand.schedule();
         break;
       case "idle":

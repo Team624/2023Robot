@@ -56,20 +56,10 @@ public class Shooter extends SubsystemBase {
 
     shooterMotorLeft.setInverted(true);
 
-    shooterPidControllerLeft.setP(Constants.Shooter.P);
-    shooterPidControllerLeft.setI(Constants.Shooter.I);
-    shooterPidControllerLeft.setD(Constants.Shooter.D);
-    shooterPidControllerLeft.setIZone(Constants.Shooter.Izone);
-
     shooterEncoderRight = shooterMotorRight.getEncoder();
     shooterPidControllerRight = shooterMotorRight.getPIDController();
     shooterMotorRight.setIdleMode(IdleMode.kCoast);
     shooterMotorRight.setCANTimeout(500);
-
-    shooterPidControllerLeft.setP(Constants.Shooter.P);
-    shooterPidControllerLeft.setI(Constants.Shooter.I);
-    shooterPidControllerLeft.setD(Constants.Shooter.D);
-    shooterPidControllerLeft.setIZone(Constants.Shooter.Izone);
   }
 
   @Override
@@ -96,6 +86,11 @@ public class Shooter extends SubsystemBase {
     shooterPidControllerLeft.setReference(goalRPM, ControlType.kVelocity);
     shooterPidControllerRight.setReference(goalRPM, ControlType.kVelocity);
     dashBoardGoalRPM.setDouble(goalRPM);
+  }
+
+  public void setPercentOutput(double speed) {
+    shooterMotorLeft.set(speed);
+    shooterMotorRight.set(speed);
   }
 
   public void stopShooter() {

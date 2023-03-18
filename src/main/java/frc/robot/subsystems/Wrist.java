@@ -88,7 +88,7 @@ public class Wrist extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
 
-    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    positionEntry.setDouble(getBoreEncoder());
     setpointEntry.setDouble(getController().getGoal().position);
     goalEntry.setDouble(getController().getGoal().position);
   }
