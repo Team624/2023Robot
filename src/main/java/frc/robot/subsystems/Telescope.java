@@ -9,9 +9,10 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAnalogSensor;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,9 +24,9 @@ public class Telescope extends SubsystemBase {
   /** Creates a new Telescope. */
   private CANSparkMax telescopeMotor;
 
-  private ElevatorFeedforward telescopFeedforward;
-
   private RelativeEncoder telescopeEncoder;
+
+  private SparkMaxAnalogSensor stringPot;
 
   private SparkMaxPIDController telescopePID;
 
@@ -52,19 +53,21 @@ public class Telescope extends SubsystemBase {
 
     telescopePID.setOutputRange(-1, 1);
 
-    telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    // telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+    // telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-    telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 45);
-    telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
+    // telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 45);
+    // telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
 
-    telescopFeedforward =
-        new ElevatorFeedforward(
-            Constants.Telescope.kS, Constants.Telescope.kG, Constants.Telescope.kV);
+    stringPot = telescopeMotor.getAnalog(Mode.kAbsolute);
+
+    telescopePID.setFeedbackDevice(stringPot);
 
     Shuffleboard.getTab("Telescope").add("Reset Encoder", new ResetEncoder(this));
     positionEntry =
-        Shuffleboard.getTab("Telescope").add("Position", getTelescopeEncoder()).getEntry();
+        Shuffleboard.getTab("Telescope").add("Position (String Pot)", getStringPot()).getEntry();
+
+    
   }
 
   @Override
@@ -75,7 +78,7 @@ public class Telescope extends SubsystemBase {
     // System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
 
     SmartDashboard.putNumber("/Telescope/Encoder", getTelescopeEncoder());
-    positionEntry.setDouble(getTelescopeEncoder());
+    positionEntry.setDouble(getStringPot());
   }
 
   public void controlTelescope(double speed) {
@@ -98,5 +101,9 @@ public class Telescope extends SubsystemBase {
 
   public double getTelescopeEncoder() {
     return telescopeEncoder.getPosition();
+  }
+
+  public double getStringPot() {
+    return stringPot.getPosition();
   }
 }
