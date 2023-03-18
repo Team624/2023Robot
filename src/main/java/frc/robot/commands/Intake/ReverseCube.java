@@ -11,9 +11,12 @@ public class ReverseCube extends CommandBase {
   /** Creates a new ReverseCube. */
   private final Intake m_intake;
 
-  public ReverseCube(Intake intake) {
+  private final double m_speed;
+
+  public ReverseCube(Intake intake, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_intake = intake;
+    this.m_speed = speed;
     addRequirements(intake);
   }
 
@@ -24,7 +27,7 @@ public class ReverseCube extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.runIntake(-0.3);
+    m_intake.runIntake(m_speed);
   }
 
   // Called once the command ends or is interrupted.

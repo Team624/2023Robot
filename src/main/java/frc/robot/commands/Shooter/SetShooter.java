@@ -27,7 +27,7 @@ public class SetShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setRPM(m_rpm);
+    m_shooter.setPercentOutput(m_rpm);
   }
 
   // Called once the command ends or is interrupted.

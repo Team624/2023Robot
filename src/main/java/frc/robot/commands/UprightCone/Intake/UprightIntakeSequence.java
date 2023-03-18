@@ -21,7 +21,6 @@ public class UprightIntakeSequence extends SequentialCommandGroup {
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
-  
 
   public UprightIntakeSequence(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
@@ -45,7 +44,6 @@ public class UprightIntakeSequence extends SequentialCommandGroup {
       Command command = new SetTelescope(telescope, 0.0);
       command.schedule();
     }
-    
 
     addCommands(
         new UprightIntakeArmWrist(arm, wrist),

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.concurrent.locks.Condition;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -25,7 +23,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Hood.ControlHood;
 
@@ -88,8 +85,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armFeedForward =
         new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV, Constants.Arm.kA);
 
-    rotations=0;
-    prevBoreValue=getBore();
+    rotations = 0;
+    prevBoreValue = getBore();
 
     armTab = Shuffleboard.getTab("Arm");
 
@@ -108,55 +105,39 @@ public class Arm extends ProfiledPIDSubsystem {
     currentRightEntry =
         armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
 
-    rotationsEntry = armTab.add("Rotations",rotations).withPosition(10, 0).getEntry();
-
-    
+    rotationsEntry = armTab.add("Rotations", rotations).withPosition(10, 0).getEntry();
   }
 
   @Override
   public void periodic() {
     super.periodic();
-    
+
     enabledEntry.setBoolean(m_enabled);
-    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    positionEntry.setDouble(getBore());
     setpointEntry.setDouble(getController().getGoal().position);
     goalEntry.setDouble(getController().getGoal().position);
     currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
     currentRightEntry.setDouble(armMotorRight.getOutputCurrent());
     rotationsEntry.setDouble(rotations);
-
-    // System.out.println(armMotorLeft.getOutputCurrent() + " " + armMotorRight.getOutputCurrent());
-
-    // if (getController().getSet() > Constants.Arm.ESTOP_TOLERANCE.getRadians()) {
-    //   armMotorLeft.stopMotor();
-    //   armMotorRight.stopMotor();
-    //   new DisabledArm(this).schedule();
-    //   return;
-    // }
-
-    // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
-
-    
   }
 
   public double getBore() {
     return MathUtil.inputModulus(
-        (1 - boreEncoder.getAbsolutePosition()) + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+        boreEncoder.getAbsolutePosition() + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
     // double radians = 2 * Math.PI * getBore();
 
     double degrees = 360 * getBore();
-    if(prevBoreValue >= 355.0 && degrees <=5.0){
-      rotations +=1;
+    if (prevBoreValue >= 355.0 && degrees <= 5.0) {
+      rotations += 1;
+    } else if (prevBoreValue <= 5.0 && degrees >= 355.0) {
+      rotations -= 1;
     }
-    else if(prevBoreValue<=5.0 && degrees >=355.0){
-      rotations -=1;
-    }
-    prevBoreValue= degrees;
+    prevBoreValue = degrees;
 
-    double outputVal = (degrees + rotations*360)/4;
+    double outputVal = (degrees + rotations * 360) / 4;
 
     Rotation2d output2d = Rotation2d.fromDegrees(outputVal);
     return output2d;
@@ -206,12 +187,10 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight.set(speed);
   }
 
-
-  public Command giveCommand(boolean ConeMode, Arm arm,Hood hood, XboxController controller){
-    if(ConeMode){
+  public Command giveCommand(boolean ConeMode, Arm arm, Hood hood, XboxController controller) {
+    if (ConeMode) {
       return new ControlArm(arm, controller);
-    }
-    else{
+    } else {
       return new ControlHood(hood, controller);
     }
   }

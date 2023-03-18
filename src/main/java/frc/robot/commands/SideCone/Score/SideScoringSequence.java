@@ -44,15 +44,13 @@ public class SideScoringSequence extends SequentialCommandGroup {
       Constants.Wrist.wrist_upright_cone_Score,
       Constants.Wrist.wrist_cone_intake
     };
-    
-    if(m_Arm.getAbsoluteRotation().getDegrees()<180){
+
+    if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
       Command command = new SetTelescope(telescope, 0.0);
       command.schedule();
     }
-    
 
     addCommands(
-        new SideScoringArmWrist(arm, wrist, i, right),
-        new SetTelescope(telescope, telePos[i]));
+        new SideScoringArmWrist(arm, wrist, i, right), new SetTelescope(telescope, telePos[i]));
   }
 }
