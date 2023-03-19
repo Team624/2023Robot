@@ -101,7 +101,7 @@ public class Hood extends ProfiledPIDSubsystem {
 
   public double getBore() {
     return MathUtil.inputModulus(
-        (1-boreEncoder.getAbsolutePosition()) + Constants.Hood.BORE_ENCODER_OFFSET, 0.0, 1.0);
+        (1 - boreEncoder.getAbsolutePosition()) + Constants.Hood.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {

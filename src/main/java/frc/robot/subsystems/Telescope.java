@@ -7,11 +7,10 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAnalogSensor;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -66,16 +65,11 @@ public class Telescope extends SubsystemBase {
     Shuffleboard.getTab("Telescope").add("Reset Encoder", new ResetEncoder(this));
     positionEntry =
         Shuffleboard.getTab("Telescope").add("Position (String Pot)", getStringPot()).getEntry();
-
-    
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    // System.out.println("telescope encoder: " + telescopeEncoder.getPosition());
-    // System.out.println("telescope velocity: " + telescopeEncoder.getVelocity());
 
     SmartDashboard.putNumber("/Telescope/Encoder", getTelescopeEncoder());
     positionEntry.setDouble(getStringPot());
@@ -91,8 +85,6 @@ public class Telescope extends SubsystemBase {
 
   public void setTelescope(double position) {
     telescopePID.setReference(position, ControlType.kPosition);
-    // telescopePID.setReference(
-    //     position, ControlType.kPosition, 0, telescopFeedforward.calculate(0.0));
   }
 
   public void resetEncoder() {

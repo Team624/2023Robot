@@ -4,29 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   // private CANSparkMax intakeMotor;
   private PWMSparkMax intakeMotor;
 
-  private RelativeEncoder intakeEncoder;
-
-  private SparkMaxPIDController intakePidController;
-
-  private double IntakeP;
-  private double IntakeI;
-  private double IntakeD;
-
   public Intake() {
 
-    // intakeMotor = new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless);
-
-    intakeMotor = new PWMSparkMax(0);
+    intakeMotor = new PWMSparkMax(Constants.Intake.PWMPort);
 
     intakeMotor.setInverted(true);
   }

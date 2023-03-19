@@ -18,7 +18,6 @@ import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.InsideBot.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
-import frc.robot.commands.Intake.ReverseCube;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.SideCone.Intake.SideIntakeSequence;
 import frc.robot.commands.SideCone.Score.SideScoringSequence;
@@ -132,7 +131,7 @@ public class AutonManager extends CommandBase {
             && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
           break;
         currentIntakeCommand.end(true);
-        currentIntakeCommand = new ReverseCone(intake, arm);
+        currentIntakeCommand = new ReverseCone(intake);
         currentIntakeCommand.schedule();
         break;
 
@@ -141,12 +140,12 @@ public class AutonManager extends CommandBase {
             && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
           break;
         currentIntakeCommand.end(true);
-        currentIntakeCommand = new ReverseCube(intake, 0.2);
+        currentIntakeCommand = new ReverseCone(intake);
         currentIntakeCommand.schedule();
         break;
       case "idle":
       default:
-        currentIntakeCommand = new IdleIntake(intake);
+        currentIntakeCommand = new IdleIntake(intake, true);
         currentIntakeCommand.schedule();
     }
   }

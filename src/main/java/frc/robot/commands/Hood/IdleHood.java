@@ -23,6 +23,7 @@ public class IdleHood extends CommandBase {
     // m_hood.enable();
     // m_hood.setGoal(m_hood.getAbsoluteRotation().getRadians());
     m_hood.disable();
+    m_hood.stopHood();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,9 +32,7 @@ public class IdleHood extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
