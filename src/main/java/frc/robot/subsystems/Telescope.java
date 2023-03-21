@@ -35,6 +35,8 @@ public class Telescope extends SubsystemBase {
 
   private GenericEntry positionEntry;
 
+  private boolean softLimited;
+
   public Telescope() {
     telescopeMotor = new CANSparkMax(Constants.Telescope.telescopemotor, MotorType.kBrushless);
     telescopeEncoder = telescopeMotor.getEncoder();
@@ -66,6 +68,9 @@ public class Telescope extends SubsystemBase {
     Shuffleboard.getTab("Telescope").add("Reset Encoder", new ResetEncoder(this));
     positionEntry =
         Shuffleboard.getTab("Telescope").add("Position (String Pot)", getStringPot()).getEntry();
+
+    softLimited = getSoftLimit();
+    if (softLimited) telescopeMotor.stopMotor();
   }
 
   @Override
@@ -77,6 +82,7 @@ public class Telescope extends SubsystemBase {
   }
 
   public void controlTelescope(double speed) {
+    if (softLimited) return;
     telescopeMotor.set(speed);
   }
 
@@ -85,6 +91,7 @@ public class Telescope extends SubsystemBase {
   }
 
   public void setTelescope(double position) {
+    if (softLimited) return;
     telescopePID.setReference(position, ControlType.kPosition);
   }
 
@@ -98,5 +105,9 @@ public class Telescope extends SubsystemBase {
 
   public double getStringPot() {
     return stringPot.getPosition();
+  }
+
+  public boolean getSoftLimit() {
+    return (stringPot.getPosition() <= 0.2 && telescopeMotor.getAppliedOutput() < 0) || (stringPot.getPosition() >= 1.12 && telescopeMotor.getAppliedOutput() > 0);
   }
 }
