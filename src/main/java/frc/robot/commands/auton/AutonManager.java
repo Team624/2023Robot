@@ -13,18 +13,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
+import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.UprightConeSequences.Score.SetpointUprightScore;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Telescope;
@@ -40,6 +44,7 @@ public class AutonManager extends CommandBase {
   private Wrist wrist;
   private Intake intake;
   private Shooter shooter;
+  private Hood hood;
 
   private Path[] paths;
   private Command currentFollowPathCommand;
@@ -55,13 +60,15 @@ public class AutonManager extends CommandBase {
       Telescope telescope,
       Wrist wrist,
       Intake intake,
-      Shooter shooter) {
+      Shooter shooter,
+      Hood hood) {
     this.drivetrain = drivetrain;
     this.arm = arm;
     this.telescope = telescope;
     this.wrist = wrist;
     this.intake = intake;
     this.shooter = shooter;
+    this.hood = hood;
   }
 
   // Called when the command is initially scheduled.
@@ -83,6 +90,7 @@ public class AutonManager extends CommandBase {
     startNTBalance();
     updateNTArm();
     updateNTIntake();
+    updateNTShooter();
   }
 
   // Called once the command ends or is interrupted.
@@ -183,7 +191,6 @@ public class AutonManager extends CommandBase {
         System.out.println("RUNNING INTAKE!!!\n\n\n");
         break;
 
-      case "move_cube_high":
       case "move_cone_high":
         this.currentArmCommand =
             new SideScoringSequence(arm, telescope, wrist, 1, true)
@@ -193,7 +200,6 @@ public class AutonManager extends CommandBase {
                     });
         break;
 
-      case "move_cube_mid":
       case "move_cone_mid":
         this.currentArmCommand =
             new SideScoringSequence(arm, telescope, wrist, 0, true)
@@ -203,7 +209,6 @@ public class AutonManager extends CommandBase {
                     });
         break;
 
-      case "move_cube_low":
       case "move_cone_low":
         SmartDashboard.getEntry("/auto/arm/state").setString("cone_intake");
         this.currentArmCommand =
@@ -245,31 +250,57 @@ public class AutonManager extends CommandBase {
 
     switch (state) {
       case "prime_high":
-        // TODO: Schedule command
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_High_Setpoint).andThen(
+          () -> {
+            setNTShooterState("prime_high");
+          });
         currentShooterCommand.schedule();
       case "prime_mid":
-        // TODO: Schedule command
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Mid_Setpoint).andThen(
+          () -> {
+            setNTShooterState("prime_mid");
+          });
         currentShooterCommand.schedule();
       case "prime_low":
-        // TODO: Schedule command
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint).andThen(
+          () -> {
+            setNTShooterState("prime_low");
+          });
         currentShooterCommand.schedule();
       case "intake":
-        // TODO: Schedule command
+        currentShooterCommand = new SequentialCommandGroup(new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint), new SetShooter(shooter, Constants.Shooter.IntakeSpeed)).andThen(() -> {
+          setNTShooterState("intake");
+        });
         currentShooterCommand.schedule();
       case "shoot_high":
-        // TODO: Schedule command
+        currentShooterCommand = new SetShooter(shooter, Constants.Shooter.HighScoreSpeed).andThen(
+          () -> {
+            setNTShooterState("shoot_high");
+          });
         currentShooterCommand.schedule();
       case "shoot_mid":
-        // TODO: Schedule command
+        currentShooterCommand = new SetShooter(shooter, Constants.Shooter.MidScoreSpeed).andThen(
+          () -> {
+            setNTShooterState("shoot_mid");
+          });
         currentShooterCommand.schedule();
       case "shoot_low":
-        // TODO: Schedule command
+        currentShooterCommand = new SetShooter(shooter, Constants.Shooter.LowScoreSpeed).andThen(
+          () -> {
+            setNTShooterState("shoot_low");
+          });
         currentShooterCommand.schedule();
       case "idle":
       default:
-        // TODO: Schedule command
-        currentShooterCommand.schedule();
+        if (currentShooterCommand != null && currentShooterCommand.isScheduled()) {
+          currentShooterCommand.end(true);
+          currentShooterCommand = null;
+        }
     }
+  }
+
+  private void setNTShooterState(String state) {
+    SmartDashboard.getEntry("/auto/shooter/state").setString(state);
   }
 
   // Starts the path specified by ROS in NetworkTables

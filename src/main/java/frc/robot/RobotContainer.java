@@ -442,7 +442,7 @@ new SelectCommand(
   }
 
   public Command getAutonManager() {
-    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter);
+    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood);
   }
 
   public Command getAutonSelectionCommand() {
