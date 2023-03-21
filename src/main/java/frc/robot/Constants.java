@@ -255,7 +255,7 @@ public final class Constants {
 
     // Setpoints
 
-    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(100);
+    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(96);
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(25);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(48.0);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
