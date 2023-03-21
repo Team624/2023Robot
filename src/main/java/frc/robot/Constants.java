@@ -235,17 +235,17 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = -0.056;
+    public static final double BORE_ENCODER_OFFSET = -0.6;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
     // Profiled PID controller gains
-    public static final double kP = 8.8;
-    public static final double kI = 0.00001;
+    public static final double kP = 100;
+    public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static final double kMaxVelocityRadiansPerSecond = 7.2;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 7.5;
+    public static final double kMaxVelocityRadiansPerSecond = 1.52;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 2.5;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -254,27 +254,30 @@ public final class Constants {
     public static final double kA = 0.0;
 
     // Setpoints
-    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(100);
-    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(122.5);
+
+    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(100);
+    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(25);
+    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(48.0);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
-        Rotation2d.fromDegrees(319 - 20); // TODO TUNE
-    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(115);
-    public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE = Rotation2d.fromDegrees(105.5);
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(316);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(319);
+        Rotation2d.fromDegrees(246.8); // TODO TUNE
+    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(47.3);
+    public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE = Rotation2d.fromDegrees(41.26); //42.8
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(272);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
   }
 
   public static final class Telescope {
-    public static final double P = 0.025;
-    public static final double I = 0.0001;
+    public static final double P = 11.5;
+    public static final double I = 0.0;
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_ZERO = 0.13;
-    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 28;
-    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 31;
-    public static final double TELESCOPE_SETPOINT_MID = 0.01;
-    public static final double TELESCOPE_SETPOINT_HIGH = 37;
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
+    public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
+    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.792; //1.03
+    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.87;
+    public static final double TELESCOPE_SETPOINT_MID = 0.15;
+    public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
 
     // FF constants
     public static final double kS = 0.0;
@@ -294,7 +297,7 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = 0.0;
+    public static final double boreEncoderOffset = 0.014;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -303,7 +306,7 @@ public final class Constants {
 
     public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
     public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
-    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(273);
+    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(90);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
 

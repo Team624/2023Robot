@@ -11,12 +11,12 @@ public class SetShooter extends CommandBase {
   /** Creates a new SetShooter. */
   private final Shooter m_shooter;
 
-  private final double m_rpm;
+  private final double m_speed;
 
-  public SetShooter(Shooter shooter, double rpm) {
+  public SetShooter(Shooter shooter, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = shooter;
-    this.m_rpm = rpm;
+    this.m_speed = speed;
     addRequirements(shooter);
   }
 
@@ -27,7 +27,7 @@ public class SetShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setPercentOutput(m_rpm);
+    m_shooter.setPercentOutput(m_speed);
   }
 
   // Called once the command ends or is interrupted.

@@ -2,10 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.SideCone.Intake;
+package frc.robot.commands.SideConeSequences.Intake;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
@@ -37,6 +38,7 @@ public class SideIntakeSequence extends SequentialCommandGroup {
     }
 
     addCommands(
+      new SetArm(arm, Constants.Arm.ARM_SETPOINT_PREINTAKE),
         new SideIntakeArmWrist(arm, wrist),
         new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE));
   }

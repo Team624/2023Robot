@@ -37,6 +37,7 @@ public class SetWrist extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_wrist2.disable();
+    m_wrist2.stopWrist();
   }
 
   // Returns true when the command should end.

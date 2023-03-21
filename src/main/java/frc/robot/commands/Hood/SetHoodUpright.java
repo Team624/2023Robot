@@ -2,48 +2,39 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Shooter;
+package frc.robot.commands.Hood;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooter;
+import frc.robot.Constants;
+import frc.robot.subsystems.Hood;
 
-public class ShooterScore extends CommandBase {
-  /** Creates a new ShooterScore. */
-  private final Shooter m_shooter;
+public class SetHoodUpright extends CommandBase {
+  /** Creates a new SetHoodUpright. */
+  private final Hood m_hood;
 
-  private final double m_speed;
-  private Timer timer;
-
-  public ShooterScore(Shooter shooter, double speed) {
+  public SetHoodUpright(Hood hood) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_shooter = shooter;
-    this.m_speed = speed;
-    addRequirements(shooter);
+    this.m_hood = hood;
+    addRequirements(hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer = new Timer();
-    timer.reset();
-    timer.start();
+    m_hood.enable();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get() < .3) {
-      m_shooter.setPercentOutput(0.2);
-    } else {
-      m_shooter.setPercentOutput(m_speed);
-    }
+    m_hood.setGoal(Constants.Hood.Hood_Upright_Setpoint);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    timer.stop();
+    m_hood.disable();
+    m_hood.stopHood();
   }
 
   // Returns true when the command should end.

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.SideCone.Score;
+package frc.robot.commands.SideConeSequences.Score;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,10 +47,14 @@ public class SideScoringSequence extends SequentialCommandGroup {
     };
 
     if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
-      // Command command = new SetTelescope(telescope, 0.0);
-      // command.schedule();
-      new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO);
+      command = new SetTelescope(telescope, 0.15);
+      
+      // new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO);
     }
+    if(command !=null){
+      command.schedule();
+    }
+    
 
     addCommands(
         new SideScoringArmWrist(arm, wrist, i, right),

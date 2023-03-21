@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.InsideBot;
+package frc.robot.commands.InsideBotSequences;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Telescope.SetTelescope;
@@ -28,6 +28,6 @@ public class InsideBot extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    addCommands(new SetTelescope(telescope, 0.0), new InsideBotArmWrist(arm, wrist));
+    addCommands(new SetTelescope(telescope, 0.15), new InsideBotArmWrist(arm, wrist));
   }
 }

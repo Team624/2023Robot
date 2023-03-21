@@ -16,11 +16,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.ControlArm;
@@ -47,12 +49,17 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry positionEntry;
   private GenericEntry setpointEntry;
   private GenericEntry goalEntry;
+  private GenericEntry velocitySetpointEntry;
   private GenericEntry currentLeftEntry;
   private GenericEntry currentRightEntry;
 
   private GenericEntry rotationsEntry;
 
+  private GenericEntry velocityEntry;
+
   public double prevBoreValue;
+  private Rotation2d prevPosition;
+  private double prevTime;
   public int rotations;
 
   public Arm() {
@@ -87,6 +94,8 @@ public class Arm extends ProfiledPIDSubsystem {
 
     rotations = 0;
     prevBoreValue = getBore();
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
 
     armTab = Shuffleboard.getTab("Arm");
 
@@ -106,6 +115,11 @@ public class Arm extends ProfiledPIDSubsystem {
         armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
 
     rotationsEntry = armTab.add("Rotations", rotations).withPosition(10, 0).getEntry();
+    velocityEntry = armTab.add("Velocity", 0).getEntry();
+    velocitySetpointEntry = armTab.add("Velocity Setpoint", 0.0).getEntry();
+    armTab.add("Reset Rotations", new InstantCommand(() -> {
+      rotations = 0;
+    }));
   }
 
   @Override
@@ -114,11 +128,22 @@ public class Arm extends ProfiledPIDSubsystem {
 
     enabledEntry.setBoolean(m_enabled);
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
-    setpointEntry.setDouble(getController().getGoal().position);
-    goalEntry.setDouble(getController().getGoal().position);
+    setpointEntry.setDouble(Units.radiansToDegrees(getController().getSetpoint().position));
+    goalEntry.setDouble(Units.radiansToDegrees(getController().getGoal().position));
     currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
     currentRightEntry.setDouble(armMotorRight.getOutputCurrent());
     rotationsEntry.setDouble(rotations);
+    velocitySetpointEntry.setDouble(getController().getSetpoint().velocity);
+
+    Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
+    double deltaTime = Timer.getFPGATimestamp() - prevTime;
+    
+    double degreesPerSecond = deltaPosition.getDegrees() / deltaTime;
+    velocityEntry.setDouble(degreesPerSecond);
+
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
+    
   }
 
   public double getBore() {
@@ -130,9 +155,9 @@ public class Arm extends ProfiledPIDSubsystem {
     // double radians = 2 * Math.PI * getBore();
 
     double degrees = 360 * getBore();
-    if (prevBoreValue >= 355.0 && degrees <= 5.0) {
+    if (prevBoreValue >= 270.0 && degrees <= 90.0) {
       rotations += 1;
-    } else if (prevBoreValue <= 5.0 && degrees >= 355.0) {
+    } else if (prevBoreValue <= 90.0 && degrees >= 270.0) {
       rotations -= 1;
     }
     prevBoreValue = degrees;
