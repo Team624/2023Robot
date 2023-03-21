@@ -48,13 +48,12 @@ public class SideScoringSequence extends SequentialCommandGroup {
 
     if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
       command = new SetTelescope(telescope, 0.15);
-      
+
       // new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO);
     }
-    if(command !=null){
+    if (command != null) {
       command.schedule();
     }
-    
 
     addCommands(
         new SideScoringArmWrist(arm, wrist, i, right),

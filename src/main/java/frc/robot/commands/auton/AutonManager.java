@@ -50,7 +50,12 @@ public class AutonManager extends CommandBase {
   private Command currentShooterCommand;
 
   public AutonManager(
-      Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake, Shooter shooter) {
+      Drivetrain drivetrain,
+      Arm arm,
+      Telescope telescope,
+      Wrist wrist,
+      Intake intake,
+      Shooter shooter) {
     this.drivetrain = drivetrain;
     this.arm = arm;
     this.telescope = telescope;

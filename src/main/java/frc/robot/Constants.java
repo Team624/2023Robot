@@ -240,7 +240,7 @@ public final class Constants {
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
     // Profiled PID controller gains
-    public static final double kP = 100;
+    public static final double kP = 13.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
@@ -261,7 +261,8 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
         Rotation2d.fromDegrees(246.8); // TODO TUNE
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(47.3);
-    public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE = Rotation2d.fromDegrees(41.26); //42.8
+    public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
+        Rotation2d.fromDegrees(41.26); // 42.8
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(272);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
   }
@@ -274,7 +275,7 @@ public final class Constants {
 
     public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
     public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
-    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.792; //1.03
+    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.792; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.87;
     public static final double TELESCOPE_SETPOINT_MID = 0.15;
     public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
@@ -287,7 +288,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 11;
+    public static final double P = 9.5;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
@@ -313,25 +314,26 @@ public final class Constants {
   public static final class Shooter {
     public static final int shooterMotorLeft = 15;
     public static final int shooterMotorRight = 16;
-    public static final double HighScoreSpeed = -1.0;
-    public static final double MidScoreSpeed = -1.0;
+    public static final double HighScoreSpeed = -0.52; 
+    public static final double MidScoreSpeed = -0.3;
     public static final double LowScoreSpeed = -1.0;
-    public static final double IntakeSpeed = 0.4;
+    public static final double IntakeSpeed = 0.3;
   }
 
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double kP = 0.0;
+    public static final double kP = 7.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
     public static final double BORE_ENCODER_OFFSET = 0.0;
 
-    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(0.1);
-    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(0.0);
-    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(0.0);
-    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(0.0);
+    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5);
+    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(31.8);
+    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8);
+    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108);
+    public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51);
   }
 
   public static final class LEDs {

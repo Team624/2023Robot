@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
-import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -40,12 +40,10 @@ import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
-import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.Telescope.SetTelescopeScore;
 import frc.robot.commands.UprightConeSequences.Intake.UprightIntakeSequence;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
-import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -250,8 +248,16 @@ public class RobotContainer {
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new RunIntake(m_intake)),
               Map.entry(
-                  CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint))),
+                  CommandSelector.HOOD, new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed)))),
           this::select);
+
+private Command m_OperatorInsideButton =
+new SelectCommand(
+    Map.ofEntries(
+        Map.entry(CommandSelector.ARM, new InsideBot(m_arm, m_telescope, m_wrist)),
+        Map.entry(
+            CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_Upright_Setpoint))),
+    this::select);
 
   private Command m_OperatorXButton2 =
       new SelectCommand(
@@ -273,7 +279,7 @@ public class RobotContainer {
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
               Map.entry(
                   CommandSelector.HOOD,
-                  new ShooterScore(m_shooter, Constants.Shooter.HighScoreSpeed))),
+                  new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))),
           this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -346,7 +352,6 @@ public class RobotContainer {
     // setBotMid.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_MID));
     // setBotIntake.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE));
 
-
     /** WRIST TESTING */
     // setBotHigh.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_leftScore));
     // setBotMid.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_intake));
@@ -369,35 +374,52 @@ public class RobotContainer {
 
     // Real stuff
 
-    setBotHigh.whileTrue(new ParallelCommandGroup(new SetTelescopeScore(m_arm, m_telescope,coneMode,true),m_OperatorUpDpad));
-    setBotHigh.and(coneModify).whileTrue(new ParallelCommandGroup(new SetTelescopeScore(m_arm, m_telescope,coneMode,true) ,m_OperatorUpDpadConeModify));
-
-    setBotMid.whileTrue(new ParallelCommandGroup(new SetTelescopeScore(m_arm, m_telescope,coneMode,true),m_OperatorMidDpad));
-    setBotMid.and(coneModify).whileTrue(new ParallelCommandGroup(new SetTelescopeScore(m_arm, m_telescope,coneMode,true),m_OperatorMidDpadConeModify));
-
-    setBotIntake.whileTrue(new ParallelCommandGroup(new SetTelescopeScore(m_arm, m_telescope,coneMode,false),m_OperatorIntakeDpad));
-
-    setBotIntake.and(coneModify).whileTrue(new ParallelCommandGroup(new SetTelescopeScore(m_arm, m_telescope,coneMode,false), new UprightIntakeSequence(m_arm, m_telescope,
-    m_wrist)));
-
-    setBotInside.whileTrue(new InsideBot(m_arm, m_telescope, m_wrist));
-
-    setBotHigh.and(reverseIntake).whileTrue(new SetHood(m_hood,
-    Constants.Hood.Hood_High_Setpoint));
+    setBotHigh.whileTrue(
+        new ParallelCommandGroup(
+            new SetTelescopeScore(m_arm, m_telescope, coneMode, true), m_OperatorUpDpad));
     setBotHigh
-        .and(reverseIntake)
-        .whileTrue(new ShooterScore(m_shooter, Constants.Shooter.HighScoreSpeed));
+        .and(coneModify)
+        .whileTrue(
+            new ParallelCommandGroup(
+                new SetTelescopeScore(m_arm, m_telescope, coneMode, true),
+                m_OperatorUpDpadConeModify));
 
-    setBotMid.and(reverseIntake).whileTrue(new SetHood(m_hood,
-    Constants.Hood.Hood_Mid_Setpoint));
+    setBotMid.whileTrue(
+        new ParallelCommandGroup(
+            new SetTelescopeScore(m_arm, m_telescope, coneMode, true), m_OperatorMidDpad));
     setBotMid
-        .and(reverseIntake)
-        .whileTrue(new ShooterScore(m_shooter, Constants.Shooter.MidScoreSpeed));
+        .and(coneModify)
+        .whileTrue(
+            new ParallelCommandGroup(
+                new SetTelescopeScore(m_arm, m_telescope, coneMode, true),
+                m_OperatorMidDpadConeModify));
+
+    setBotIntake.whileTrue(
+        new ParallelCommandGroup(
+            new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad));
+
+    setBotIntake
+        .and(coneModify)
+        .whileTrue(
+            new ParallelCommandGroup(
+                new SetTelescopeScore(m_arm, m_telescope, coneMode, false),
+                new UprightIntakeSequence(m_arm, m_telescope, m_wrist)));
+
+    setBotInside.whileTrue(m_OperatorInsideButton);
+
+    
+
+    setBotHigh.and(reverseIntake).whileTrue(new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_High_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.HighScoreSpeed)));
+
+    setBotMid.and(reverseIntake).whileTrue((new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Mid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.MidScoreSpeed))));
+
+    setBotHigh.and(coneModify).whileTrue((new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Hybrid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))));
+    // runIntake.whileTrue(new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed)));
 
     runIntake.whileTrue(m_OperatorXButton);
-    runIntake.whileTrue(m_OperatorXButton2);
+    // runIntake.whileTrue(m_OperatorXButton2);
     // runIntake.whileFalse(m_OperatorXButtonFalse);
-    reverseIntake.whileTrue(m_OperatorBButton);
+    // reverseIntake.whileTrue(m_OperatorBButton);
 
     toggleMode.onTrue(
         new InstantCommand(
@@ -408,17 +430,6 @@ public class RobotContainer {
                       coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
                   .schedule();
             }));
-
-    // toggleMode.onTrue(
-    //     new InstantCommand(
-    //         () -> {
-    //            if(coneMode){
-    //             new SetHoodUpright(m_hood);
-    //            }
-    //            else{
-    //             new InsideBot(m_arm, m_telescope, m_wrist);
-    //            }
-    //         }));
   }
 
   /**

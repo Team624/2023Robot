@@ -52,7 +52,7 @@ public class SetpointUprightScore extends SequentialCommandGroup {
     if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
 
       command = new SetTelescope(telescope, 0.15);
-      
+
       // new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO);
     }
     command.schedule();

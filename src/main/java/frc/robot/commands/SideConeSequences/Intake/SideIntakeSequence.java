@@ -38,7 +38,7 @@ public class SideIntakeSequence extends SequentialCommandGroup {
     }
 
     addCommands(
-      new SetArm(arm, Constants.Arm.ARM_SETPOINT_PREINTAKE),
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_PREINTAKE),
         new SideIntakeArmWrist(arm, wrist),
         new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE));
   }

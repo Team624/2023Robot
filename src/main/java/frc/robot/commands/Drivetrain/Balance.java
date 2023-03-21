@@ -45,6 +45,11 @@ public class Balance extends CommandBase {
       mult = -1;
     }
 
+    if (m_front) {
+      vel = -vel;
+      mult *= -1;
+    }
+
     if (Math.abs(angle) < 15) {
       m_drivetrain.drive(new Translation2d(vel, 0), 0, true, true);
     }

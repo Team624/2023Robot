@@ -52,6 +52,7 @@ public class Hood extends ProfiledPIDSubsystem {
     hoodMotor = new CANSparkMax(Constants.Hood.hoodMotor, MotorType.kBrushless);
     hoodMotor.setIdleMode(IdleMode.kBrake);
     hoodMotor.setCANTimeout(500);
+    hoodMotor.setInverted(true);
 
     boreEncoder = new DutyCycleEncoder(2);
 
@@ -71,7 +72,7 @@ public class Hood extends ProfiledPIDSubsystem {
     super.periodic();
 
     enabledEntry.setBoolean(m_enabled);
-    positionEntry.setDouble(getBore());
+    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     setpointEntry.setDouble(getController().getGoal().position);
     goalEntry.setDouble(getController().getGoal().position);
   }

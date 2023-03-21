@@ -60,7 +60,6 @@ public class Arm extends ProfiledPIDSubsystem {
   public double prevBoreValue;
   private Rotation2d prevPosition;
   private double prevTime;
-
   public int rotations;
 
   public Arm() {
@@ -86,6 +85,7 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorLeft.setSmartCurrentLimit(20);
 
     armMotorLeft.setInverted(true);
+
 
     boreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_PORT);
 
@@ -117,9 +117,12 @@ public class Arm extends ProfiledPIDSubsystem {
     rotationsEntry = armTab.add("Rotations", rotations).withPosition(10, 0).getEntry();
     velocityEntry = armTab.add("Velocity", 0).getEntry();
     velocitySetpointEntry = armTab.add("Velocity Setpoint", 0.0).getEntry();
-    armTab.add("Reset Rotations", new InstantCommand(() -> {
-      rotations = 0;
-    }));
+    armTab.add(
+        "Reset Rotations",
+        new InstantCommand(
+            () -> {
+              rotations = 0;
+            }));
   }
 
   @Override
@@ -137,13 +140,12 @@ public class Arm extends ProfiledPIDSubsystem {
 
     Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
     double deltaTime = Timer.getFPGATimestamp() - prevTime;
-    
+
     double degreesPerSecond = deltaPosition.getDegrees() / deltaTime;
     velocityEntry.setDouble(degreesPerSecond);
 
     prevPosition = getAbsoluteRotation();
     prevTime = Timer.getFPGATimestamp();
-    
   }
 
   public double getBore() {
@@ -176,7 +178,7 @@ public class Arm extends ProfiledPIDSubsystem {
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = MathUtil.clamp(voltage, -9.0, 9.0);
+      voltage = MathUtil.clamp(voltage, -11.0, 11.0);
 
       voltageEntry.setDouble(-voltage);
 
