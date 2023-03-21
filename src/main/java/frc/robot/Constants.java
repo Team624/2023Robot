@@ -275,7 +275,7 @@ public final class Constants {
 
     public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
     public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
-    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.792; // 1.03
+    public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.87;
     public static final double TELESCOPE_SETPOINT_MID = 0.15;
     public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
@@ -288,7 +288,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 9.5;
+    public static final double P = 9.0;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;

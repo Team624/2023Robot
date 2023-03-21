@@ -214,7 +214,7 @@ public class RobotContainer {
               Map.entry(
                   CommandSelector.ARM,
                   new SideScoringSequence(m_arm, m_telescope, m_wrist, 1, false)),
-              Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
+              Map.entry(CommandSelector.HOOD, (new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Hybrid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))))),
           this::select);
 
   private Command m_OperatorMidDpad =
@@ -248,7 +248,7 @@ public class RobotContainer {
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new RunIntake(m_intake)),
               Map.entry(
-                  CommandSelector.HOOD, new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed)))),
+                  CommandSelector.HOOD, new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed))),
           this::select);
 
 private Command m_OperatorInsideButton =
@@ -279,7 +279,7 @@ new SelectCommand(
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
               Map.entry(
                   CommandSelector.HOOD,
-                  new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))),
+                  new IdleHood(m_hood))),
           this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -413,13 +413,12 @@ new SelectCommand(
 
     setBotMid.and(reverseIntake).whileTrue((new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Mid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.MidScoreSpeed))));
 
-    setBotHigh.and(coneModify).whileTrue((new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Hybrid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))));
+    // setBotHigh.and(coneModify).whileTrue((new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Hybrid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))));
     // runIntake.whileTrue(new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed)));
 
     runIntake.whileTrue(m_OperatorXButton);
-    // runIntake.whileTrue(m_OperatorXButton2);
     // runIntake.whileFalse(m_OperatorXButtonFalse);
-    // reverseIntake.whileTrue(m_OperatorBButton);
+    reverseIntake.whileTrue(m_OperatorBButton);
 
     toggleMode.onTrue(
         new InstantCommand(
