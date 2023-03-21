@@ -53,10 +53,11 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry rotationsEntry;
 
   public double prevBoreValue;
+  public double prevPosition;
+  public double prevTime;
   public int rotations;
 
   public Arm() {
-
     super(
         new ProfiledPIDController(
             Constants.Arm.kP,
@@ -130,7 +131,8 @@ public class Arm extends ProfiledPIDSubsystem {
     // double radians = 2 * Math.PI * getBore();
 
     double degrees = 360 * getBore();
-    if (prevBoreValue >= 355.0 && degrees <= 5.0) {
+
+    if (prevBoreValue >= 180.0 && degrees <= 180.0) {
       rotations += 1;
     } else if (prevBoreValue <= 5.0 && degrees >= 355.0) {
       rotations -= 1;

@@ -27,6 +27,7 @@ import frc.robot.commands.UprightCone.Score.SetpointUprightScore;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utility.BezierCurve;
@@ -39,6 +40,7 @@ public class AutonManager extends CommandBase {
   private Telescope telescope;
   private Wrist wrist;
   private Intake intake;
+  private Shooter shooter;
 
   private Path[] paths;
   private Command currentFollowPathCommand;
@@ -46,14 +48,16 @@ public class AutonManager extends CommandBase {
   private Command currentBalanceCommand;
   private Command currentArmCommand;
   private Command currentIntakeCommand;
+  private Command currentShooterCommand;
 
   public AutonManager(
-      Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake) {
+      Drivetrain drivetrain, Arm arm, Telescope telescope, Wrist wrist, Intake intake, Shooter shooter) {
     this.drivetrain = drivetrain;
     this.arm = arm;
     this.telescope = telescope;
     this.wrist = wrist;
     this.intake = intake;
+    this.shooter = shooter;
   }
 
   // Called when the command is initially scheduled.
@@ -230,6 +234,38 @@ public class AutonManager extends CommandBase {
     this.currentArmCommand.schedule();
 
     SmartDashboard.getEntry("/auto/arm/set").setString("none");
+  }
+
+  private void updateNTShooter() {
+    String state = SmartDashboard.getEntry("/auto/shooter/set").getString("idle");
+
+    switch (state) {
+      case "prime_high":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "prime_mid":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "prime_low":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "intake":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "shoot_high":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "shoot_mid":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "shoot_low":
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+      case "idle":
+      default:
+        // TODO: Schedule command
+        currentShooterCommand.schedule();
+    }
   }
 
   // Starts the path specified by ROS in NetworkTables

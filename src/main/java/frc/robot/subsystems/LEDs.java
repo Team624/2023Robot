@@ -32,6 +32,8 @@ public class LEDs extends SubsystemBase {
   public LEDs() {
     // NavX uses id 0x32
     leds = new I2C(Constants.LEDs.LEDS_PORT, Constants.LEDs.LEDS_ID);
+
+    setAnimationCommand(Animation.CRYPTONITE).schedule();
   }
 
   @Override
