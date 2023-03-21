@@ -431,7 +431,7 @@ public class RobotContainer {
   }
 
   public Command getAutonManager() {
-    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake);
+    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter);
   }
 
   public Command getAutonSelectionCommand() {

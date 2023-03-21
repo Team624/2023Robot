@@ -60,10 +60,10 @@ public class Arm extends ProfiledPIDSubsystem {
   public double prevBoreValue;
   private Rotation2d prevPosition;
   private double prevTime;
+
   public int rotations;
 
   public Arm() {
-
     super(
         new ProfiledPIDController(
             Constants.Arm.kP,
