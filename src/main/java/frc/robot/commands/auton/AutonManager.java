@@ -54,6 +54,8 @@ public class AutonManager extends CommandBase {
   private Command currentIntakeCommand;
   private Command currentShooterCommand;
 
+  private String prevArmState = "";
+
   public AutonManager(
       Drivetrain drivetrain,
       Arm arm,
@@ -170,6 +172,10 @@ public class AutonManager extends CommandBase {
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("none");
 
+    if (state.equals(prevArmState)) return;
+
+    prevArmState = state;
+
     System.out.println("State: " + state);
 
     if (state.equals("none")
@@ -233,7 +239,7 @@ public class AutonManager extends CommandBase {
       case "retract":
       default:
         this.currentArmCommand =
-            new SetTelescope(telescope, 0.0)
+            new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("retract");
