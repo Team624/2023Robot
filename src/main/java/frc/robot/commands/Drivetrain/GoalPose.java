@@ -117,7 +117,7 @@ public class GoalPose extends CommandBase {
       }
     }
 
-    omegaController.setGoal(-Math.PI);
+    omegaController.setGoal(0.0);
 
     double yVel = yController.calculate(pose2d.getY());
 

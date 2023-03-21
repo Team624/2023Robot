@@ -86,7 +86,6 @@ public class Arm extends ProfiledPIDSubsystem {
 
     armMotorLeft.setInverted(true);
 
-
     boreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_PORT);
 
     armFeedForward =
