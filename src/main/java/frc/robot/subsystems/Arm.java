@@ -16,11 +16,17 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.commands.Arm.ControlArm;
+import frc.robot.commands.Hood.ControlHood;
 
 public class Arm extends ProfiledPIDSubsystem {
   /** Creates a new Arm. */
@@ -43,13 +49,21 @@ public class Arm extends ProfiledPIDSubsystem {
   private GenericEntry positionEntry;
   private GenericEntry setpointEntry;
   private GenericEntry goalEntry;
+  private GenericEntry velocitySetpointEntry;
   private GenericEntry currentLeftEntry;
   private GenericEntry currentRightEntry;
 
-  public boolean cone = false;
+  private GenericEntry rotationsEntry;
+
+  private GenericEntry velocityEntry;
+
+  public double prevBoreValue;
+  private Rotation2d prevPosition;
+  private double prevTime;
+
+  public int rotations;
 
   public Arm() {
-
     super(
         new ProfiledPIDController(
             Constants.Arm.kP,
@@ -78,6 +92,11 @@ public class Arm extends ProfiledPIDSubsystem {
     armFeedForward =
         new ArmFeedforward(Constants.Arm.kS, Constants.Arm.kG, Constants.Arm.kV, Constants.Arm.kA);
 
+    rotations = 0;
+    prevBoreValue = getBore();
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
+
     armTab = Shuffleboard.getTab("Arm");
 
     enabledEntry =
@@ -90,8 +109,17 @@ public class Arm extends ProfiledPIDSubsystem {
     coneEntry = armTab.add("Cone", false).withPosition(9, 0).getEntry();
     setpointEntry = armTab.add("Setpoint", getController().getSetpoint().position).getEntry();
     goalEntry = armTab.add("Goal", getController().getGoal().position).getEntry();
-    currentLeftEntry = armTab.add("Current Draw (Left)", armMotorLeft.getOutputCurrent()).getEntry();
-    currentRightEntry = armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
+    currentLeftEntry =
+        armTab.add("Current Draw (Left)", armMotorLeft.getOutputCurrent()).getEntry();
+    currentRightEntry =
+        armTab.add("Current Draw (Right)", armMotorRight.getOutputCurrent()).getEntry();
+
+    rotationsEntry = armTab.add("Rotations", rotations).withPosition(10, 0).getEntry();
+    velocityEntry = armTab.add("Velocity", 0).getEntry();
+    velocitySetpointEntry = armTab.add("Velocity Setpoint", 0.0).getEntry();
+    armTab.add("Reset Rotations", new InstantCommand(() -> {
+      rotations = 0;
+    }));
   }
 
   @Override
@@ -99,49 +127,45 @@ public class Arm extends ProfiledPIDSubsystem {
     super.periodic();
 
     enabledEntry.setBoolean(m_enabled);
-    positionEntry.setDouble(getBore());
-    setpointEntry.setDouble(getController().getGoal().position);
-    goalEntry.setDouble(getController().getGoal().position);
+    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    setpointEntry.setDouble(Units.radiansToDegrees(getController().getSetpoint().position));
+    goalEntry.setDouble(Units.radiansToDegrees(getController().getGoal().position));
     currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
     currentRightEntry.setDouble(armMotorRight.getOutputCurrent());
+    rotationsEntry.setDouble(rotations);
+    velocitySetpointEntry.setDouble(getController().getSetpoint().velocity);
 
-    // System.out.println(armMotorLeft.getOutputCurrent() + " " + armMotorRight.getOutputCurrent());
+    Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
+    double deltaTime = Timer.getFPGATimestamp() - prevTime;
     
+    double degreesPerSecond = deltaPosition.getDegrees() / deltaTime;
+    velocityEntry.setDouble(degreesPerSecond);
 
-
-
-    // if (getController().getSet() > Constants.Arm.ESTOP_TOLERANCE.getRadians()) {
-    //   armMotorLeft.stopMotor();
-    //   armMotorRight.stopMotor();
-    //   new DisabledArm(this).schedule();
-    //   return;
-    // }
-
-    // setpointEntry.setDouble(getController().getGoal().position * (180 / Math.PI));
-
-    coneEntry.setBoolean(cone);
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
+    
   }
 
   public double getBore() {
     return MathUtil.inputModulus(
-        (1 - boreEncoder.getAbsolutePosition()) + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+        boreEncoder.getAbsolutePosition() + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
   }
 
   public Rotation2d getAbsoluteRotation() {
-    double radians = 2 * Math.PI * getBore();
-    if (radians > 1.5 * Math.PI) {
-      double excess = radians - 1.5 * Math.PI;
-      radians = -(0.5 * Math.PI - excess);
+    // double radians = 2 * Math.PI * getBore();
+
+    double degrees = 360 * getBore();
+    if (prevBoreValue >= 270.0 && degrees <= 90.0) {
+      rotations += 1;
+    } else if (prevBoreValue <= 90.0 && degrees >= 270.0) {
+      rotations -= 1;
     }
+    prevBoreValue = degrees;
 
-    // Handle encoder looping around
-    if (radians > 1.5 * Math.PI) {
-      double excess = radians - 1.5 * Math.PI;
+    double outputVal = (degrees + rotations * 360) / 4;
 
-      radians = -(0.5 * Math.PI - excess);
-    }
-
-    return new Rotation2d(radians);
+    Rotation2d output2d = Rotation2d.fromDegrees(outputVal);
+    return output2d;
   }
 
   @Override
@@ -154,15 +178,10 @@ public class Arm extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
-      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
-        // System.out.println("Stopping arm!");
-        voltage = 0;
-      }
+      voltageEntry.setDouble(-voltage);
 
-      voltageEntry.setDouble(voltage);
-
-      armMotorLeft.setVoltage(voltage);
-      armMotorRight.setVoltage(voltage);
+      armMotorLeft.setVoltage(-voltage);
+      armMotorRight.setVoltage(-voltage);
     }
   }
 
@@ -193,7 +212,11 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight.set(speed);
   }
 
-  public void pieceChange() {
-    cone = !cone;
+  public Command giveCommand(boolean ConeMode, Arm arm, Hood hood, XboxController controller) {
+    if (ConeMode) {
+      return new ControlArm(arm, controller);
+    } else {
+      return new ControlHood(hood, controller);
+    }
   }
 }

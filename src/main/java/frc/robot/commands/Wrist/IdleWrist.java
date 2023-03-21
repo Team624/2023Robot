@@ -8,20 +8,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Wrist;
 
 public class IdleWrist extends CommandBase {
-  /** Creates a new IdleWrist. */
-  private final Wrist m_Wrist;
+  /** Creates a new IdleWrist2. */
+  private final Wrist m_wrist2;
 
-  public IdleWrist(Wrist wrist) {
+  public IdleWrist(Wrist wrist2) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    this.m_Wrist = wrist;
-    addRequirements(wrist);
+    this.m_wrist2 = wrist2;
+    addRequirements(wrist2);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Wrist.setReference(m_Wrist.getAbsoluteRotation().getRadians());
+    // m_wrist2.enable();
+    // m_wrist2.setGoal(m_wrist2.getAbsoluteRotation().getRadians());
+    m_wrist2.disable();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -8,10 +8,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 
 public class ConeAlign extends CommandBase {
 
   private final Drivetrain m_drivetrain;
+
+  private final Limelight m_limelight;
 
   public double goal;
 
@@ -28,15 +31,16 @@ public class ConeAlign extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(6, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(8.9, 0.03, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(3.5, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(8.5, 0, 0, OMEGA_CONSTRAINTS);
 
   private final boolean m_right;
 
-  public ConeAlign(Drivetrain drivetrain, Boolean right) {
+  public ConeAlign(Drivetrain drivetrain, Boolean right, Limelight mLimelight) {
 
     m_drivetrain = drivetrain;
+    m_limelight = mLimelight;
     m_right = right;
     xController.setTolerance(0.02);
     yController.setTolerance(0.02);
@@ -49,11 +53,8 @@ public class ConeAlign extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
     Pose2d pose = m_drivetrain.getPose();
-
     omegaController.reset(pose.getRotation().getRadians());
-
     xController.reset(pose.getX());
     yController.reset(pose.getY());
   }
@@ -61,7 +62,6 @@ public class ConeAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double angle = 180 - m_drivetrain.getYaw().getDegrees();
     double currentY = m_drivetrain.getPose().getY();
     double[] possibleLocations = {
       -3.0349888823977644,
@@ -103,6 +103,6 @@ public class ConeAlign extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_drivetrain.getPose().getY() - goal) < .02 && omegaController.atGoal();
+    return yController.atGoal() && omegaController.atGoal();
   }
 }

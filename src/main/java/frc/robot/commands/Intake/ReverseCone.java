@@ -5,19 +5,15 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 public class ReverseCone extends CommandBase {
   /** Creates a new ReverseIntake. */
   private final Intake m_intake;
 
-  private final Arm m_Arm;
-
-  public ReverseCone(Intake intake, Arm arm) {
+  public ReverseCone(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.\
     this.m_intake = intake;
-    this.m_Arm = arm;
     addRequirements(intake);
   }
 
@@ -28,11 +24,8 @@ public class ReverseCone extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  
-      m_intake.runIntake(-1.0);
 
-      
-    
+    m_intake.runIntake(-1.0);
   }
 
   // Called once the command ends or is interrupted.

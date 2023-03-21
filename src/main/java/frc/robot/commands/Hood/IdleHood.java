@@ -2,50 +2,41 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Arm;
+package frc.robot.commands.Hood;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hood;
 
-public class SetArm extends CommandBase {
-  /** Creates a new SetArm. */
-  private final Arm m_Arm;
+public class IdleHood extends CommandBase {
+  /** Creates a new IdleHood. */
+  private final Hood m_hood;
 
-  private final Rotation2d m_setPoint;
-
-  public SetArm(Arm arm, Rotation2d setpoint) {
+  public IdleHood(Hood hood) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Arm = arm;
-    this.m_setPoint = setpoint;
-
-    addRequirements(arm);
+    this.m_hood = hood;
+    addRequirements(hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    m_Arm.enable();
+    // m_hood.enable();
+    // m_hood.setGoal(m_hood.getAbsoluteRotation().getRadians());
+    m_hood.disable();
+    m_hood.stopHood();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    m_Arm.setGoal(m_setPoint);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_Arm.disable();
-    m_Arm.stopArm();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_Arm.getController().atGoal();
+    return false;
   }
 }

@@ -2,12 +2,10 @@ package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class Balance extends CommandBase {
@@ -17,12 +15,6 @@ public class Balance extends CommandBase {
   private PIDController pidController;
 
   public double goal;
-
-  public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
-  public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-
-  private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(MaxVel, 2);
 
   boolean ground;
   private final boolean m_front;
@@ -73,10 +65,10 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    System.out.println("the angle: "+angle);
+    System.out.println("the angle: " + angle);
     if (Math.abs(angle) < 13.8 && !ground) {
       m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
-      
+
       // m_drivetrain.swerveXposition();
       setNTState(true);
 

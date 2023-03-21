@@ -4,50 +4,42 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  // private CANSparkMax intakeMotor;
-  private PWMSparkMax intakeMotor;
+  private CANSparkMax intakeMotor;
+  // private PWMSparkMax intakeMotor;
 
-  private RelativeEncoder intakeEncoder;
-
-  private SparkMaxPIDController intakePidController;
-
-  private double IntakeP;
-  private double IntakeI;
-  private double IntakeD;
+  private GenericEntry currentIntakeEntry;
+  private ShuffleboardTab intakeTab;
+  // private CANSparkMax intakeMotorCAN;
 
   public Intake() {
 
-    // intakeMotor = new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless);
-
-    intakeMotor = new PWMSparkMax(0);
+    intakeMotor = new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless);
 
     intakeMotor.setInverted(true);
 
-    // intakePidController = intakeMotor.getPIDController();
-    // intakeMotor.setIdleMode(IdleMode.kBrake);
-    // IntakeP = frc.robot.Constants.Intake.P;
-    // IntakeI = frc.robot.Constants.Intake.I;
-    // IntakeD = frc.robot.Constants.Intake.D;
+    // intakeMotor.setSmartCurrentLimit(20);
+ 
+    intakeTab = Shuffleboard.getTab("Intake");
 
-    // intakePidController.setP(IntakeP);
-    // intakePidController.setI(IntakeI);
-    // intakePidController.setD(IntakeD);
-
-    // intakePidController.setOutputRange(-1, 1);
-
+    currentIntakeEntry =
+        intakeTab.add("Current Output Intake", intakeMotor.getOutputCurrent()).getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    currentIntakeEntry.setDouble(getCurrentIntake());
   }
 
   public void runIntake(double speed) {
@@ -56,5 +48,9 @@ public class Intake extends SubsystemBase {
 
   public void stopIntake() {
     intakeMotor.stopMotor();
+  }
+
+  public double getCurrentIntake() {
+    return intakeMotor.getOutputCurrent();
   }
 }
