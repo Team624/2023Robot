@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
 
     intakeMotor.setInverted(true);
 
-    // intakeMotor.setSmartCurrentLimit(20);
+    intakeMotor.setSmartCurrentLimit(10);
 
     intakeTab = Shuffleboard.getTab("Intake");
 
