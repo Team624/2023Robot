@@ -54,7 +54,6 @@ public class SideScoringSequence extends SequentialCommandGroup {
     if (command != null) {
       command.schedule();
     }
-    
 
     addCommands(
         new SideScoringArmWrist(arm, wrist, i, right),

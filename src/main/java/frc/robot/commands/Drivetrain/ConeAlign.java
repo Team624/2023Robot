@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -41,7 +43,12 @@ public class ConeAlign extends CommandBase {
 
     m_drivetrain = drivetrain;
     m_limelight = mLimelight;
-    m_right = right;
+    if(DriverStation.getAlliance().equals(Alliance.Blue)){
+      m_right=!right;
+    }
+    else{
+      m_right = right;
+    }
     xController.setTolerance(0.02);
     yController.setTolerance(0.02);
     omegaController.setTolerance(Units.degreesToRadians(2));
@@ -88,7 +95,7 @@ public class ConeAlign extends CommandBase {
       }
     }
     yController.setGoal(goal);
-    omegaController.setGoal(-Math.PI);
+    omegaController.setGoal(0.0);
     double yVel = yController.calculate(m_drivetrain.getPose().getY());
     double rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     UpdatePose.keepRunning = false;

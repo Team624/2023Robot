@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DoubleSubstation;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
+import frc.robot.commands.DoubleSubstation;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -215,7 +215,11 @@ public class RobotContainer {
               Map.entry(
                   CommandSelector.ARM,
                   new SideScoringSequence(m_arm, m_telescope, m_wrist, 1, false)),
-              Map.entry(CommandSelector.HOOD, (new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Hybrid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))))),
+              Map.entry(
+                  CommandSelector.HOOD,
+                  (new SequentialCommandGroup(
+                      new SetHood(m_hood, Constants.Hood.Hood_Hybrid_Setpoint),
+                      new ShooterScore(m_shooter, Constants.Shooter.LowScoreSpeed))))),
           this::select);
 
   private Command m_OperatorMidDpad =
@@ -252,13 +256,13 @@ public class RobotContainer {
                   CommandSelector.HOOD, new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed))),
           this::select);
 
-private Command m_OperatorInsideButton =
-new SelectCommand(
-    Map.ofEntries(
-        Map.entry(CommandSelector.ARM, new InsideBot(m_arm, m_telescope, m_wrist)),
-        Map.entry(
-            CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_Upright_Setpoint))),
-    this::select);
+  private Command m_OperatorInsideButton =
+      new SelectCommand(
+          Map.ofEntries(
+              Map.entry(CommandSelector.ARM, new InsideBot(m_arm, m_telescope, m_wrist)),
+              Map.entry(
+                  CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_Upright_Setpoint))),
+          this::select);
 
   private Command m_OperatorXButton2 =
       new SelectCommand(
@@ -278,9 +282,7 @@ new SelectCommand(
       new SelectCommand(
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
-              Map.entry(
-                  CommandSelector.HOOD,
-                  new IdleArm(m_arm))),
+              Map.entry(CommandSelector.HOOD, new IdleArm(m_arm))),
           this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -408,13 +410,23 @@ new SelectCommand(
 
     setBotInside.whileTrue(m_OperatorInsideButton);
 
-    
+    setBotHigh
+        .and(reverseIntake)
+        .whileTrue(
+            new SequentialCommandGroup(
+                new SetHood(m_hood, Constants.Hood.Hood_High_Setpoint),
+                new ShooterScore(m_shooter, Constants.Shooter.HighScoreSpeed)));
 
-    setBotHigh.and(reverseIntake).whileTrue(new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_High_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.HighScoreSpeed)));
+    setBotMid
+        .and(reverseIntake)
+        .whileTrue(
+            new SequentialCommandGroup(
+                new SetHood(m_hood, Constants.Hood.Hood_Mid_Setpoint),
+                new ShooterScore(m_shooter, Constants.Shooter.MidScoreSpeed)));
 
-    setBotMid.and(reverseIntake).whileTrue(new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Mid_Setpoint),new ShooterScore(m_shooter, Constants.Shooter.MidScoreSpeed)));
-
-    // runIntake.whileTrue(new SequentialCommandGroup(new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter, Constants.Shooter.IntakeSpeed)));
+    // runIntake.whileTrue(new SequentialCommandGroup(new SetHood(m_hood,
+    // Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter,
+    // Constants.Shooter.IntakeSpeed)));
 
     runIntake.whileTrue(m_OperatorXButton);
     // runIntake.whileFalse(m_OperatorXButtonFalse);

@@ -9,7 +9,6 @@ import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,13 +17,16 @@ import frc.robot.subsystems.Wrist;
 public class DoubleSubstationArmWrist extends ParallelCommandGroup {
   /** Creates a new DoubleSubstationArmWrist. */
   private final Arm m_Arm;
+
   private final Wrist m_Wrist;
-  public DoubleSubstationArmWrist(Arm arm , Wrist wrist) {
+
+  public DoubleSubstationArmWrist(Arm arm, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    this.m_Arm=arm;
+    this.m_Arm = arm;
     this.m_Wrist = wrist;
-    addCommands(new SetArm(arm, Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION),
-    new SetWrist(wrist, Constants.Wrist.wrist_upright_cone_intake));
+    addCommands(
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_DOUBLE_SUBSTATION),
+        new SetWrist(wrist, Constants.Wrist.wrist_upright_cone_intake));
   }
 }

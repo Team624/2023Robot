@@ -314,7 +314,7 @@ public final class Constants {
   public static final class Shooter {
     public static final int shooterMotorLeft = 15;
     public static final int shooterMotorRight = 16;
-    public static final double HighScoreSpeed = -0.52; 
+    public static final double HighScoreSpeed = -0.52;
     public static final double MidScoreSpeed = -0.3;
     public static final double LowScoreSpeed = -1.0;
     public static final double IntakeSpeed = 0.3;

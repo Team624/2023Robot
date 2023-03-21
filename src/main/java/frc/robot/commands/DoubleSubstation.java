@@ -6,11 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
-import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.SideConeSequences.Score.SideScoringArmWrist;
 import frc.robot.commands.Telescope.SetTelescope;
-import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -25,6 +21,7 @@ public class DoubleSubstation extends SequentialCommandGroup {
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
   private Command command;
+
   public DoubleSubstation(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -32,10 +29,6 @@ public class DoubleSubstation extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-
-    addCommands(
-        new SetTelescope(telescope, 0.15),
-        new DoubleSubstationArmWrist(arm, wrist));
-  
+    addCommands(new SetTelescope(telescope, 0.15), new DoubleSubstationArmWrist(arm, wrist));
   }
 }
