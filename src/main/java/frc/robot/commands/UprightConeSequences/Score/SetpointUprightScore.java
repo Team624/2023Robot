@@ -5,7 +5,6 @@
 package frc.robot.commands.UprightCone.Score;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Telescope.SetTelescope;
@@ -43,14 +42,15 @@ public class SetpointUprightScore extends SequentialCommandGroup {
     };
     Rotation2d[] wristPos = {
       Constants.Wrist.wrist_zero,
-      Constants.Wrist.wrist_upright_cone_Score,
+      Constants.Wrist.wrist_upright_cone_intake,
       Constants.Wrist.wrist_cone_intake
     };
 
     if (m_Arm.getAbsoluteRotation().getDegrees() < 180) {
 
-      Command command = new SetTelescope(telescope, 0.0);
-      command.schedule();
+      // Command command = new SetTelescope(telescope, 0.0);
+      // command.schedule();
+      new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO);
     }
 
     addCommands(new UprightScoreArmWrist(arm, wrist, i), new SetTelescope(telescope, telePos[i]));

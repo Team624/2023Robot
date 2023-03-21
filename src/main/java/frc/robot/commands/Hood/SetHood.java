@@ -36,6 +36,7 @@ public class SetHood extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_hood.disable();
+    m_hood.stopHood();
   }
 
   // Returns true when the command should end.

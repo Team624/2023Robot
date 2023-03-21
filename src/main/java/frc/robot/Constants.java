@@ -223,6 +223,7 @@ public final class Constants {
     public static final double I = 0;
     public static final double D = 0;
     public static final int intakeMotor = 12;
+    public static final int PWMPort = 0;
   }
 
   public static final class Arm {
@@ -269,6 +270,7 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
+    public static final double TELESCOPE_SETPOINT_ZERO = 0.13;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 28;
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 31;
     public static final double TELESCOPE_SETPOINT_MID = 0.01;
@@ -299,7 +301,7 @@ public final class Constants {
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final Rotation2d wrist_upright_cone_Score = Rotation2d.fromDegrees(180);
+    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
     public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
     public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(273);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
@@ -308,11 +310,10 @@ public final class Constants {
   public static final class Shooter {
     public static final int shooterMotorLeft = 15;
     public static final int shooterMotorRight = 16;
-    public static final double P = 0.0;
-    public static final double I = 0.0;
-    public static final double D = 0.0;
-    public static final double F = 0.0;
-    public static final double Izone = 0.0;
+    public static final double HighScoreSpeed = -1.0;
+    public static final double MidScoreSpeed = -1.0;
+    public static final double LowScoreSpeed = -1.0;
+    public static final double IntakeSpeed = 0.4;
   }
 
   public static final class Hood {
@@ -324,6 +325,7 @@ public final class Constants {
 
     public static final double BORE_ENCODER_OFFSET = 0.0;
 
+    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(0.1);
     public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(0.0);
     public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(0.0);
     public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(0.0);

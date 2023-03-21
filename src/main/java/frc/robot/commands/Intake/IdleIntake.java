@@ -11,22 +11,29 @@ public class IdleIntake extends CommandBase {
   /** Creates a new IdleIntake. */
   private final Intake m_Intake;
 
-  public IdleIntake(Intake intake) {
+  private final boolean m_cone;
+
+  public IdleIntake(Intake intake, boolean cone) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Intake = intake;
+    this.m_cone = cone;
     addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_Intake.stopIntake();
+    if (!m_cone) {
+      m_Intake.stopIntake();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.runIntake(0.0);
+    if (m_cone) {
+      m_Intake.runIntake(0.15);
+    }
   }
 
   // Called once the command ends or is interrupted.
