@@ -55,6 +55,7 @@ public class AutonManager extends CommandBase {
   private Command currentShooterCommand;
 
   private String prevArmState = "";
+  private String prevShooterState = "";
 
   public AutonManager(
       Drivetrain drivetrain,
@@ -253,6 +254,10 @@ public class AutonManager extends CommandBase {
 
   private void updateNTShooter() {
     String state = SmartDashboard.getEntry("/auto/shooter/set").getString("idle");
+
+    if (state.equals(prevShooterState)) return;
+
+    prevShooterState = state;
 
     switch (state) {
       case "prime_high":
