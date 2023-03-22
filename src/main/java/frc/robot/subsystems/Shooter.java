@@ -23,6 +23,8 @@ public class Shooter extends SubsystemBase {
 
   private final CANSparkMax shooterMotorRight;
 
+  public double addedPercentOutput = 0;
+
   private double goalRPM;
 
   private final RelativeEncoder shooterEncoderLeft;
@@ -44,10 +46,17 @@ public class Shooter extends SubsystemBase {
           .withPosition(0, 3)
           .withWidget(BuiltInWidgets.kTextView)
           .getEntry();
+  private GenericEntry addedPercent =
+      shootTab
+          .add("Added Percent: ", 0)
+          .withPosition(0, 3)
+          .withWidget(BuiltInWidgets.kTextView)
+          .getEntry();
 
   public Shooter() {
     shooterMotorLeft = new CANSparkMax(Constants.Shooter.shooterMotorLeft, MotorType.kBrushless);
     shooterMotorRight = new CANSparkMax(Constants.Shooter.shooterMotorRight, MotorType.kBrushless);
+
 
     shooterEncoderLeft = shooterMotorLeft.getEncoder();
     shooterPidControllerLeft = shooterMotorLeft.getPIDController();
@@ -72,6 +81,7 @@ public class Shooter extends SubsystemBase {
     dashBoardGoalRPM.setDouble(goalRPM);
     dashBoardCurrentRPMLeft.setDouble(shooterEncoderLeft.getVelocity());
     dashBoardCurrentRPMRight.setDouble(shooterEncoderRight.getVelocity());
+    addedPercent.setDouble(addedPercentOutput);
   }
 
   public void setDashBoardRPM() {
@@ -96,5 +106,13 @@ public class Shooter extends SubsystemBase {
   public void stopShooter() {
     shooterMotorLeft.stopMotor();
     shooterMotorRight.stopMotor();
+  }
+
+  public void addPercentOutput() {
+    addedPercentOutput += 100;
+  }
+
+  public void lostPercentOutput() {
+    addedPercentOutput += 100;
   }
 }

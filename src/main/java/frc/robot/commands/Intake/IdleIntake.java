@@ -32,7 +32,7 @@ public class IdleIntake extends CommandBase {
   @Override
   public void execute() {
     if (m_cone) {
-      m_Intake.runIntake(0.15);
+      m_Intake.runIntake(0.0);
     }
   }
 
