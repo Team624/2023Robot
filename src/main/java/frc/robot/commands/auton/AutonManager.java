@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.DisabledLimelight;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Hood.SetHood;
@@ -21,6 +22,7 @@ import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
@@ -30,6 +32,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
@@ -45,6 +48,7 @@ public class AutonManager extends CommandBase {
   private Intake intake;
   private Shooter shooter;
   private Hood hood;
+  private Limelight limelight;
 
   private Path[] paths;
   private Command currentFollowPathCommand;
@@ -53,6 +57,8 @@ public class AutonManager extends CommandBase {
   private Command currentArmCommand;
   private Command currentIntakeCommand;
   private Command currentShooterCommand;
+
+  private DisabledLimelight disabledLimelightCommand;
 
   private String prevArmState = "";
   private String prevShooterState = "";
@@ -64,7 +70,8 @@ public class AutonManager extends CommandBase {
       Wrist wrist,
       Intake intake,
       Shooter shooter,
-      Hood hood) {
+      Hood hood,
+      Limelight limelight) {
     this.drivetrain = drivetrain;
     this.arm = arm;
     this.telescope = telescope;
@@ -72,15 +79,22 @@ public class AutonManager extends CommandBase {
     this.intake = intake;
     this.shooter = shooter;
     this.hood = hood;
+    this.limelight = limelight;
+
+    disabledLimelightCommand = new DisabledLimelight(limelight);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    disabledLimelightCommand.schedule();
+    arm.resetRotationsCommand().schedule();
+
     updatePaths();
     drivetrain.setPose();
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
     SmartDashboard.getEntry("/auto/arm/state").setString("none");
+    SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
 
     SmartDashboard.putBoolean("/auto/state", true);
   }
@@ -109,6 +123,8 @@ public class AutonManager extends CommandBase {
     }
 
     System.out.println("Auton ended!");
+
+    disabledLimelightCommand.end(true);
   }
 
   private boolean startNTBalance() {
@@ -264,49 +280,57 @@ public class AutonManager extends CommandBase {
         currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_High_Setpoint).andThen(
           () -> {
             setNTShooterState("prime_high");
-          });
+          }).deadlineWith(new IdleShooter(shooter));
         currentShooterCommand.schedule();
+        break;
       case "prime_mid":
         currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Mid_Setpoint).andThen(
           () -> {
             setNTShooterState("prime_mid");
           });
         currentShooterCommand.schedule();
+        break;
       case "prime_low":
         currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint).andThen(
           () -> {
             setNTShooterState("prime_low");
           });
         currentShooterCommand.schedule();
-      case "intake":
+        break;
+      case "deploy_intake":
         currentShooterCommand = new SequentialCommandGroup(new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint), new SetShooter(shooter, Constants.Shooter.IntakeSpeed)).andThen(() -> {
           setNTShooterState("intake");
         });
         currentShooterCommand.schedule();
+        break;
       case "shoot_high":
         currentShooterCommand = new SetShooter(shooter, Constants.Shooter.HighScoreSpeed).andThen(
           () -> {
             setNTShooterState("shoot_high");
           });
         currentShooterCommand.schedule();
+        break;
       case "shoot_mid":
         currentShooterCommand = new SetShooter(shooter, Constants.Shooter.MidScoreSpeed).andThen(
           () -> {
             setNTShooterState("shoot_mid");
           });
         currentShooterCommand.schedule();
+        break;
       case "shoot_low":
         currentShooterCommand = new SetShooter(shooter, Constants.Shooter.LowScoreSpeed).andThen(
           () -> {
             setNTShooterState("shoot_low");
           });
         currentShooterCommand.schedule();
+        break;
       case "idle":
       default:
         if (currentShooterCommand != null && currentShooterCommand.isScheduled()) {
           currentShooterCommand.end(true);
           currentShooterCommand = null;
         }
+        break;
     }
   }
 

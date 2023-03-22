@@ -149,9 +149,6 @@ public class RobotContainer {
 
   private final POVButton right = new POVButton(d_controller, 90);
 
-  private final POVButton addPercent = new POVButton(d_controller, 0);
-  private final POVButton losePercent = new POVButton(d_controller, 180);
-
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
@@ -338,9 +335,6 @@ public class RobotContainer {
 
     right.whileTrue(new ConeAlign(m_drivetrain, true, m_limelight));
 
-    addPercent.onTrue(new InstantCommand(() -> m_shooter.addPercentOutput()));
-    losePercent.onTrue(new InstantCommand(() -> m_shooter.lostPercentOutput()));
-
     substationButton.whileTrue(
         new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
 
@@ -461,7 +455,7 @@ public class RobotContainer {
   }
 
   public Command getAutonManager() {
-    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood);
+    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood, m_limelight);
   }
 
   public Command getAutonSelectionCommand() {

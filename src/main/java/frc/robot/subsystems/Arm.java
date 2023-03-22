@@ -77,12 +77,12 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight = new CANSparkMax(Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
-    armMotorRight.setSmartCurrentLimit(20);
+    // armMotorRight.setSmartCurrentLimit(20);
 
     armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
     armMotorLeft.setIdleMode(IdleMode.kBrake);
     armMotorLeft.setCANTimeout(500);
-    armMotorLeft.setSmartCurrentLimit(20);
+    // armMotorLeft.setSmartCurrentLimit(20);
 
     armMotorLeft.setInverted(true);
 
@@ -116,12 +116,15 @@ public class Arm extends ProfiledPIDSubsystem {
     rotationsEntry = armTab.add("Rotations", rotations).withPosition(10, 0).getEntry();
     velocityEntry = armTab.add("Velocity", 0).getEntry();
     velocitySetpointEntry = armTab.add("Velocity Setpoint", 0.0).getEntry();
-    armTab.add(
-        "Reset Rotations",
-        new InstantCommand(
-            () -> {
-              rotations = 0;
-            }));
+    // armTab.add(
+    //     "Reset Rotations",
+    //     resetRotationsCommand());
+  }
+
+  public Command resetRotationsCommand() {
+    return this.runOnce(() -> {
+      this.rotations = 0;
+    });
   }
 
   @Override
@@ -140,7 +143,7 @@ public class Arm extends ProfiledPIDSubsystem {
     Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
     double deltaTime = Timer.getFPGATimestamp() - prevTime;
 
-    double degreesPerSecond = deltaPosition.getDegrees() / deltaTime;
+    double degreesPerSecond = deltaPosition.getRadians() / deltaTime;
     velocityEntry.setDouble(degreesPerSecond);
 
     prevPosition = getAbsoluteRotation();
@@ -177,7 +180,7 @@ public class Arm extends ProfiledPIDSubsystem {
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = MathUtil.clamp(voltage, -12.0, 12.0);
+      // voltage = MathUtil.clamp(voltage, -12.0, 12.0);
 
       voltageEntry.setDouble(-voltage);
 
