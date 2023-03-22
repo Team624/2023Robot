@@ -288,7 +288,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 7.5;
+    public static final double P = 4.5;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
@@ -298,16 +298,16 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = 0.014;
+    public static final double boreEncoderOffset = -0.223-0.53;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
-    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(90);
+    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(268);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(90);
+    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(1);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
 
@@ -323,7 +323,7 @@ public final class Constants {
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double kP = 15.5;
+    public static final double kP = 23.5;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 

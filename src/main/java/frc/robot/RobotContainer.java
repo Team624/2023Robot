@@ -32,6 +32,7 @@ import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.Hood.SetHoodUpright;
 import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
+import frc.robot.commands.Intake.IdleSpinIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
@@ -45,6 +46,7 @@ import frc.robot.commands.Telescope.SetTelescopeScore;
 import frc.robot.commands.UprightConeSequences.Intake.UprightIntakeSequence;
 import frc.robot.commands.Wrist.ControlWrist;
 import frc.robot.commands.Wrist.IdleWrist;
+import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.commands.auton.AutonManager;
 import frc.robot.commands.auton.AutonSelection;
 import frc.robot.subsystems.Arm;
@@ -274,7 +276,7 @@ public class RobotContainer {
   private Command m_OperatorXButtonFalse =
       new SelectCommand(
           Map.ofEntries(
-              Map.entry(CommandSelector.ARM, new IdleIntake(m_intake, coneMode)),
+              Map.entry(CommandSelector.ARM, new IdleIntake(m_intake)),
               Map.entry(CommandSelector.HOOD, new SetHoodUpright(m_hood))),
           this::select);
 
@@ -284,6 +286,13 @@ public class RobotContainer {
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
               Map.entry(CommandSelector.HOOD, new IdleArm(m_arm))),
           this::select);
+
+          private Command m_IdleIntake =
+          new SelectCommand(
+              Map.ofEntries(
+                  Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
+                  Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
+              this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -296,7 +305,7 @@ public class RobotContainer {
             () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
-    m_intake.setDefaultCommand(new IdleIntake(m_intake, coneMode));
+    m_intake.setDefaultCommand(new IdleIntake(m_intake));
     m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
@@ -356,10 +365,10 @@ public class RobotContainer {
     // setBotIntake.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE));
 
     /** WRIST TESTING */
-    // setBotHigh.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_leftScore));
+    // setBotHigh.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_upright_cone_intake));
     // setBotMid.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_intake));
     // setBotIntake.whileTrue(new SetWrist(m_wrist,
-    // Constants.Wrist.wrist_upright_cone_intake));
+    // Constants.Wrist.wrist_zero));
 
     /** TELESCOPE TESTING */
 
@@ -424,15 +433,13 @@ public class RobotContainer {
                 new SetHood(m_hood, Constants.Hood.Hood_Mid_Setpoint),
                 new ShooterScore(m_shooter, Constants.Shooter.MidScoreSpeed)));
 
-    // runIntake.whileTrue(new SequentialCommandGroup(new SetHood(m_hood,
-    // Constants.Hood.Hood_Intake_Setpoint),new SetShooter(m_shooter,
-    // Constants.Shooter.IntakeSpeed)));
+
 
     runIntake.whileTrue(m_OperatorXButton);
     // runIntake.whileFalse(m_OperatorXButtonFalse);
     reverseIntake.whileTrue(m_OperatorBButton);
 
-    coneModify.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
+    substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 
     toggleMode.onTrue(
         new InstantCommand(
@@ -443,6 +450,7 @@ public class RobotContainer {
                       coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
                   .schedule();
             }));
+   
   }
 
   /**
@@ -455,7 +463,8 @@ public class RobotContainer {
   }
 
   public Command getAutonManager() {
-    return new AutonManager(m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood, m_limelight);
+    return new AutonManager(
+        m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood, m_limelight);
   }
 
   public Command getAutonSelectionCommand() {

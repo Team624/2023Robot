@@ -108,6 +108,7 @@ public class Telescope extends SubsystemBase {
   }
 
   public boolean getSoftLimit() {
-    return (stringPot.getPosition() <= 0.2 && telescopeMotor.getAppliedOutput() < 0) || (stringPot.getPosition() >= 1.12 && telescopeMotor.getAppliedOutput() > 0);
+    return (stringPot.getPosition() <= 0.2 && telescopeMotor.getAppliedOutput() < 0)
+        || (stringPot.getPosition() >= 1.12 && telescopeMotor.getAppliedOutput() > 0);
   }
 }

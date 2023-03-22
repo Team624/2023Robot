@@ -77,12 +77,12 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight = new CANSparkMax(Constants.Arm.armMotorRight, MotorType.kBrushless);
     armMotorRight.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
-    // armMotorRight.setSmartCurrentLimit(20);
+    armMotorRight.setSmartCurrentLimit(30);
 
     armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
     armMotorLeft.setIdleMode(IdleMode.kBrake);
     armMotorLeft.setCANTimeout(500);
-    // armMotorLeft.setSmartCurrentLimit(20);
+    armMotorLeft.setSmartCurrentLimit(30);
 
     armMotorLeft.setInverted(true);
 
@@ -119,12 +119,20 @@ public class Arm extends ProfiledPIDSubsystem {
     // armTab.add(
     //     "Reset Rotations",
     //     resetRotationsCommand());
+
+    armTab.add(
+        "Reset Rotations",
+        new InstantCommand(
+            () -> {
+              rotations = 0;
+            }));
   }
 
   public Command resetRotationsCommand() {
-    return this.runOnce(() -> {
-      this.rotations = 0;
-    });
+    return this.runOnce(
+        () -> {
+          this.rotations = 0;
+        });
   }
 
   @Override

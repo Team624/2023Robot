@@ -57,7 +57,6 @@ public class Shooter extends SubsystemBase {
     shooterMotorLeft = new CANSparkMax(Constants.Shooter.shooterMotorLeft, MotorType.kBrushless);
     shooterMotorRight = new CANSparkMax(Constants.Shooter.shooterMotorRight, MotorType.kBrushless);
 
-
     shooterEncoderLeft = shooterMotorLeft.getEncoder();
     shooterPidControllerLeft = shooterMotorLeft.getPIDController();
     shooterMotorLeft.setIdleMode(IdleMode.kCoast);

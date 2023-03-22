@@ -181,7 +181,7 @@ public class AutonManager extends CommandBase {
         break;
       case "idle":
       default:
-        currentIntakeCommand = new IdleIntake(intake, true);
+        currentIntakeCommand = new IdleIntake(intake);
         currentIntakeCommand.schedule();
     }
   }
@@ -277,51 +277,69 @@ public class AutonManager extends CommandBase {
 
     switch (state) {
       case "prime_high":
-        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_High_Setpoint).andThen(
-          () -> {
-            setNTShooterState("prime_high");
-          }).deadlineWith(new IdleShooter(shooter));
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_High_Setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_high");
+                    })
+                .deadlineWith(new IdleShooter(shooter));
         currentShooterCommand.schedule();
         break;
       case "prime_mid":
-        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Mid_Setpoint).andThen(
-          () -> {
-            setNTShooterState("prime_mid");
-          });
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_Mid_Setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_mid");
+                    });
         currentShooterCommand.schedule();
         break;
       case "prime_low":
-        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint).andThen(
-          () -> {
-            setNTShooterState("prime_low");
-          });
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_low");
+                    });
         currentShooterCommand.schedule();
         break;
       case "deploy_intake":
-        currentShooterCommand = new SequentialCommandGroup(new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint), new SetShooter(shooter, Constants.Shooter.IntakeSpeed)).andThen(() -> {
-          setNTShooterState("intake");
-        });
+        currentShooterCommand =
+            new SequentialCommandGroup(
+                    new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint),
+                    new SetShooter(shooter, Constants.Shooter.IntakeSpeed))
+                .andThen(
+                    () -> {
+                      setNTShooterState("intake");
+                    });
         currentShooterCommand.schedule();
         break;
       case "shoot_high":
-        currentShooterCommand = new SetShooter(shooter, Constants.Shooter.HighScoreSpeed).andThen(
-          () -> {
-            setNTShooterState("shoot_high");
-          });
+        currentShooterCommand =
+            new SetShooter(shooter, Constants.Shooter.HighScoreSpeed)
+                .andThen(
+                    () -> {
+                      setNTShooterState("shoot_high");
+                    });
         currentShooterCommand.schedule();
         break;
       case "shoot_mid":
-        currentShooterCommand = new SetShooter(shooter, Constants.Shooter.MidScoreSpeed).andThen(
-          () -> {
-            setNTShooterState("shoot_mid");
-          });
+        currentShooterCommand =
+            new SetShooter(shooter, Constants.Shooter.MidScoreSpeed)
+                .andThen(
+                    () -> {
+                      setNTShooterState("shoot_mid");
+                    });
         currentShooterCommand.schedule();
         break;
       case "shoot_low":
-        currentShooterCommand = new SetShooter(shooter, Constants.Shooter.LowScoreSpeed).andThen(
-          () -> {
-            setNTShooterState("shoot_low");
-          });
+        currentShooterCommand =
+            new SetShooter(shooter, Constants.Shooter.LowScoreSpeed)
+                .andThen(
+                    () -> {
+                      setNTShooterState("shoot_low");
+                    });
         currentShooterCommand.schedule();
         break;
       case "idle":

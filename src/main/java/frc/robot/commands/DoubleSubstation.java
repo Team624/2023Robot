@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Telescope;
@@ -29,6 +30,8 @@ public class DoubleSubstation extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    addCommands(new SetTelescope(telescope, 0.15), new DoubleSubstationArmWrist(arm, wrist));
+    addCommands(
+        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO),
+        new DoubleSubstationArmWrist(arm, wrist));
   }
 }
