@@ -43,7 +43,7 @@ public class ConeAlign extends CommandBase {
 
     m_drivetrain = drivetrain;
     m_limelight = mLimelight;
-    if(DriverStation.getAlliance().equals(Alliance.Blue)){
+    if(DriverStation.getAlliance().equals(Alliance.Red)){
       m_right=!right;
     }
     else{

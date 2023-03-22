@@ -314,7 +314,7 @@ public final class Constants {
   public static final class Shooter {
     public static final int shooterMotorLeft = 15;
     public static final int shooterMotorRight = 16;
-    public static final double HighScoreSpeed = -0.52;
+    public static final double HighScoreSpeed = -0.48;
     public static final double MidScoreSpeed = -0.3;
     public static final double LowScoreSpeed = -1.0;
     public static final double IntakeSpeed = 0.3;
@@ -323,14 +323,14 @@ public final class Constants {
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double kP = 7.0;
+    public static final double kP = 15.5;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
     public static final double BORE_ENCODER_OFFSET = 0.0;
 
     public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5);
-    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(31.8);
+    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2);
     public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8);
     public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108);
     public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51);

@@ -177,7 +177,7 @@ public class Arm extends ProfiledPIDSubsystem {
       voltage =
           output + armFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
-      voltage = MathUtil.clamp(voltage, -11.0, 11.0);
+      voltage = MathUtil.clamp(voltage, -12.0, 12.0);
 
       voltageEntry.setDouble(-voltage);
 

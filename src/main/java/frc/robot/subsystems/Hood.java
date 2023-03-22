@@ -47,7 +47,7 @@ public class Hood extends ProfiledPIDSubsystem {
             Constants.Hood.kI,
             Constants.Hood.kD,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(4, 4)));
+            new TrapezoidProfile.Constraints(5.0, 4)));
     getController().setTolerance(Units.degreesToRadians(3));
     hoodMotor = new CANSparkMax(Constants.Hood.hoodMotor, MotorType.kBrushless);
     hoodMotor.setIdleMode(IdleMode.kBrake);

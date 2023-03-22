@@ -149,6 +149,9 @@ public class RobotContainer {
 
   private final POVButton right = new POVButton(d_controller, 90);
 
+  private final POVButton addPercent = new POVButton(d_controller, 0);
+  private final POVButton losePercent = new POVButton(d_controller, 180);
+
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
@@ -334,6 +337,9 @@ public class RobotContainer {
     left.whileTrue(new ConeAlign(m_drivetrain, false, m_limelight));
 
     right.whileTrue(new ConeAlign(m_drivetrain, true, m_limelight));
+
+    addPercent.onTrue(new InstantCommand(() -> m_shooter.addPercentOutput()));
+    losePercent.onTrue(new InstantCommand(() -> m_shooter.lostPercentOutput()));
 
     substationButton.whileTrue(
         new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
