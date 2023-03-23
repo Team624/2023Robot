@@ -34,10 +34,12 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.LEDs.Animation;
 import frc.robot.utility.BezierCurve;
 import frc.robot.utility.Path;
 
@@ -51,6 +53,7 @@ public class AutonManager extends CommandBase {
   private Shooter shooter;
   private Hood hood;
   private Limelight limelight;
+  private LEDs leds;
 
   private Path[] paths;
   private Command currentFollowPathCommand;
@@ -73,7 +76,8 @@ public class AutonManager extends CommandBase {
       Intake intake,
       Shooter shooter,
       Hood hood,
-      Limelight limelight) {
+      Limelight limelight,
+      LEDs leds) {
     this.drivetrain = drivetrain;
     this.arm = arm;
     this.telescope = telescope;
@@ -82,6 +86,7 @@ public class AutonManager extends CommandBase {
     this.shooter = shooter;
     this.hood = hood;
     this.limelight = limelight;
+    this.leds = leds;
 
     disabledLimelightCommand = new DisabledLimelight(limelight);
   }
@@ -91,6 +96,7 @@ public class AutonManager extends CommandBase {
   public void initialize() {
     disabledLimelightCommand.schedule();
     arm.resetRotationsCommand().schedule();
+    leds.setAnimationCommand(Animation.CRYPTONITE);
 
     updatePaths();
     drivetrain.setPose();
@@ -99,8 +105,6 @@ public class AutonManager extends CommandBase {
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
 
     SmartDashboard.putBoolean("/auto/state", true);
-
-    intake.setDefaultCommand(new IdleSpinIntake(intake));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -110,7 +114,7 @@ public class AutonManager extends CommandBase {
     startNTPath();
     startNTBalance();
     updateNTArm();
-    updateNTIntake();
+    // updateNTIntake();
     updateNTShooter();
   }
 
@@ -160,41 +164,41 @@ public class AutonManager extends CommandBase {
     return true;
   }
 
-  private void updateNTIntake() {
-    String state = SmartDashboard.getEntry("/auto/intake/set").getString("idle");
+  // private void updateNTIntake() {
+  //   String state = SmartDashboard.getEntry("/auto/intake/set").getString("idle");
 
-    switch (state) {
-      case "intake":
-        if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled()))
-          break;
-        currentIntakeCommand.end(true);
-        currentIntakeCommand = new RunIntake(intake);
-        currentIntakeCommand.schedule();
-        break;
-      case "cone":
-        if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
-          break;
-        currentIntakeCommand.end(true);
-        currentIntakeCommand = new ReverseCone(intake);
-        currentIntakeCommand.schedule();
-        break;
+  //   switch (state) {
+  //     case "intake":
+  //       if (currentIntakeCommand != null
+  //           && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled()))
+  //         break;
+  //       currentIntakeCommand.end(true);
+  //       currentIntakeCommand = new RunIntake(intake);
+  //       currentIntakeCommand.schedule();
+  //       break;
+  //     case "cone":
+  //       if (currentIntakeCommand != null
+  //           && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
+  //         break;
+  //       currentIntakeCommand.end(true);
+  //       currentIntakeCommand = new ReverseCone(intake);
+  //       currentIntakeCommand.schedule();
+  //       break;
 
-      case "cube":
-        if (currentIntakeCommand != null
-            && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
-          break;
-        currentIntakeCommand.end(true);
-        currentIntakeCommand = new ReverseCone(intake);
-        currentIntakeCommand.schedule();
-        break;
-      case "idle":
-      default:
-        currentIntakeCommand = new IdleIntake(intake);
-        currentIntakeCommand.schedule();
-    }
-  }
+  //     case "cube":
+  //       if (currentIntakeCommand != null
+  //           && (currentIntakeCommand instanceof ReverseCone && currentIntakeCommand.isScheduled()))
+  //         break;
+  //       currentIntakeCommand.end(true);
+  //       currentIntakeCommand = new ReverseCone(intake);
+  //       currentIntakeCommand.schedule();
+  //       break;
+  //     case "idle":
+  //     default:
+  //       currentIntakeCommand = new IdleIntake(intake);
+  //       currentIntakeCommand.schedule();
+  //   }
+  // }
 
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("none");
@@ -322,21 +326,21 @@ public class AutonManager extends CommandBase {
         currentShooterCommand.schedule();
         break;
       case "shoot_high":
-        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.HighScoreSpeed).andThen(
+        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.HighScoreSpeed).withTimeout(0.6).andThen(
           () -> {
             setNTShooterState("shoot_high");
           });
         currentShooterCommand.schedule();
         break;
       case "shoot_mid":
-        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.MidScoreSpeed).andThen(
+        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.MidScoreSpeed).withTimeout(0.6).andThen(
           () -> {
             setNTShooterState("shoot_mid");
           });
         currentShooterCommand.schedule();
         break;
       case "shoot_low":
-        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.LowScoreSpeed).andThen(
+        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.LowScoreSpeed).withTimeout(0.6).andThen(
           () -> {
             setNTShooterState("shoot_low");
           });

@@ -313,7 +313,7 @@ public class RobotContainer {
             () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
-    m_intake.setDefaultCommand(new IdleIntake(m_intake));
+    m_intake.setDefaultCommand(new IdleSpinIntake(m_intake));
     m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
     m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
@@ -454,15 +454,18 @@ public class RobotContainer {
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 
     toggleMode.onTrue(
-        new InstantCommand(
-            () -> {
-              coneMode = !coneMode;
-              m_leds
-                  .setAnimationCommand(
-                      coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
-                  .schedule();
-            }));
+        new InstantCommand(() -> {
+            setConeMode(!coneMode);
+        }));
    
+  }
+
+  public void setConeMode(boolean coneMode) {
+        this.coneMode = coneMode;
+        m_leds
+            .setAnimationCommand(
+                coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
+            .schedule();
   }
 
   /**
@@ -476,7 +479,7 @@ public class RobotContainer {
 
   public Command getAutonManager() {
     return new AutonManager(
-        m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood, m_limelight);
+        m_drivetrain, m_arm, m_telescope, m_wrist, m_intake, m_shooter, m_hood, m_limelight, m_leds);
   }
 
   public Command getAutonSelectionCommand() {

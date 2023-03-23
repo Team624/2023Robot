@@ -244,8 +244,8 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static final double kMaxVelocityRadiansPerSecond = 2.5;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 3.5;
+    public static final double kMaxVelocityRadiansPerSecond = 5.45;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.0;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -256,7 +256,7 @@ public final class Constants {
     // Setpoints
 
     public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(96);
-    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(25);
+    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(28.5);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
         Rotation2d.fromDegrees(240); // TODO TUNE
