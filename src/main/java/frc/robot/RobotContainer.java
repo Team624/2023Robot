@@ -91,6 +91,7 @@ public class RobotContainer {
   private final int telescopeAxis = XboxController.Axis.kRightY.value;
   private final int wristAxis = XboxController.Axis.kRightX.value;
   private final int coneModifyAxis = XboxController.Axis.kRightTrigger.value;
+  private final int hybridSpitout =  XboxController.Axis.kLeftTrigger.value;
 
   private final JoystickButton manual =
       new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
@@ -109,6 +110,7 @@ public class RobotContainer {
   private final Trigger armMove2 = m_controllerCommand.axisGreaterThan(armAxis, 0.08);
 
   private final Trigger coneModify = m_controllerCommand.axisGreaterThan(coneModifyAxis, 0.2);
+  private final Trigger hybridSpit = m_controllerCommand.axisGreaterThan(hybridSpitout, 0.2);
 
   /* Telescope */
 
@@ -159,6 +161,8 @@ public class RobotContainer {
 
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
+
+
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -246,7 +250,8 @@ public class RobotContainer {
               Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
           this::select);
 
-  private Command m_OperatorIntakeDpad =
+  private Command 
+  m_OperatorIntakeDpad =
       new SelectCommand(
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new SideIntakeSequence(m_arm, m_telescope, m_wrist)),
@@ -280,7 +285,7 @@ public class RobotContainer {
       new SelectCommand(
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
-              Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
+              Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
           this::select);
 
           private Command m_OperatorBButtonFalse =
@@ -289,6 +294,7 @@ public class RobotContainer {
                   Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
                   Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
               this::select);
+
               private Command m_OperatorBButtonIntakeShooter =
               new SelectCommand(
                   Map.ofEntries(
@@ -421,7 +427,7 @@ public class RobotContainer {
 
     setBotInside.whileTrue(m_OperatorInsideButton);
 
-    setBotIntake.and(reverseIntake).whileTrue(m_OperatorBButtonIntakeShooter);
+    hybridSpit.whileTrue(new SetShooter(m_shooter, -0.3));
 
     setBotHigh
         .and(reverseIntake)
@@ -443,7 +449,7 @@ public class RobotContainer {
     runIntake.whileTrue(m_OperatorXButton);
     runIntake.whileFalse(m_OperatorXButtonFalse);
     reverseIntake.whileTrue(m_OperatorBButton);
-    reverseIntake.whileFalse(m_OperatorBButtonFalse);
+    // reverseIntake.whileFalse(m_OperatorBButtonFalse);
 
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 
