@@ -20,6 +20,7 @@ import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
+import frc.robot.commands.Intake.IdleSpinIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
@@ -98,6 +99,8 @@ public class AutonManager extends CommandBase {
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
 
     SmartDashboard.putBoolean("/auto/state", true);
+
+    intake.setDefaultCommand(new IdleSpinIntake(intake));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -264,7 +267,6 @@ public class AutonManager extends CommandBase {
       default:
         this.currentArmCommand =
             new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO)
-              .deadlineWith(new ReverseCone(intake))
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("retract");
