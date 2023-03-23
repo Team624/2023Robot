@@ -35,7 +35,7 @@ public class ConeAlign extends CommandBase {
   private final ProfiledPIDController yController =
       new ProfiledPIDController(9.5, 0.03, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(8.5, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(9.0, 0, 0, OMEGA_CONSTRAINTS);
 
   private final boolean m_right;
 

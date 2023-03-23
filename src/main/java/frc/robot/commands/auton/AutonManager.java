@@ -313,8 +313,8 @@ public class AutonManager extends CommandBase {
       case "deploy_intake":
         currentShooterCommand =
             new SequentialCommandGroup(
-                    new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint),
-                    new SetShooter(shooter, Constants.Shooter.IntakeSpeed))
+                    new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint).raceWith(
+                    new SetShooter(shooter, Constants.Shooter.IntakeSpeed)))
                 .andThen(
                     () -> {
                       setNTShooterState("intake");
@@ -348,6 +348,12 @@ public class AutonManager extends CommandBase {
           currentShooterCommand.end(true);
           currentShooterCommand = null;
         }
+
+        new IdleShooter(shooter).schedule();
+
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Upright_Setpoint).andThen(() -> {
+          setNTShooterState("idle");
+        });
         break;
     }
   }
