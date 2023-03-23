@@ -32,7 +32,8 @@ public class SetHoodIntake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hood.setGoal(Constants.Hood.Hood_Upright_Setpoint);
+    m_hood.disable();
+    m_hood.stopHood();
   }
 
   // Returns true when the command should end.

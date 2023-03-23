@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAnalogSensor;
@@ -34,6 +35,7 @@ public class Telescope extends SubsystemBase {
   private double D;
 
   private GenericEntry positionEntry;
+  private GenericEntry softEntry;
 
   private boolean softLimited;
 
@@ -55,8 +57,8 @@ public class Telescope extends SubsystemBase {
 
     telescopePID.setOutputRange(-1, 1);
 
-    // telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    // telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    telescopeMotor.enableSoftLimit(SoftLimitDirection.kForward, false);
+    telescopeMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
 
     // telescopeMotor.setSoftLimit(SoftLimitDirection.kForward, 45);
     // telescopeMotor.setSoftLimit(SoftLimitDirection.kReverse, 0.01f);
@@ -69,8 +71,7 @@ public class Telescope extends SubsystemBase {
     positionEntry =
         Shuffleboard.getTab("Telescope").add("Position (String Pot)", getStringPot()).getEntry();
 
-    softLimited = getSoftLimit();
-    if (softLimited) telescopeMotor.stopMotor();
+    softEntry = Shuffleboard.getTab("Telescope").add("Soft limit enabled", false).getEntry();
   }
 
   @Override
@@ -79,6 +80,11 @@ public class Telescope extends SubsystemBase {
 
     SmartDashboard.putNumber("/Telescope/Encoder", getTelescopeEncoder());
     positionEntry.setDouble(getStringPot());
+
+    // softLimited = getSoftLimit();
+    // if (softLimited) telescopeMotor.stopMotor();
+
+    softEntry.setBoolean(softLimited);
   }
 
   public void controlTelescope(double speed) {
@@ -108,7 +114,7 @@ public class Telescope extends SubsystemBase {
   }
 
   public boolean getSoftLimit() {
-    return (stringPot.getPosition() <= 0.2 && telescopeMotor.getAppliedOutput() < 0)
+    return (stringPot.getPosition() <= 0.15 && telescopeMotor.getAppliedOutput() < 0)
         || (stringPot.getPosition() >= 1.12 && telescopeMotor.getAppliedOutput() > 0);
   }
 }
