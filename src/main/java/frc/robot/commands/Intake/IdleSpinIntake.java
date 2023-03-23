@@ -2,48 +2,38 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Hood;
+package frc.robot.commands.Intake;
 
-import edu.wpi.first.hal.simulation.ConstBufferCallback;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Intake;
 
-public class SetHood extends CommandBase {
-  /** Creates a new SetHood. */
-  private final Hood m_hood;
-
-  private final Rotation2d m_setPoint;
-
-  public SetHood(Hood hood, Rotation2d setpoint) {
+public class IdleSpinIntake extends CommandBase {
+  /** Creates a new IdleSpinIntake. */
+  private final Intake m_intake;
+  public IdleSpinIntake(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_hood = hood;
-    this.m_setPoint = setpoint;
+    this.m_intake=intake;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_hood.enable();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_hood.setGoal(m_setPoint);
+    m_intake.runIntake(0.15);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_hood.disable();
-    m_hood.stopHood();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_hood.getController().atGoal();
+    return false;
   }
 }

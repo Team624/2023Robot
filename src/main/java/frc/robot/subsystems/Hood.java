@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -38,6 +39,10 @@ public class Hood extends ProfiledPIDSubsystem {
   private GenericEntry positionEntry;
   private GenericEntry setpointEntry;
   private GenericEntry goalEntry;
+  private GenericEntry velocityEntry;
+
+  private Rotation2d prevPosition;
+  private double prevTime;
 
   public Hood() {
     super(
@@ -47,7 +52,7 @@ public class Hood extends ProfiledPIDSubsystem {
             Constants.Hood.kI,
             Constants.Hood.kD,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(5.0, 4)));
+            new TrapezoidProfile.Constraints(4.5, 6.5)));
     getController().setTolerance(Units.degreesToRadians(3));
     hoodMotor = new CANSparkMax(Constants.Hood.hoodMotor, MotorType.kBrushless);
     hoodMotor.setIdleMode(IdleMode.kBrake);
@@ -65,6 +70,10 @@ public class Hood extends ProfiledPIDSubsystem {
     voltageEntry = hoodTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
     setpointEntry = hoodTab.add("Setpoint", getController().getSetpoint().position).getEntry();
     goalEntry = hoodTab.add("Goal", getController().getGoal().position).getEntry();
+    velocityEntry = hoodTab.add("Velocity", 0).getEntry();
+
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -75,6 +84,15 @@ public class Hood extends ProfiledPIDSubsystem {
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     setpointEntry.setDouble(getController().getGoal().position);
     goalEntry.setDouble(getController().getGoal().position);
+
+    Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
+    double deltaTime = Timer.getFPGATimestamp() - prevTime;
+
+    double radiansPerSecond = deltaPosition.getRadians() / deltaTime;
+    velocityEntry.setDouble(radiansPerSecond);
+
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
   }
 
   @Override

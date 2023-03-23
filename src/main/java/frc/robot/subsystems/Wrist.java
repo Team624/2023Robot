@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -35,6 +36,11 @@ public class Wrist extends ProfiledPIDSubsystem {
   private GenericEntry positionEntry;
   private GenericEntry setpointEntry;
   private GenericEntry goalEntry;
+  private GenericEntry velocityEntry;
+  private GenericEntry velocitySetpointEntry;
+
+  private Rotation2d prevPosition;
+  private double prevTime;
 
   private boolean check;
 
@@ -60,7 +66,7 @@ public class Wrist extends ProfiledPIDSubsystem {
             Constants.Wrist.I,
             Constants.Wrist.D,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(6, 5)));
+            new TrapezoidProfile.Constraints(7.5, 8.9)));
     getController().setTolerance(Units.degreesToRadians(3));
     wristMotor = new CANSparkMax(Constants.Wrist.WristMotor, MotorType.kBrushless);
 
@@ -74,12 +80,17 @@ public class Wrist extends ProfiledPIDSubsystem {
 
     WristboreEncoder = new DutyCycleEncoder(1);
 
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
+
     wristTab = Shuffleboard.getTab("Wrist");
     positionEntry = wristTab.add("Positionning degrees", getBoreEncoder()).getEntry();
 
     voltageEntry = wristTab.add("Voltage", 0).withWidget(BuiltInWidgets.kVoltageView).getEntry();
     setpointEntry = wristTab.add("Setpoint", getController().getSetpoint().position).getEntry();
     goalEntry = wristTab.add("Goal", getController().getGoal().position).getEntry();
+    velocityEntry = wristTab.add("Velocity", 0).getEntry();
+    velocitySetpointEntry = wristTab.add("Velocity Setpoint", 0.0).getEntry();
 
     boolean check = true;
   }
@@ -88,9 +99,19 @@ public class Wrist extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
 
-    positionEntry.setDouble(getBoreEncoder());
-    setpointEntry.setDouble(getController().getGoal().position);
+    positionEntry.setDouble(getAbsoluteRotation().getDegrees());
+    setpointEntry.setDouble(getBoreEncoder());
     goalEntry.setDouble(getController().getGoal().position);
+    velocitySetpointEntry.setDouble(getController().getSetpoint().velocity);
+
+    Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
+    double deltaTime = Timer.getFPGATimestamp() - prevTime;
+
+    double degreesPerSecond = deltaPosition.getRadians() / deltaTime;
+    velocityEntry.setDouble(degreesPerSecond);
+
+    prevPosition = getAbsoluteRotation();
+    prevTime = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -106,14 +127,14 @@ public class Wrist extends ProfiledPIDSubsystem {
         voltage = 0;
       }
 
-      wristMotor.setVoltage(voltage);
-      voltageEntry.setDouble(voltage);
+      wristMotor.setVoltage(-voltage);
+      voltageEntry.setDouble(-voltage);
     }
   }
 
   public double getBoreEncoder() {
     return (MathUtil.inputModulus(
-        WristboreEncoder.getAbsolutePosition() + Constants.Wrist.boreEncoderOffset, 0, 1));
+        (1-WristboreEncoder.getAbsolutePosition()) + Constants.Wrist.boreEncoderOffset, 0, 1));
   }
 
   public Rotation2d getAbsoluteRotation() {

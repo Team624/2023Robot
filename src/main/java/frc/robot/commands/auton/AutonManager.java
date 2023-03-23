@@ -188,7 +188,7 @@ public class AutonManager extends CommandBase {
         break;
       case "idle":
       default:
-        currentIntakeCommand = new IdleIntake(intake, true);
+        currentIntakeCommand = new IdleIntake(intake);
         currentIntakeCommand.schedule();
     }
   }
@@ -285,10 +285,13 @@ public class AutonManager extends CommandBase {
 
     switch (state) {
       case "prime_high":
-        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_High_Setpoint).andThen(
-          () -> {
-            setNTShooterState("prime_high");
-          }).deadlineWith(new IdleShooter(shooter));
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_High_Setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_high");
+                    })
+                .deadlineWith(new IdleShooter(shooter));
         currentShooterCommand.schedule();
         break;
       case "prime_mid":
@@ -306,9 +309,14 @@ public class AutonManager extends CommandBase {
         currentShooterCommand.schedule();
         break;
       case "deploy_intake":
-        currentShooterCommand = new SequentialCommandGroup(new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint), new SetShooter(shooter, Constants.Shooter.IntakeSpeed)).andThen(() -> {
-          setNTShooterState("intake");
-        });
+        currentShooterCommand =
+            new SequentialCommandGroup(
+                    new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint),
+                    new SetShooter(shooter, Constants.Shooter.IntakeSpeed))
+                .andThen(
+                    () -> {
+                      setNTShooterState("intake");
+                    });
         currentShooterCommand.schedule();
         break;
       case "shoot_high":
