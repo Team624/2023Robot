@@ -24,6 +24,7 @@ import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
+import frc.robot.commands.Shooter.ShooterScore;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.SetTelescope;
@@ -121,6 +122,12 @@ public class AutonManager extends CommandBase {
       double flippedRotation = Math.PI - drivetrain.getPose().getRotation().getRadians();
       drivetrain.zeroGyroscope(new Rotation2d(flippedRotation));
     }
+
+    if (currentArmCommand != null) currentArmCommand.cancel();
+    if (currentShooterCommand != null) currentShooterCommand.cancel();
+    if (currentFollowPathCommand != null) currentFollowPathCommand.cancel();
+    if (currentBalanceCommand != null) currentShooterCommand.cancel();
+    if (currentShooterCommand != null) currentShooterCommand.cancel();
 
     System.out.println("Auton ended!");
 
@@ -257,6 +264,7 @@ public class AutonManager extends CommandBase {
       default:
         this.currentArmCommand =
             new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO)
+              .deadlineWith(new ReverseCone(intake))
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("retract");
@@ -287,21 +295,17 @@ public class AutonManager extends CommandBase {
         currentShooterCommand.schedule();
         break;
       case "prime_mid":
-        currentShooterCommand =
-            new SetHood(hood, Constants.Hood.Hood_Mid_Setpoint)
-                .andThen(
-                    () -> {
-                      setNTShooterState("prime_mid");
-                    });
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Mid_Setpoint).andThen(
+          () -> {
+            setNTShooterState("prime_mid");
+          }).deadlineWith(new IdleShooter(shooter));;
         currentShooterCommand.schedule();
         break;
       case "prime_low":
-        currentShooterCommand =
-            new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint)
-                .andThen(
-                    () -> {
-                      setNTShooterState("prime_low");
-                    });
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint).andThen(
+          () -> {
+            setNTShooterState("prime_low");
+          }).deadlineWith(new IdleShooter(shooter));;
         currentShooterCommand.schedule();
         break;
       case "deploy_intake":
@@ -316,30 +320,24 @@ public class AutonManager extends CommandBase {
         currentShooterCommand.schedule();
         break;
       case "shoot_high":
-        currentShooterCommand =
-            new SetShooter(shooter, Constants.Shooter.HighScoreSpeed)
-                .andThen(
-                    () -> {
-                      setNTShooterState("shoot_high");
-                    });
+        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.HighScoreSpeed).andThen(
+          () -> {
+            setNTShooterState("shoot_high");
+          });
         currentShooterCommand.schedule();
         break;
       case "shoot_mid":
-        currentShooterCommand =
-            new SetShooter(shooter, Constants.Shooter.MidScoreSpeed)
-                .andThen(
-                    () -> {
-                      setNTShooterState("shoot_mid");
-                    });
+        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.MidScoreSpeed).andThen(
+          () -> {
+            setNTShooterState("shoot_mid");
+          });
         currentShooterCommand.schedule();
         break;
       case "shoot_low":
-        currentShooterCommand =
-            new SetShooter(shooter, Constants.Shooter.LowScoreSpeed)
-                .andThen(
-                    () -> {
-                      setNTShooterState("shoot_low");
-                    });
+        currentShooterCommand = new ShooterScore(shooter, Constants.Shooter.LowScoreSpeed).andThen(
+          () -> {
+            setNTShooterState("shoot_low");
+          });
         currentShooterCommand.schedule();
         break;
       case "idle":
