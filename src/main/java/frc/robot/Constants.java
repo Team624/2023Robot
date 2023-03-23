@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.I2C;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SdsModuleConfigurations;
@@ -293,11 +292,10 @@ public final class Constants {
     public static final double D = 0.0;
     public static final int WristMotor = 13;
 
-
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.223-0.53;
+    public static final double boreEncoderOffset = -0.223 - 0.53;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -339,11 +337,12 @@ public final class Constants {
     public static final int LEDS_ID = 0x30;
     public static final I2C.Port LEDS_PORT = I2C.Port.kMXP;
   }
-  public static final class Limelight{
-    public static final double kTranslationP = 10.5;
-    public static final double kTranslationP = 0.2;
-    public static final double kTranslationP = 0.0;
 
-    public static final double kRotationP = 9.5;
+  public static final class Limelight {
+    public static final double kTranslationP = 10.8;
+    public static final double kTranslationI = 0.3;
+    public static final double kTranslationD = 0.0;
+
+    public static final double kRotationP = 10;
   }
 }

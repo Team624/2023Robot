@@ -134,7 +134,7 @@ public class Wrist extends ProfiledPIDSubsystem {
 
   public double getBoreEncoder() {
     return (MathUtil.inputModulus(
-        (1-WristboreEncoder.getAbsolutePosition()) + Constants.Wrist.boreEncoderOffset, 0, 1));
+        (1 - WristboreEncoder.getAbsolutePosition()) + Constants.Wrist.boreEncoderOffset, 0, 1));
   }
 
   public Rotation2d getAbsoluteRotation() {

@@ -1,5 +1,7 @@
 package frc.robot.commands.Drivetrain;
 
+import java.sql.Driver;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,7 +35,11 @@ public class ConeAlign extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(Constants.Limelight.kTranslationP, Constants.Limelight.kTranslationI, Constants.Limelight.kTranslationD, Y_CONSTRAINTS);
+      new ProfiledPIDController(
+          Constants.Limelight.kTranslationP,
+          Constants.Limelight.kTranslationI,
+          Constants.Limelight.kTranslationD,
+          Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(Constants.Limelight.kRotationP, 0, 0, OMEGA_CONSTRAINTS);
 
@@ -43,11 +49,7 @@ public class ConeAlign extends CommandBase {
 
     m_drivetrain = drivetrain;
     m_limelight = mLimelight;
-    if (DriverStation.getAlliance().equals(Alliance.Red)) {
-      m_right = !right;
-    } else {
-      m_right = right;
-    }
+    m_right = right;
     xController.setTolerance(0.02);
     yController.setTolerance(0.02);
     omegaController.setTolerance(Units.degreesToRadians(2));
@@ -84,7 +86,13 @@ public class ConeAlign extends CommandBase {
     } else {
       for (int start = 0; start < 5; start++) {
         if (currentY <= possibleLocations[start] && currentY >= possibleLocations[start + 1]) {
-          if (m_right) {
+          boolean go_right = m_right;
+          System.out.println(DriverStation.getAlliance().toString());
+          if (DriverStation.getAlliance()==Alliance.Red) {
+            go_right = !m_right;
+          } 
+          if (go_right
+          ) {
             goal = possibleLocations[start + 1];
           } else {
             goal = possibleLocations[start];
