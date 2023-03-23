@@ -289,7 +289,7 @@ public final class Constants {
 
   public static final class Wrist {
     public static final double P = 5.5;
-    public static final double I = 0.001;
+    public static final double I = 0.1;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
 

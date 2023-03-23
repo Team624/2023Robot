@@ -38,7 +38,7 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(9.5, 0.03, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(9.8, 0.03, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(9.0, 0, 0, OMEGA_CONSTRAINTS);
 
