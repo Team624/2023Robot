@@ -339,4 +339,11 @@ public final class Constants {
     public static final int LEDS_ID = 0x30;
     public static final I2C.Port LEDS_PORT = I2C.Port.kMXP;
   }
+  public static final class Limelight{
+    public static final double kTranslationP = 10.5;
+    public static final double kTranslationP = 0.2;
+    public static final double kTranslationP = 0.0;
+
+    public static final double kRotationP = 9.5;
+  }
 }

@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.DoubleSubstation;
+import frc.robot.commands.DoubleSubstation.DoubleSubstation;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -288,19 +288,6 @@ public class RobotContainer {
               Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
           this::select);
 
-          private Command m_OperatorBButtonFalse =
-          new SelectCommand(
-              Map.ofEntries(
-                  Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
-                  Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
-              this::select);
-
-              private Command m_OperatorBButtonIntakeShooter =
-              new SelectCommand(
-                  Map.ofEntries(
-                      Map.entry(CommandSelector.ARM, new IdleIntake(m_intake)),
-                      Map.entry(CommandSelector.HOOD,new SetShooter(m_shooter, -0.3))),
-                  this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -448,8 +435,7 @@ public class RobotContainer {
 
     runIntake.whileTrue(m_OperatorXButton);
     runIntake.whileFalse(m_OperatorXButtonFalse);
-    reverseIntake.whileTrue(m_OperatorBButton);
-    // reverseIntake.whileFalse(m_OperatorBButtonFalse);
+    reverseIntake.whileTrue(new ReverseCone(m_intake));
 
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 
