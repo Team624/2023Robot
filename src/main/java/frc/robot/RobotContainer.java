@@ -279,7 +279,7 @@ public class RobotContainer {
       new SelectCommand(
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
-              Map.entry(CommandSelector.HOOD, new SetShooter(m_shooter, -0.3))),
+              Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
           this::select);
 
           private Command m_OperatorBButtonFalse =
@@ -288,7 +288,12 @@ public class RobotContainer {
                   Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
                   Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
               this::select);
-
+              private Command m_OperatorBButtonIntakeShooter =
+              new SelectCommand(
+                  Map.ofEntries(
+                      Map.entry(CommandSelector.ARM, new IdleIntake(m_intake)),
+                      Map.entry(CommandSelector.HOOD,new SetShooter(m_shooter, -0.3))),
+                  this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -414,6 +419,8 @@ public class RobotContainer {
                 new UprightIntakeSequence(m_arm, m_telescope, m_wrist)));
 
     setBotInside.whileTrue(m_OperatorInsideButton);
+
+    setBotIntake.and(reverseIntake).whileTrue(m_OperatorBButtonIntakeShooter);
 
     setBotHigh
         .and(reverseIntake)
