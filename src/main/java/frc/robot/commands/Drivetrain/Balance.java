@@ -49,14 +49,18 @@ public class Balance extends CommandBase {
       vel = -vel;
       mult *= -1;
     }
-
-    if (Math.abs(angle) < 15) {
+    
+    if (Math.abs(angle) < 15) { // RSC 9
       m_drivetrain.drive(new Translation2d(vel, 0), 0, true, true);
     }
 
-    if (Math.abs(angle) > 15) {
+    //Comp 15
+
+    if (Math.abs(angle) > 15) { // RSC 9
       ground = false;
     }
+
+    // comp 15
 
     if (!ground) {
       m_drivetrain.drive(
@@ -69,6 +73,8 @@ public class Balance extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    //RSC 7
+    //Comp 13.8
 
     System.out.println("the angle: " + angle);
     if (Math.abs(angle) < 13.8 && !ground) {

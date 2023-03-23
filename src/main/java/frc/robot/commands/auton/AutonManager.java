@@ -308,7 +308,7 @@ public class AutonManager extends CommandBase {
         currentShooterCommand.schedule();
         break;
       case "prime_low":
-        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint).andThen(
+        currentShooterCommand = new SetHood(hood, Constants.Hood.Hood_Hybrid_Setpoint).andThen(
           () -> {
             setNTShooterState("prime_low");
           }).deadlineWith(new IdleShooter(shooter));;
