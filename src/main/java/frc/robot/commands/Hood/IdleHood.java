@@ -20,10 +20,10 @@ public class IdleHood extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hood.enable();
-    m_hood.setGoal(m_hood.getAbsoluteRotation().getRadians());
-    // m_hood.disable();
-    // m_hood.stopHood();
+    // m_hood.enable();
+    // m_hood.setGoal(m_hood.getAbsoluteRotation().getRadians());
+    m_hood.disable();
+    m_hood.stopHood();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
