@@ -222,11 +222,11 @@ public final class Constants {
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
 
     // TODO: Tune this
-    public static final double AUTO_BALANCE_SPEED = 0.7;
-    public static final double AUTO_BALANCE_GROUND_SPEED = 0.5;
-    public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 7;
-    public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 9.0;
-    public static final double AUTO_BALANCE_POSITION_THRESHOLD = 4.0;
+    public static final double AUTO_BALANCE_SPEED = 0.6;
+    public static final double AUTO_BALANCE_GROUND_SPEED = 0.8;
+    public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 16;
+    public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 13.0;
+    public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
 
   }
 

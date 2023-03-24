@@ -65,7 +65,7 @@ public class Balance extends CommandBase {
     currentYaw.getCos() * pitchDegreesPerSec
             + currentYaw.getSin() * rollDegreesPerSec;
 
-    System.out.println(angleVelocityDegreesPerSec);
+    System.out.println("Velocity: " + angleVelocityDegreesPerSec);
 
     prevPitch = currentPitch.getDegrees();
     prevRoll = currentRoll.getDegrees();
