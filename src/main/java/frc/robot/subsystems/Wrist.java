@@ -76,7 +76,7 @@ public class Wrist extends ProfiledPIDSubsystem {
 
     wristMotor.setCANTimeout(500);
 
-    wristMotor.setSmartCurrentLimit(5);
+    // wristMotor.setSmartCurrentLimit(5);
 
     WristboreEncoder = new DutyCycleEncoder(1);
 

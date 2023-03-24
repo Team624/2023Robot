@@ -42,6 +42,6 @@ public class SideScoringArmWrist extends ParallelCommandGroup {
       newArmpos = armPos[i];
     }
 
-    addCommands(new SetArm(arm, newArmpos), new SetWrist(wrist, newWristPos));
+    addCommands(new SetArm(arm, newArmpos), new SetWrist(wrist, newWristPos).withTimeout(2));
   }
 }
