@@ -100,14 +100,18 @@ public final class Constants {
      */
     public static final double wheelBase = 0.5886; // TODO: This must be tuned to specific robot
 
+    public static final Translation2d[] MODULE_POSITIONS = {
+      new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
+      new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
+      new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
+      new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
+    };
+
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =
         new SwerveDriveKinematics(
-            new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
-            new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
-            new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
-            new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
+            MODULE_POSITIONS);
 
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6379.0
@@ -216,6 +220,12 @@ public final class Constants {
     public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
     public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
+
+    // TODO: Tune this
+    public static final double AUTO_BALANCE_VELOCITY = 0.35;
+    public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 8.0;
+    public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
+
   }
 
   public static final class Intake {

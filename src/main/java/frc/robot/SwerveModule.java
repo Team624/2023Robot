@@ -143,4 +143,8 @@ public class SwerveModule {
             Constants.Swerve.driveGearRatio),
         getAngle());
   }
+
+  public void forceSetState(SwerveModuleState state) {
+    lastAngle = state.angle;
+  }
 }
