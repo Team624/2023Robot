@@ -22,8 +22,14 @@ public class Balance extends CommandBase {
 
   private double angleDegrees;
 
+  private boolean offGround;
+
+  private boolean reversed;
+
   public Balance(Drivetrain drivetrain, boolean reversed) {
     this.m_drivetrain = drivetrain;
+
+    this.reversed = reversed;
 
     addRequirements(drivetrain);
   }
@@ -33,6 +39,8 @@ public class Balance extends CommandBase {
     prevPitch = m_drivetrain.getPitch();
     prevRoll = m_drivetrain.getRoll();
     prevTimestamp = Timer.getFPGATimestamp();
+
+    offGround = false;
   }
 
   @Override
@@ -57,6 +65,22 @@ public class Balance extends CommandBase {
     currentYaw.getCos() * pitchDegreesPerSec
             + currentYaw.getSin() * rollDegreesPerSec;
 
+    System.out.println(angleVelocityDegreesPerSec);
+
+    prevPitch = currentPitch.getDegrees();
+    prevRoll = currentRoll.getDegrees();
+    prevTimestamp = Timer.getFPGATimestamp();
+
+    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD) {
+      offGround = true;
+      // System.out.println("off ground" + angleDegrees);
+    }
+
+    if (!offGround) {
+      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_GROUND_SPEED * (reversed ? -1 : 1), 0, 0), true, false);
+      return;
+    }
+
     // Check thresholds
     boolean shouldStop =
         (angleDegrees < 0.0 && angleVelocityDegreesPerSec > Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD)
@@ -66,7 +90,7 @@ public class Balance extends CommandBase {
     if (shouldStop) {
       m_drivetrain.stop();
     } else {
-      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_VELOCITY, 0.0, 0.0), true, false);
+      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_SPEED * (angleDegrees > 0.0 ? -1 : 1), 0.0, 0.0), true, false);
     }
   }
 
@@ -78,7 +102,7 @@ public class Balance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
+    return offGround && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
   }
 
   private void setNTState(boolean state) {

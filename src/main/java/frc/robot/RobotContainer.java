@@ -22,6 +22,7 @@ import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.DoubleSubstation;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -339,8 +340,10 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
-    creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
+    // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
+    // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
+    
+    creepMode.whileTrue(new Balance(m_drivetrain, false));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
 
