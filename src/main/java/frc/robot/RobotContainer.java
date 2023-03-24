@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -77,6 +80,8 @@ public class RobotContainer {
   public final XboxController m_controller = new XboxController(1);
 
   CommandXboxController m_controllerCommand = new CommandXboxController(1);
+
+  GenericEntry m_coneModeEntry = Shuffleboard.getTab("Autonomous").add("Start Cone Mode?", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
 
   /* Operator Controls */
 
@@ -469,6 +474,10 @@ public class RobotContainer {
             .setAnimationCommand(
                 coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
             .schedule();
+  }
+
+  public void setInitialConeMode() {
+    setConeMode(m_coneModeEntry.getBoolean(true));
   }
 
   /**
