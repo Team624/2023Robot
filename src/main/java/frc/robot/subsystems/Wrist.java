@@ -139,8 +139,8 @@ public class Wrist extends ProfiledPIDSubsystem {
 
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBoreEncoder();
-    if (radians > 1.8 * Math.PI) {
-      double excess = radians - 1.8 * Math.PI;
+    if (radians > 1.5 * Math.PI) {
+      double excess = radians - 1.5 * Math.PI;
       radians = -(0.5 * Math.PI - excess);
     }
 
