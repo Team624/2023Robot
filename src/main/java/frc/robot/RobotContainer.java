@@ -153,9 +153,9 @@ public class RobotContainer {
   private final JoystickButton alignTag3 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
 
-  private final POVButton left = new POVButton(d_controller, 270);
+  private final POVButton left = new POVButton(d_controller, 90);
 
-  private final POVButton right = new POVButton(d_controller, 90);
+  private final POVButton right = new POVButton(d_controller, 270);
 
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
@@ -293,7 +293,7 @@ public class RobotContainer {
           new SelectCommand(
               Map.ofEntries(
                   Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
-                  Map.entry(CommandSelector.HOOD, new IdleHood(m_hood))),
+                  Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
               this::select);
 
               private Command m_OperatorBButtonIntakeShooter =
@@ -452,7 +452,7 @@ public class RobotContainer {
     runIntake.whileTrue(m_OperatorXButton);
     runIntake.whileFalse(m_OperatorXButtonFalse);
     reverseIntake.whileTrue(m_OperatorBButton);
-    // reverseIntake.whileFalse(m_OperatorBButtonFalse);
+    reverseIntake.whileFalse(m_OperatorBButtonFalse);
 
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 
