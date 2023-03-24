@@ -125,11 +125,6 @@ public class AutonManager extends CommandBase {
 
     SmartDashboard.putBoolean("/auto/state", false);
 
-    if (DriverStation.getAlliance() == Alliance.Red) {
-      double flippedRotation = Math.PI - drivetrain.getPose().getRotation().getRadians();
-      drivetrain.zeroGyroscope(new Rotation2d(flippedRotation));
-    }
-
     if (currentArmCommand != null) currentArmCommand.cancel();
     if (currentShooterCommand != null) currentShooterCommand.cancel();
     if (currentFollowPathCommand != null) currentFollowPathCommand.cancel();
