@@ -42,9 +42,6 @@ public class Wrist extends ProfiledPIDSubsystem {
   private Rotation2d prevPosition;
   private double prevTime;
 
-  private int rotations;
-  private double prevRadians;
-
   private boolean check;
 
   /** If 0 Can go -180 to 180 */
@@ -147,16 +144,7 @@ public class Wrist extends ProfiledPIDSubsystem {
       radians = -(0.5 * Math.PI - excess);
     }
 
-    if (prevRadians >= 1.5 * Math.PI && radians <= 0.5 * Math.PI) {
-      rotations += 1;
-    } else if (prevRadians
-     <= 0.5 * Math.PI && radians >= 1.5 * Math.PI) {
-      rotations -= 1;
-    }
-
-    prevRadians = radians;
-
-    return new Rotation2d(radians + rotations * 2 * Math.PI);
+    return new Rotation2d(radians);
   }
 
   @Override
