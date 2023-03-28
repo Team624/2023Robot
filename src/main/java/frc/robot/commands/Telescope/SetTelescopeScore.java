@@ -13,6 +13,7 @@ public class SetTelescopeScore extends CommandBase {
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
+
   private final boolean m_cone;
   private final boolean m_score;
   private boolean running = false;

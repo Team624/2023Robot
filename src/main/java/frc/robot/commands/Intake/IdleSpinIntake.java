@@ -4,16 +4,16 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
 public class IdleSpinIntake extends CommandBase {
   /** Creates a new IdleSpinIntake. */
   private final Intake m_intake;
+
   public IdleSpinIntake(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_intake=intake;
+    this.m_intake = intake;
     addRequirements(intake);
   }
 

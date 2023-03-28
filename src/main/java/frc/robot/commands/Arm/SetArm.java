@@ -41,13 +41,12 @@ public class SetArm extends CommandBase {
   public void end(boolean interrupted) {
     m_Arm.disable();
     m_Arm.stopArm();
-    
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_Arm.getController().atGoal()){
+    if (m_Arm.getController().atGoal()) {
       System.out.println("At setpoint");
     }
     return m_Arm.getController().atGoal();

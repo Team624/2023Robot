@@ -91,6 +91,7 @@ public class Balance extends CommandBase {
       m_drivetrain.stop();
     } else {
       m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_SPEED * (angleDegrees > 0.0 ? -1 : 1), 0.0, 0.0), true, false);
+
     }
   }
 
@@ -103,6 +104,7 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
     return offGround && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
+
   }
 
   private void setNTState(boolean state) {

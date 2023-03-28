@@ -29,6 +29,8 @@ public class InsideBot extends SequentialCommandGroup {
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
 
-    addCommands(new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO), new InsideBotArmWrist(arm, wrist));
+    addCommands(
+        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO),
+        new InsideBotArmWrist(arm, wrist));
   }
 }

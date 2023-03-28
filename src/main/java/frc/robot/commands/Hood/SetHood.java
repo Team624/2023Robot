@@ -4,10 +4,8 @@
 
 package frc.robot.commands.Hood;
 
-import edu.wpi.first.hal.simulation.ConstBufferCallback;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Hood;
 
 public class SetHood extends CommandBase {

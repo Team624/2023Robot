@@ -38,9 +38,13 @@ public class GoalPose extends CommandBase {
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(10.3, 0.15, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(
+          Constants.Limelight.kTranslationP+1.6,
+          Constants.Limelight.kTranslationI+.2,
+          Constants.Limelight.kTranslationD,
+          Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(9.5, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(Constants.Limelight.kRotationP, 0, 0, OMEGA_CONSTRAINTS);
 
   public GoalPose(Drivetrain drivetrain, Limelight limelight, int node, int right) {
 
