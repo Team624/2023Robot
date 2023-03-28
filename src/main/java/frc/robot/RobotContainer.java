@@ -7,13 +7,10 @@ package frc.robot;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -26,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.DoubleSubstation;
+import frc.robot.commands.DoubleSubstation.*;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -38,6 +35,7 @@ import frc.robot.commands.Hood.ControlHood;
 import frc.robot.commands.Hood.IdleHood;
 import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.InsideBotSequences.InsideBot;
+import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.IdleSpinIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
@@ -81,7 +79,11 @@ public class RobotContainer {
 
   CommandXboxController m_controllerCommand = new CommandXboxController(1);
 
-  GenericEntry m_coneModeEntry = Shuffleboard.getTab("Autonomous").add("Start Cone Mode?", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+  GenericEntry m_coneModeEntry =
+      Shuffleboard.getTab("Autonomous")
+          .add("Start Cone Mode?", true)
+          .withWidget(BuiltInWidgets.kToggleSwitch)
+          .getEntry();
 
   /* Operator Controls */
 
@@ -167,7 +169,6 @@ public class RobotContainer {
 
   private final JoystickButton creepMode =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
-    
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -292,20 +293,19 @@ public class RobotContainer {
               Map.entry(CommandSelector.HOOD, new SetShooter(m_shooter, -0.3))),
           this::select);
 
-          private Command m_OperatorBButtonFalse =
-          new SelectCommand(
-              Map.ofEntries(
-                  Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
-                  Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
-              this::select);
+  private Command m_OperatorBButtonFalse =
+      new SelectCommand(
+          Map.ofEntries(
+              Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
+              Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
+          this::select);
 
-              private Command m_OperatorBButtonIntakeShooter =
-              new SelectCommand(
-                  Map.ofEntries(
-                      Map.entry(CommandSelector.ARM, new IdleIntake(m_intake)),
-                      Map.entry(CommandSelector.HOOD,new SetShooter(m_shooter, -0.3))),
-                  this::select);
-
+  private Command m_OperatorBButtonIntakeShooter =
+      new SelectCommand(
+          Map.ofEntries(
+              Map.entry(CommandSelector.ARM, new IdleIntake(m_intake)),
+              Map.entry(CommandSelector.HOOD, new SetShooter(m_shooter, -0.3))),
+          this::select);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -462,7 +462,6 @@ public class RobotContainer {
 
     runIntake.whileTrue(m_OperatorXButton);
     runIntake.whileFalse(m_OperatorXButtonFalse);
-
 
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 

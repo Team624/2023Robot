@@ -109,8 +109,7 @@ public final class Constants {
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =
-        new SwerveDriveKinematics(
-            MODULE_POSITIONS);
+        new SwerveDriveKinematics(MODULE_POSITIONS);
 
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6379.0
@@ -226,7 +225,6 @@ public final class Constants {
     public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 16;
     public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 13.0;
     public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
-
   }
 
   public static final class Intake {
@@ -308,7 +306,6 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
     public static final double boreEncoderOffset = -0.744272543606814;
-
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;

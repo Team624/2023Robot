@@ -39,8 +39,8 @@ public class GoalPose extends CommandBase {
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
   private final ProfiledPIDController yController =
       new ProfiledPIDController(
-          Constants.Limelight.kTranslationP+1.6,
-          Constants.Limelight.kTranslationI+.2,
+          Constants.Limelight.kTranslationP + 1.6,
+          Constants.Limelight.kTranslationI + .2,
           Constants.Limelight.kTranslationD,
           Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =

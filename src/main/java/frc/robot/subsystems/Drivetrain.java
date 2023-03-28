@@ -271,7 +271,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void stopWithX() {
     for (SwerveModule mod : mSwerveMods) {
-      SwerveModuleState state = new SwerveModuleState(0, Constants.Swerve.MODULE_POSITIONS[mod.moduleNumber].getAngle());
+      SwerveModuleState state =
+          new SwerveModuleState(0, Constants.Swerve.MODULE_POSITIONS[mod.moduleNumber].getAngle());
 
       mod.forceSetState(state);
 

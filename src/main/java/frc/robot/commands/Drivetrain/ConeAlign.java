@@ -1,7 +1,5 @@
 package frc.robot.commands.Drivetrain;
 
-import java.sql.Driver;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -38,7 +36,6 @@ public class ConeAlign extends CommandBase {
       new ProfiledPIDController(10.2, 0.3, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController =
       new ProfiledPIDController(10.0, 0, 0, OMEGA_CONSTRAINTS);
-
 
   private final boolean m_right;
 
@@ -85,11 +82,10 @@ public class ConeAlign extends CommandBase {
         if (currentY <= possibleLocations[start] && currentY >= possibleLocations[start + 1]) {
           boolean go_right = m_right;
           System.out.println(DriverStation.getAlliance().toString());
-          if (DriverStation.getAlliance()==Alliance.Red) {
+          if (DriverStation.getAlliance() == Alliance.Red) {
             go_right = !m_right;
-          } 
-          if (go_right
-          ) {
+          }
+          if (go_right) {
             goal = possibleLocations[start + 1];
           } else {
             goal = possibleLocations[start];

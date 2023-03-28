@@ -1,12 +1,8 @@
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -58,12 +54,12 @@ public class Balance extends CommandBase {
     double rollDegreesPerSec = rollDelta / timeDelta;
 
     // Calculate angle and velocity of the charger
-    angleDegrees = currentYaw.getCos() * m_drivetrain.getPitch()
+    angleDegrees =
+        currentYaw.getCos() * m_drivetrain.getPitch()
             + currentYaw.getSin() * m_drivetrain.getRoll();
 
     double angleVelocityDegreesPerSec =
-    currentYaw.getCos() * pitchDegreesPerSec
-            + currentYaw.getSin() * rollDegreesPerSec;
+        currentYaw.getCos() * pitchDegreesPerSec + currentYaw.getSin() * rollDegreesPerSec;
 
     System.out.println("Velocity: " + angleVelocityDegreesPerSec);
 
@@ -77,21 +73,31 @@ public class Balance extends CommandBase {
     }
 
     if (!offGround) {
-      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_GROUND_SPEED * (reversed ? -1 : 1), 0, 0), true, false);
+      m_drivetrain.drive(
+          new ChassisSpeeds(
+              Constants.Autonomous.AUTO_BALANCE_GROUND_SPEED * (reversed ? -1 : 1), 0, 0),
+          true,
+          false);
       return;
     }
 
     // Check thresholds
     boolean shouldStop =
-        (angleDegrees < 0.0 && angleVelocityDegreesPerSec > Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD)
+        (angleDegrees < 0.0
+                && angleVelocityDegreesPerSec
+                    > Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD)
             || (angleDegrees > 0.0
-                && angleVelocityDegreesPerSec < -Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD);
+                && angleVelocityDegreesPerSec
+                    < -Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD);
 
     if (shouldStop) {
       m_drivetrain.stop();
     } else {
-      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_SPEED * (angleDegrees > 0.0 ? -1 : 1), 0.0, 0.0), true, false);
-
+      m_drivetrain.drive(
+          new ChassisSpeeds(
+              Constants.Autonomous.AUTO_BALANCE_SPEED * (angleDegrees > 0.0 ? -1 : 1), 0.0, 0.0),
+          true,
+          false);
     }
   }
 
@@ -103,8 +109,8 @@ public class Balance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return offGround && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
-
+    return offGround
+        && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
   }
 
   private void setNTState(boolean state) {
