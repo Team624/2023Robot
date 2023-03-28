@@ -257,7 +257,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final double kMaxVelocityRadiansPerSecond = 5.45;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.0;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.9;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -272,7 +272,7 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
         Rotation2d.fromDegrees(240); // TODO TUNE
-    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.4);
+    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(272);
@@ -288,7 +288,7 @@ public final class Constants {
     public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
     public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
-    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.845;
+    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
     public static final double TELESCOPE_SETPOINT_MID = 0.15;
     public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
 
@@ -309,7 +309,8 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.223-0.53;
+    // public static final double boreEncoderOffset = -0.223-0.53;
+    public static final double boreEncoderOffset = -0.744272543606814;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;

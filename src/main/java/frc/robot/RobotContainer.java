@@ -457,7 +457,7 @@ public class RobotContainer {
     runIntake.whileTrue(m_OperatorXButton);
     runIntake.whileFalse(m_OperatorXButtonFalse);
     reverseIntake.whileTrue(m_OperatorBButton);
-    reverseIntake.whileFalse(m_OperatorBButtonFalse);
+    // reverseIntake.whileFalse(m_OperatorBButtonFalse);
 
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
 

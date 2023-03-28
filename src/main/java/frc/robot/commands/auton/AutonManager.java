@@ -266,6 +266,7 @@ public class AutonManager extends CommandBase {
       default:
         this.currentArmCommand =
             new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO)
+                .alongWith(new ReverseCone(intake).withTimeout(0.7))
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("retract");

@@ -99,6 +99,7 @@ public class Wrist extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
 
+    // positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     setpointEntry.setDouble(getBoreEncoder());
     goalEntry.setDouble(getController().getGoal().position);
@@ -123,9 +124,9 @@ public class Wrist extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
-      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
-        voltage = 0;
-      }
+      // if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+      //   voltage = 0;
+      // }
 
       wristMotor.setVoltage(-voltage);
       voltageEntry.setDouble(-voltage);
@@ -171,9 +172,7 @@ public class Wrist extends ProfiledPIDSubsystem {
   }
 
   public boolean softLimit(double value) {
-
     if (value > 0 && (getAbsoluteRotation().getDegrees() > 340)) {
-
       wristMotor.stopMotor();
       return true;
     }
