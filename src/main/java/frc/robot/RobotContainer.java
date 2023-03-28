@@ -4,8 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
-import frc.robot.commands.DoubleSubstation.DoubleSubstation;
+import frc.robot.commands.DoubleSubstation;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
@@ -74,6 +80,8 @@ public class RobotContainer {
   public final XboxController m_controller = new XboxController(1);
 
   CommandXboxController m_controllerCommand = new CommandXboxController(1);
+
+  GenericEntry m_coneModeEntry = Shuffleboard.getTab("Autonomous").add("Start Cone Mode?", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
 
   /* Operator Controls */
 
@@ -150,9 +158,9 @@ public class RobotContainer {
   private final JoystickButton alignTag3 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
 
-  private final POVButton left = new POVButton(d_controller, 270);
+  private final POVButton left = new POVButton(d_controller, 90);
 
-  private final POVButton right = new POVButton(d_controller, 90);
+  private final POVButton right = new POVButton(d_controller, 270);
 
   private final JoystickButton substationButton =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
@@ -283,6 +291,21 @@ public class RobotContainer {
               Map.entry(CommandSelector.ARM, new ReverseCone(m_intake)),
               Map.entry(CommandSelector.HOOD, new SetShooter(m_shooter, -0.3))),
           this::select);
+
+          private Command m_OperatorBButtonFalse =
+          new SelectCommand(
+              Map.ofEntries(
+                  Map.entry(CommandSelector.ARM, new IdleSpinIntake(m_intake)),
+                  Map.entry(CommandSelector.HOOD, new IdleIntake(m_intake))),
+              this::select);
+
+              private Command m_OperatorBButtonIntakeShooter =
+              new SelectCommand(
+                  Map.ofEntries(
+                      Map.entry(CommandSelector.ARM, new IdleIntake(m_intake)),
+                      Map.entry(CommandSelector.HOOD,new SetShooter(m_shooter, -0.3))),
+                  this::select);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -455,6 +478,10 @@ public class RobotContainer {
     m_leds
         .setAnimationCommand(coneMode ? LEDs.Animation.YELLOW_CHASE : LEDs.Animation.PURPLE_CHASE)
         .schedule();
+  }
+
+  public void setInitialConeMode() {
+    setConeMode(m_coneModeEntry.getBoolean(true));
   }
 
   /**

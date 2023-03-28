@@ -124,11 +124,6 @@ public class AutonManager extends CommandBase {
 
     SmartDashboard.putBoolean("/auto/state", false);
 
-    if (DriverStation.getAlliance() == Alliance.Red) {
-      double flippedRotation = Math.PI - drivetrain.getPose().getRotation().getRadians();
-      drivetrain.zeroGyroscope(new Rotation2d(flippedRotation));
-    }
-
     if (currentArmCommand != null) currentArmCommand.cancel();
     if (currentShooterCommand != null) currentShooterCommand.cancel();
     if (currentFollowPathCommand != null) currentFollowPathCommand.cancel();
@@ -272,6 +267,7 @@ public class AutonManager extends CommandBase {
       default:
         this.currentArmCommand =
             new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_ZERO)
+                .alongWith(new ReverseCone(intake).withTimeout(0.7))
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("retract");

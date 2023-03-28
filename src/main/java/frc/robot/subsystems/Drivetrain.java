@@ -247,7 +247,7 @@ public class Drivetrain extends SubsystemBase {
     return ahrs;
   }
 
-  public double getAngle() {
+  public double getRoll() {
     return ahrs.getRoll();
   }
 
@@ -269,17 +269,13 @@ public class Drivetrain extends SubsystemBase {
   //   }
   // }
 
-  public void swerveXposition() {
+  public void stopWithX() {
     for (SwerveModule mod : mSwerveMods) {
-      if (mod.moduleNumber == 0) {
-        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), m_isOpenLoop);
-      } else if (mod.moduleNumber == 1) {
-        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), m_isOpenLoop);
-      } else if (mod.moduleNumber == 2) {
-        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), m_isOpenLoop);
-      } else {
-        mod.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), m_isOpenLoop);
-      }
+      SwerveModuleState state = new SwerveModuleState(0, Constants.Swerve.MODULE_POSITIONS[mod.moduleNumber].getAngle());
+
+      mod.forceSetState(state);
+
+      m_states[mod.moduleNumber] = state;
     }
   }
 }

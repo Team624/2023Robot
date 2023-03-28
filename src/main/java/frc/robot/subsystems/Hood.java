@@ -58,6 +58,7 @@ public class Hood extends ProfiledPIDSubsystem {
     hoodMotor.setIdleMode(IdleMode.kBrake);
     hoodMotor.setCANTimeout(500);
     hoodMotor.setInverted(true);
+    hoodMotor.setSmartCurrentLimit(20);
 
     boreEncoder = new DutyCycleEncoder(2);
 

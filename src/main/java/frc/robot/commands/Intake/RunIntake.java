@@ -26,6 +26,7 @@ public class RunIntake extends CommandBase {
   public void execute() {
     m_Intake.runIntake(1);
   }
+  
 
   // Called once the command ends or is interrupted.
   @Override
@@ -35,5 +36,8 @@ public class RunIntake extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+    
+    
+  
   }
 }

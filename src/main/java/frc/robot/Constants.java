@@ -99,14 +99,18 @@ public final class Constants {
      */
     public static final double wheelBase = 0.5886; // TODO: This must be tuned to specific robot
 
+    public static final Translation2d[] MODULE_POSITIONS = {
+      new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
+      new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
+      new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
+      new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
+    };
+
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =
         new SwerveDriveKinematics(
-            new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
-            new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
-            new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
-            new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
+            MODULE_POSITIONS);
 
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6379.0
@@ -215,6 +219,14 @@ public final class Constants {
     public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
     public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
+
+    // TODO: Tune this
+    public static final double AUTO_BALANCE_SPEED = 0.5;
+    public static final double AUTO_BALANCE_GROUND_SPEED = 0.8;
+    public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 16;
+    public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 13.0;
+    public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
+
   }
 
   public static final class Intake {
@@ -244,7 +256,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final double kMaxVelocityRadiansPerSecond = 5.45;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.0;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.9;
 
     // Feedforward constants
     public static final double kS = 0.0;
@@ -259,7 +271,7 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
         Rotation2d.fromDegrees(240); // TODO TUNE
-    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.4);
+    public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(272);
@@ -275,7 +287,7 @@ public final class Constants {
     public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
     public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
-    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.845;
+    public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
     public static final double TELESCOPE_SETPOINT_MID = 0.15;
     public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
 
@@ -295,7 +307,8 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.223 - 0.53;
+    public static final double boreEncoderOffset = -0.744272543606814;
+
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;

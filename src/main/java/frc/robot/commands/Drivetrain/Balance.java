@@ -1,91 +1,110 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class Balance extends CommandBase {
-
   private final Drivetrain m_drivetrain;
-  private double angle;
-  private PIDController pidController;
 
-  public double goal;
+  private double prevPitch;
+  private double prevRoll;
 
-  boolean ground;
-  private final boolean m_front;
+  private double prevTimestamp;
 
-  public Balance(Drivetrain drivetrain, boolean front) {
+  private double angleDegrees;
+
+  private boolean offGround;
+
+  private boolean reversed;
+
+  public Balance(Drivetrain drivetrain, boolean reversed) {
     this.m_drivetrain = drivetrain;
-    this.m_front = front;
-    angle = 0;
-    pidController = new PIDController(0.064, 0, 0);
 
-    // P = 0.053
+    this.reversed = reversed;
+
     addRequirements(drivetrain);
   }
 
   @Override
   public void initialize() {
-    ground = true;
+    prevPitch = m_drivetrain.getPitch();
+    prevRoll = m_drivetrain.getRoll();
+    prevTimestamp = Timer.getFPGATimestamp();
+
+    offGround = false;
   }
 
   @Override
   public void execute() {
-    // x component of charge station = 3.88745 meters away from alliance wall
-    double vel = 1.8;
-    double mult = 1;
+    Rotation2d currentYaw = m_drivetrain.getPose().getRotation();
+    Rotation2d currentPitch = Rotation2d.fromDegrees(m_drivetrain.getPitch());
+    Rotation2d currentRoll = Rotation2d.fromDegrees(m_drivetrain.getRoll());
 
-    angle = m_drivetrain.getPitch();
+    // Get deltas for velocity calculations
+    double pitchDelta = currentPitch.getDegrees() - prevPitch;
+    double rollDelta = currentRoll.getDegrees() - prevRoll;
+    double timeDelta = Timer.getFPGATimestamp() - prevTimestamp;
 
-    if (m_front) {
-      vel = -vel;
-      mult *= -1;
+    double pitchDegreesPerSec = pitchDelta / timeDelta;
+    double rollDegreesPerSec = rollDelta / timeDelta;
+
+    // Calculate angle and velocity of the charger
+    angleDegrees = currentYaw.getCos() * m_drivetrain.getPitch()
+            + currentYaw.getSin() * m_drivetrain.getRoll();
+
+    double angleVelocityDegreesPerSec =
+    currentYaw.getCos() * pitchDegreesPerSec
+            + currentYaw.getSin() * rollDegreesPerSec;
+
+    System.out.println("Velocity: " + angleVelocityDegreesPerSec);
+
+    prevPitch = currentPitch.getDegrees();
+    prevRoll = currentRoll.getDegrees();
+    prevTimestamp = Timer.getFPGATimestamp();
+
+    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD) {
+      offGround = true;
+      // System.out.println("off ground" + angleDegrees);
     }
 
-    if (Math.abs(angle) < 9) { // RSC 9
-      m_drivetrain.drive(new Translation2d(vel, 0), 0, true, true);
+    if (!offGround) {
+      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_GROUND_SPEED * (reversed ? -1 : 1), 0, 0), true, false);
+      return;
     }
 
-    // Comp 15
+    // Check thresholds
+    boolean shouldStop =
+        (angleDegrees < 0.0 && angleVelocityDegreesPerSec > Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD)
+            || (angleDegrees > 0.0
+                && angleVelocityDegreesPerSec < -Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD);
 
-    if (Math.abs(angle) > 9) { // RSC 9
-      ground = false;
-    }
+    if (shouldStop) {
+      m_drivetrain.stop();
+    } else {
+      m_drivetrain.drive(new ChassisSpeeds(Constants.Autonomous.AUTO_BALANCE_SPEED * (angleDegrees > 0.0 ? -1 : 1), 0.0, 0.0), true, false);
 
-    // comp 15
-
-    if (!ground) {
-      m_drivetrain.drive(
-          new Translation2d(pidController.calculate(-Math.abs(angle) * mult), 0), 0, true, true);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_drivetrain.stopWithX();
+    setNTState(true);
+  }
 
   @Override
   public boolean isFinished() {
-    // RSC 7
-    // Comp 13.8
+    return offGround && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
 
-    System.out.println("the angle: " + angle);
-    if (Math.abs(angle) < 8.5
-        && !ground
-        && m_drivetrain.getAngle() < 3
-        && m_drivetrain.getAngle() > -3) {
-      m_drivetrain.drive(new Translation2d(0, 0), 0.5, true, true);
-
-      // m_drivetrain.swerveXposition();
-      setNTState(true);
-
-      return true;
-    }
-    return false;
   }
 
   private void setNTState(boolean state) {
