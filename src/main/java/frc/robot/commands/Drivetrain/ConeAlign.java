@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -22,33 +21,33 @@ public class ConeAlign extends CommandBase {
 
   public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
   public static final double AngVel = Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+  private double tolerance = .02;
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
-  private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(MaxVel, 2);
-  private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(AngVel, 3);
-
   private final ProfiledPIDController xController =
       new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
+
+  private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
+      new TrapezoidProfile.Constraints(MaxVel, 2);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(10.2, 0.3, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(8.9, 0.03, 0.0, Y_CONSTRAINTS);
+
+  private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
+      new TrapezoidProfile.Constraints(AngVel, 3);
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(10.0, 0, 0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(8.5, 0, 0, OMEGA_CONSTRAINTS);
 
   private final boolean m_right;
 
   public ConeAlign(Drivetrain drivetrain, Boolean right, Limelight mLimelight) {
-
     m_drivetrain = drivetrain;
     m_limelight = mLimelight;
     m_right = right;
-    xController.setTolerance(0.02);
-    yController.setTolerance(0.02);
+    xController.setTolerance(tolerance);
+    yController.setTolerance(tolerance);
     omegaController.setTolerance(Units.degreesToRadians(2));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
-
     addRequirements(drivetrain);
   }
 
@@ -80,12 +79,7 @@ public class ConeAlign extends CommandBase {
     } else {
       for (int start = 0; start < 5; start++) {
         if (currentY <= possibleLocations[start] && currentY >= possibleLocations[start + 1]) {
-          boolean go_right = m_right;
-          System.out.println(DriverStation.getAlliance().toString());
-          if (DriverStation.getAlliance() == Alliance.Red) {
-            go_right = !m_right;
-          }
-          if (go_right) {
+          if (m_right) {
             goal = possibleLocations[start + 1];
           } else {
             goal = possibleLocations[start];
@@ -102,6 +96,25 @@ public class ConeAlign extends CommandBase {
     m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
   }
 
+  public double[] getNodeLocations(Alliance alliance) {
+    double[] locations = {
+      -3.0349888823977644,
+      -4.152591117602235,
+      -4.711388882397765,
+      -5.828991117602236,
+      -6.387788882397764,
+      -7.505391117602235
+    };
+    if (alliance == Alliance.Blue) {
+      return locations;
+    } else {
+      for (int i = 0; i < locations.length; i++) {
+        locations[i] = -8.27 - locations[i];
+      }
+      return locations;
+    }
+  }
+
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
@@ -110,6 +123,7 @@ public class ConeAlign extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return yController.atGoal() && omegaController.atGoal();
+    double currentOffset = m_limelight.getAlignmentValues()[0];
+    return yController.atGoal() && omegaController.atGoal() && Math.abs(currentOffset) < tolerance;
   }
 }

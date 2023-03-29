@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,23 +13,27 @@ public class Limelight extends SubsystemBase {
 
   private final NetworkTable networkTable;
   private final NetworkTableEntry botpose_network;
+  private final NetworkTableEntry campose_network;
   private final NetworkTableEntry tid_network;
   private final NetworkTableEntry ta_network;
+  private final NetworkTableEntry tx_network;
   private double ta;
   private double tl;
   private double x_coordinate;
   private double y_coordinate;
   private double angle;
   private double tid;
-
   private double[] botpose;
   private Map<Double, Double> id_json;
+  private int pipeline_index = 0;
 
   public Limelight() {
     networkTable = NetworkTableInstance.getDefault().getTable("limelight");
     ta_network = networkTable.getEntry("ta");
     botpose_network = networkTable.getEntry("botpose");
+    campose_network = networkTable.getEntry("campose");
     tid_network = networkTable.getEntry("tid");
+    tx_network = networkTable.getEntry("tx");
     id_json = new HashMap<Double, Double>();
     id_json.put(1.0, -6.94659);
     id_json.put(2.0, -5.27019);
@@ -37,6 +43,15 @@ public class Limelight extends SubsystemBase {
     id_json.put(6.0, -3.59379);
     id_json.put(7.0, -5.2701);
     id_json.put(8.0, -6.94659);
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+  }
+
+  public void changePipelined(int pipeline) {
+    pipeline_index = pipeline;
+    NetworkTableInstance.getDefault()
+        .getTable("limelight")
+        .getEntry("pipeline")
+        .setNumber(pipeline);
   }
 
   public boolean hasTarget() {
@@ -59,27 +74,36 @@ public class Limelight extends SubsystemBase {
         return output;
       }
     }
-    double[] output = {};
+    double[] output = {0, 0};
     return output;
   }
 
   @Override
   public void periodic() {
-    double[] botpose_data = botpose_network.getDoubleArray(new double[] {});
-    botpose = botpose_data;
-    if (botpose_data.length == 7) {
-      x_coordinate = botpose_data[0] + 8.27;
-      y_coordinate = botpose_data[1] - 4.01;
-      tl = botpose[6];
-
+    if (pipeline_index == 1) {
+      angle = tx_network.getDouble(0);
     } else {
-      x_coordinate = 0;
-      y_coordinate = 0;
-      tl = 0;
+      botpose = botpose_network.getDoubleArray(new double[] {});
+      if (botpose.length == 7) {
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+          botpose[0] = botpose[0] + 8.27;
+          botpose[1] = botpose[1] - 4.01;
+        } else {
+          botpose[0] = -botpose[0] + 8.27;
+          botpose[1] = -botpose[1] - 4.01;
+        }
+        x_coordinate = botpose[0];
+        y_coordinate = botpose[1];
+        tl = botpose[6];
+      } else {
+        x_coordinate = 0;
+        y_coordinate = 0;
+        tl = 0;
+      }
+      tl = (tl + 11) / 1000.0;
+      tid = tid_network.getDouble(-1.0);
+      ta = ta_network.getDouble(0);
     }
-    tl = (tl + 11) / 1000.0;
-    tid = tid_network.getDouble(-1.0);
-    ta = ta_network.getDouble(0);
   }
 
   public double getTA() {
@@ -103,8 +127,6 @@ public class Limelight extends SubsystemBase {
   }
 
   public double[] getBotPose() {
-    botpose[0] = getX();
-    botpose[1] = getY();
     return botpose;
   }
 

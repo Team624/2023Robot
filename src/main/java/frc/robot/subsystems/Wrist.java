@@ -42,6 +42,9 @@ public class Wrist extends ProfiledPIDSubsystem {
   private Rotation2d prevPosition;
   private double prevTime;
 
+  private int rotations;
+  private double prevRadians;
+
   private boolean check;
 
   /** If 0 Can go -180 to 180 */
@@ -99,7 +102,6 @@ public class Wrist extends ProfiledPIDSubsystem {
   public void periodic() {
     super.periodic();
 
-    // positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     setpointEntry.setDouble(getBoreEncoder());
     goalEntry.setDouble(getController().getGoal().position);
@@ -124,9 +126,9 @@ public class Wrist extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
-      // if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
-      //   voltage = 0;
-      // }
+      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+        voltage = 0;
+      }
 
       wristMotor.setVoltage(-voltage);
       voltageEntry.setDouble(-voltage);
@@ -140,12 +142,16 @@ public class Wrist extends ProfiledPIDSubsystem {
 
   public Rotation2d getAbsoluteRotation() {
     double radians = 2 * Math.PI * getBoreEncoder();
-    if (radians > 1.5 * Math.PI) {
-      double excess = radians - 1.5 * Math.PI;
-      radians = -(0.5 * Math.PI - excess);
+
+    if (prevRadians >= 1.5 * Math.PI && radians <= 0.5 * Math.PI) {
+      rotations += 1;
+    } else if (prevRadians <= 0.5 * Math.PI && radians >= 1.5 * Math.PI) {
+      rotations -= 1;
     }
 
-    return new Rotation2d(radians);
+    prevRadians = radians;
+
+    return new Rotation2d(radians + rotations * 2 * Math.PI);
   }
 
   @Override
@@ -172,7 +178,9 @@ public class Wrist extends ProfiledPIDSubsystem {
   }
 
   public boolean softLimit(double value) {
+
     if (value > 0 && (getAbsoluteRotation().getDegrees() > 340)) {
+
       wristMotor.stopMotor();
       return true;
     }
