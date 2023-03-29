@@ -305,7 +305,7 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.744272543606814;
+    public static final double boreEncoderOffset = -0.507;
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;

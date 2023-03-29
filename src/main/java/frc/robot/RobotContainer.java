@@ -28,6 +28,7 @@ import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.ReflectiveAlign;
 import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
@@ -347,7 +348,7 @@ public class RobotContainer {
     // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
     // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
-    creepMode.whileTrue(new Balance(m_drivetrain, false));
+    creepMode.whileTrue(new ReflectiveAlign(m_drivetrain, m_limelight));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
 
