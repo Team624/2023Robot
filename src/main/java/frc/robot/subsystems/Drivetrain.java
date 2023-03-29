@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -46,7 +48,15 @@ public class Drivetrain extends SubsystemBase {
 
   public SwerveModule[] mSwerveMods;
 
+  public PIDController thetaController;
+
   public Drivetrain() {
+
+    thetaController =
+                new PIDController(
+                        Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
+                        Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
+                        Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD);
     mSwerveMods =
         new SwerveModule[] {
           new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -261,13 +271,17 @@ public class Drivetrain extends SubsystemBase {
     isCreepin = false;
   }
 
-  // public void updateAlliance() {
-  //   if (DriverStation.getAlliance() == Alliance.Blue) {
-  //     alliance = 1;
-  //   } else {
-  //     alliance = 2;
-  //   }
-  // }
+  public double calculteTheta(double goalAngleRadians) {
+    return thetaController.calculate(getYaw().getRadians(), goalAngleRadians);
+}
+
+public DoubleSupplier calculateThetaSupplier(DoubleSupplier goalAngleSupplierRadians) {
+    return () -> calculteTheta(goalAngleSupplierRadians.getAsDouble());
+}
+
+public DoubleSupplier calculteThetaSupplier(double goalAngle) {
+    return calculateThetaSupplier(() -> goalAngle);
+}
 
   public void stopWithX() {
     for (SwerveModule mod : mSwerveMods) {

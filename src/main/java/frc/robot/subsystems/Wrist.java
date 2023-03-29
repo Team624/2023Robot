@@ -45,7 +45,6 @@ public class Wrist extends ProfiledPIDSubsystem {
   private int rotations;
   private double prevRadians;
 
-  private boolean check;
 
   /** If 0 Can go -180 to 180 */
 
@@ -95,7 +94,6 @@ public class Wrist extends ProfiledPIDSubsystem {
     velocityEntry = wristTab.add("Velocity", 0).getEntry();
     velocitySetpointEntry = wristTab.add("Velocity Setpoint", 0.0).getEntry();
 
-    boolean check = true;
   }
 
   @Override
@@ -126,9 +124,9 @@ public class Wrist extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
-      if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
-        voltage = 0;
-      }
+      // if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
+      //   voltage = 0;
+      // }
 
       wristMotor.setVoltage(-voltage);
       voltageEntry.setDouble(-voltage);
