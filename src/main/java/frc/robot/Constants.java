@@ -355,6 +355,10 @@ public final class Constants {
   }
 
   public static final class Limelight {
+    public static final double[] tagLocations = {0.0, -6.94659, -5.27019, -3.59379, -1.26839, -1.26839, -3.59379, -5.27019, -6.94659};
+
+    public static final int numValuesAveraged = 5;
+
     public static final double kTranslationP = 10.8;
     public static final double kTranslationI = 0.3;
     public static final double kTranslationD = 0.0;

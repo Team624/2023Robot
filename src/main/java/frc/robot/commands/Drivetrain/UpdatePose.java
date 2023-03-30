@@ -26,13 +26,15 @@ public class UpdatePose extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Limelight.setPipeline(0);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Limelight.hasTarget() && keepRunning) {
-      m_Drivetrain.updatePoseLimelight(m_Limelight.getBotPose(), m_Limelight.getLatency());
+    if (m_Limelight.getData().tv && keepRunning) {
+      m_Drivetrain.updatePoseLimelight(m_Limelight.getData().botpose.getTranslation().toTranslation2d(), m_Limelight.getData().dataTimestamp -  (m_Limelight.getData().cl + m_Limelight.getData().tl) / 1000);
     }
   }
 

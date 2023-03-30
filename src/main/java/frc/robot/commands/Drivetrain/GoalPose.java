@@ -125,7 +125,7 @@ public class GoalPose extends CommandBase {
 
     double yVel = yController.calculate(pose2d.getY());
 
-    if (m_limelight.hasTarget()) {
+    if (m_limelight.getData().tv) {
       thVel = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     }
     thVel = omegaController.calculate((m_drivetrain.getPose().getRotation().getRadians()));

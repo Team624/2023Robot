@@ -173,7 +173,8 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Drivetrain m_drivetrain = new Drivetrain();
-  private final Limelight m_limelight = new Limelight();
+  private final Limelight m_limelightTop = new Limelight("top");
+  private final Limelight m_limelightBottom = new Limelight("bottom");
   private final Arm m_arm = new Arm();
   private final Intake m_intake = new Intake();
   private final Wrist m_wrist = new Wrist();
@@ -322,7 +323,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(new IdleSpinIntake(m_intake));
     m_wrist.setDefaultCommand(new IdleWrist(m_wrist));
     m_telescope.setDefaultCommand(new IdleTelescope(m_telescope));
-    m_limelight.setDefaultCommand(new UpdatePose(m_limelight, m_drivetrain));
+    m_limelightTop.setDefaultCommand(new UpdatePose(m_limelightTop, m_drivetrain));
     m_hood.setDefaultCommand(new IdleHood(m_hood));
     m_shooter.setDefaultCommand(new IdleShooter(m_shooter));
     configureBindings();
@@ -348,18 +349,18 @@ public class RobotContainer {
     // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
     // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
-    // creepMode.whileTrue(new ReflectiveAlign(m_drivetrain, m_limelight));
-    creepMode.whileTrue(new Balance2(m_drivetrain));
+    creepMode.whileTrue(new ReflectiveAlign(m_drivetrain, m_limelightBottom));
+    // creepMode.whileTrue(new Balance2(m_drivetrain));
 
-    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelight, 0, 3));
+    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
 
-    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelight, 1, 3));
+    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 1, 3));
 
-    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelight, 2, 3));
+    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 2, 3));
 
-    left.whileTrue(new ConeAlign(m_drivetrain, false, m_limelight));
+    left.whileTrue(new ConeAlign(m_drivetrain, false, m_limelightTop));
 
-    right.whileTrue(new ConeAlign(m_drivetrain, true, m_limelight));
+    right.whileTrue(new ConeAlign(m_drivetrain, true, m_limelightTop));
 
     substationButton.whileTrue(
         new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
@@ -503,7 +504,7 @@ public class RobotContainer {
         m_intake,
         m_shooter,
         m_hood,
-        m_limelight,
+        m_limelightTop,
         m_leds);
   }
 

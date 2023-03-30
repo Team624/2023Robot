@@ -187,9 +187,8 @@ public class Drivetrain extends SubsystemBase {
         chassisSpeeds.omegaRadiansPerSecond);
   }
 
-  public void updatePoseLimelight(double[] pose, double latency) {
-    Pose2d newPose = new Pose2d(pose[0], pose[1], getYaw());
-    poseEstimator.addVisionMeasurement(newPose, Timer.getFPGATimestamp());
+  public void updatePoseLimelight(Translation2d translation, double timestampSeconds) {
+    poseEstimator.addVisionMeasurement(new Pose2d(translation, getPose().getRotation()), timestampSeconds);
   }
 
   public SwerveModuleState[] getModuleStates() {
