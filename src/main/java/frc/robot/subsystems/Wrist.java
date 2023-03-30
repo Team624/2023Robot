@@ -68,7 +68,7 @@ public class Wrist extends ProfiledPIDSubsystem {
             Constants.Wrist.I,
             Constants.Wrist.D,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(7.5, 8.9)));
+            new TrapezoidProfile.Constraints(7.5, 12.5)));
     getController().setTolerance(Units.degreesToRadians(3));
     wristMotor = new CANSparkMax(Constants.Wrist.WristMotor, MotorType.kBrushless);
 

@@ -383,10 +383,10 @@ public class RobotContainer {
     // setBotIntake.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE));
 
     /** WRIST TESTING */
-    // setBotHigh.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_upright_cone_intake));
-    // setBotMid.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_intake));
-    // setBotIntake.whileTrue(new SetWrist(m_wrist,
-    // Constants.Wrist.wrist_zero));
+    setBotHigh.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_upright_cone_intake));
+    setBotMid.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_intake));
+    setBotIntake.whileTrue(new SetWrist(m_wrist,
+    Constants.Wrist.wrist_zero));
 
     /** TELESCOPE TESTING */
 
@@ -404,36 +404,36 @@ public class RobotContainer {
 
     // Real stuff
 
-    setBotHigh.whileTrue(
-        new ParallelCommandGroup(
-            new SetTelescopeScore(m_arm, m_telescope, coneMode, true), m_OperatorUpDpad));
-    setBotHigh
-        .and(coneModify)
-        .whileTrue(
-            new ParallelCommandGroup(
-                new SetTelescopeScore(m_arm, m_telescope, coneMode, true),
-                m_OperatorUpDpadConeModify));
+    // setBotHigh.whileTrue(
+    //     new ParallelCommandGroup(
+    //         new SetTelescopeScore(m_arm, m_telescope, coneMode, true), m_OperatorUpDpad));
+    // setBotHigh
+    //     .and(coneModify)
+    //     .whileTrue(
+    //         new ParallelCommandGroup(
+    //             new SetTelescopeScore(m_arm, m_telescope, coneMode, true),
+    //             m_OperatorUpDpadConeModify));
 
-    setBotMid.whileTrue(
-        new ParallelCommandGroup(
-            new SetTelescopeScore(m_arm, m_telescope, coneMode, true), m_OperatorMidDpad));
-    setBotMid
-        .and(coneModify)
-        .whileTrue(
-            new ParallelCommandGroup(
-                new SetTelescopeScore(m_arm, m_telescope, coneMode, true),
-                m_OperatorMidDpadConeModify));
+    // setBotMid.whileTrue(
+    //     new ParallelCommandGroup(
+    //         new SetTelescopeScore(m_arm, m_telescope, coneMode, true), m_OperatorMidDpad));
+    // setBotMid
+    //     .and(coneModify)
+    //     .whileTrue(
+    //         new ParallelCommandGroup(
+    //             new SetTelescopeScore(m_arm, m_telescope, coneMode, true),
+    //             m_OperatorMidDpadConeModify));
 
-    setBotIntake.whileTrue(
-        new ParallelCommandGroup(
-            new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad));
+    // setBotIntake.whileTrue(
+    //     new ParallelCommandGroup(
+    //         new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad));
 
-    setBotIntake
-        .and(coneModify)
-        .whileTrue(
-            new ParallelCommandGroup(
-                new SetTelescopeScore(m_arm, m_telescope, coneMode, false),
-                new UprightIntakeSequence(m_arm, m_telescope, m_wrist)));
+    // setBotIntake
+    //     .and(coneModify)
+    //     .whileTrue(
+    //         new ParallelCommandGroup(
+    //             new SetTelescopeScore(m_arm, m_telescope, coneMode, false),
+    //             new UprightIntakeSequence(m_arm, m_telescope, m_wrist)));
 
     setBotInside.whileTrue(m_OperatorInsideButton);
 

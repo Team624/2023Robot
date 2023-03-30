@@ -100,10 +100,8 @@ public class Hood extends ProfiledPIDSubsystem {
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
     // Use the output (and optionally the setpoint) here
     if (this.m_enabled) {
-      // voltage = armFeedForward.calculate(1.5 * Math.PI - setpoint.position, setpoint.velocity);
 
       voltage = output;
-      // + hoodFeedForward.calculate(0.5 * Math.PI - setpoint.position, setpoint.velocity);
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 

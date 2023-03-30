@@ -319,7 +319,7 @@ public final class Constants {
     public static final double kA = 0.0;
 
     public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(90);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(270);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(180);
     public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(1);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
@@ -336,7 +336,7 @@ public final class Constants {
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double kP = 23.5;
+    public static final double kP = 10.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
