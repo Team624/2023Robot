@@ -105,6 +105,10 @@ public class Hood extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
+      if(getAbsoluteRotation().getDegrees()<0){
+        voltage=0;
+      }
+
       voltageEntry.setDouble(voltage);
 
       hoodMotor.setVoltage(voltage);

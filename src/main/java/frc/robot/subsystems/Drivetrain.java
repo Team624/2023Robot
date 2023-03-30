@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -24,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
+import java.util.function.DoubleSupplier;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
@@ -53,10 +52,10 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     thetaController =
-                new PIDController(
-                        Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
-                        Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
-                        Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD);
+        new PIDController(
+            Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP,
+            Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KI,
+            Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KD);
     mSwerveMods =
         new SwerveModule[] {
           new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -273,15 +272,15 @@ public class Drivetrain extends SubsystemBase {
 
   public double calculteTheta(double goalAngleRadians) {
     return thetaController.calculate(getYaw().getRadians(), goalAngleRadians);
-}
+  }
 
-public DoubleSupplier calculateThetaSupplier(DoubleSupplier goalAngleSupplierRadians) {
+  public DoubleSupplier calculateThetaSupplier(DoubleSupplier goalAngleSupplierRadians) {
     return () -> calculteTheta(goalAngleSupplierRadians.getAsDouble());
-}
+  }
 
-public DoubleSupplier calculteThetaSupplier(double goalAngle) {
+  public DoubleSupplier calculteThetaSupplier(double goalAngle) {
     return calculateThetaSupplier(() -> goalAngle);
-}
+  }
 
   public void stopWithX() {
     for (SwerveModule mod : mSwerveMods) {

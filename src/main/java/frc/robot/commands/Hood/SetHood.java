@@ -35,8 +35,8 @@ public class SetHood extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hood.disable();
-    m_hood.stopHood();
+    // m_hood.enable();
+    m_hood.setGoal(m_hood.getAbsoluteRotation().getRadians());
   }
 
   // Returns true when the command should end.
