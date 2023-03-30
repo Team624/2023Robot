@@ -77,8 +77,17 @@ public class ReflectiveAlign extends CommandBase {
   }
 
   @Override
+<<<<<<< HEAD
   public void end(boolean interrupted){
     values.clear();
+=======
+<<<<<<< HEAD
+  public void end(boolean interrupted){
+    values.clear();
+=======
+  public void end(boolean interrupted) {
+>>>>>>> b2fd43e9e1d81fe2f406cc15b61c1b983612c93a
+>>>>>>> eedd9b6e85dd8253999e955c029214bde1433911
     // limelight.changePipelined(0);
     // UpdatePose.keepRunning = true;
   }
