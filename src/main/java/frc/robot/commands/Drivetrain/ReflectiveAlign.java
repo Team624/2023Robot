@@ -1,10 +1,13 @@
 package frc.robot.commands.Drivetrain;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 
 import javax.sound.sampled.LineEvent;
 
 import edu.wpi.first.math.MathUtil;
+=======
+>>>>>>> b2fd43e9e1d81fe2f406cc15b61c1b983612c93a
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -79,8 +82,12 @@ public class ReflectiveAlign extends CommandBase {
   }
 
   @Override
+<<<<<<< HEAD
   public void end(boolean interrupted){
     values.clear();
+=======
+  public void end(boolean interrupted) {
+>>>>>>> b2fd43e9e1d81fe2f406cc15b61c1b983612c93a
     // limelight.changePipelined(0);
     // UpdatePose.keepRunning = true;
   }

@@ -229,7 +229,7 @@ public final class Constants {
     public static final double balancedAngle = 0; // The angle the robot should be at when balanced
     public static final double kP = 0.007; // The proportional constant for the PID controller
     public static final double angleSetPoint =
-            0; // The angle the PID controller should try to reach
+        0; // The angle the PID controller should try to reach
     public static final double kTurn = 0.007; // The constant for the turn PID controller
   }
 
@@ -303,7 +303,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 5.5;
+    public static final double P = 15.1;
     public static final double I = 0.1;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
@@ -319,7 +319,7 @@ public final class Constants {
     public static final double kA = 0.0;
 
     public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(90);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(270);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(180);
     public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(1);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
@@ -336,11 +336,11 @@ public final class Constants {
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double kP = 23.5;
+    public static final double kP = 10.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static final double BORE_ENCODER_OFFSET = 0.0;
+    public static final double BORE_ENCODER_OFFSET = 0.1;
 
     public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5);
     public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2);

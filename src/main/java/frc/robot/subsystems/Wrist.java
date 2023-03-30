@@ -45,7 +45,6 @@ public class Wrist extends ProfiledPIDSubsystem {
   private int rotations;
   private double prevRadians;
 
-
   /** If 0 Can go -180 to 180 */
 
   /** If 90 180 - Counter clockwise -180 - Clock wise 90 0 - counter clockwise */
@@ -68,7 +67,7 @@ public class Wrist extends ProfiledPIDSubsystem {
             Constants.Wrist.I,
             Constants.Wrist.D,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(7.5, 8.9)));
+            new TrapezoidProfile.Constraints(9.8, 17)));
     getController().setTolerance(Units.degreesToRadians(3));
     wristMotor = new CANSparkMax(Constants.Wrist.WristMotor, MotorType.kBrushless);
 
@@ -93,7 +92,6 @@ public class Wrist extends ProfiledPIDSubsystem {
     goalEntry = wristTab.add("Goal", getController().getGoal().position).getEntry();
     velocityEntry = wristTab.add("Velocity", 0).getEntry();
     velocitySetpointEntry = wristTab.add("Velocity Setpoint", 0.0).getEntry();
-
   }
 
   @Override
