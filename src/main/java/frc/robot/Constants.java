@@ -225,6 +225,12 @@ public final class Constants {
     public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 16;
     public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 13.0;
     public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
+
+    public static final double balancedAngle = 0; // The angle the robot should be at when balanced
+    public static final double kP = 0.007; // The proportional constant for the PID controller
+    public static final double angleSetPoint =
+            0; // The angle the PID controller should try to reach
+    public static final double kTurn = 0.007; // The constant for the turn PID controller
   }
 
   public static final class Intake {
