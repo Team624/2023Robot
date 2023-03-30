@@ -1,5 +1,7 @@
 package frc.robot.commands.Drivetrain;
 
+import javax.sound.sampled.LineEvent;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -19,26 +21,38 @@ public class ReflectiveAlign extends CommandBase {
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
   private final ProfiledPIDController yController =
-      new ProfiledPIDController(0.001, 0.0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(0.1, 0.0, 0.0, Y_CONSTRAINTS);
 
   public ReflectiveAlign(Drivetrain m_drivetrain, Limelight limelight) {
     this.limelight = limelight;
     this.m_drivetrain = m_drivetrain;
 
     yController.setGoal(0);
+    yController.setTolerance(.01);
+
+    this.addRequirements(m_drivetrain, limelight);
+  }
+
+  @Override
+  public void initialize() {
+    yController.reset(limelight.getAngle());
+    System.out.println("Running reflective align");
+    limelight.changePipelined(1);
   }
 
   public void execute() {
-    double feedback = yController.calculate(limelight.getAngle());
-
+    System.out.println(limelight.getAngle());
+    double feedback = -yController.calculate(limelight.getAngle());
     m_drivetrain.drive(new ChassisSpeeds(0, feedback, 0), true, false);
   }
 
-  public void initialize() {
-    yController.setTolerance(.01);
+  @Override
+  public void end(boolean interrupted){
+    // limelight.changePipelined(0);
+    // UpdatePose.keepRunning = true;
   }
 
   public boolean isFinished() {
-    return yController.atGoal();
+    return false;
   }
 }
