@@ -342,11 +342,11 @@ public final class Constants {
 
     public static final double BORE_ENCODER_OFFSET = 0.1;
 
-    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5);
-    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2);
-    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8);
-    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108);
-    public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51);
+    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5+36);
+    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2+36);
+    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8+36);
+    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108+36);
+    public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51+36);
   }
 
   public static final class LEDs {

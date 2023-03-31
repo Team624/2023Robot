@@ -45,13 +45,16 @@ public class Balance2 extends CommandBase {
               Constants.Autonomous.AUTO_BALANCE_GROUND_SPEED * (reversed ? -1 : 1), 0, 0),
           true,
           false);
-      return;
+
     }
-    turningEffort =
-        m_Drivetrain.calculateThetaSupplier(() -> Constants.Autonomous.angleSetPoint).getAsDouble();
-    balanaceEffort =
-        (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) * Constants.Autonomous.kP;
-    m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, turningEffort), false, true);
+    else{
+      turningEffort =
+      m_Drivetrain.calculateThetaSupplier(() -> Constants.Autonomous.angleSetPoint).getAsDouble();
+  balanaceEffort =
+      (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) * Constants.Autonomous.kP;
+  m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, turningEffort), false, true);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.
