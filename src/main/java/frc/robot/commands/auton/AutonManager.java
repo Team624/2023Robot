@@ -91,7 +91,7 @@ public class AutonManager extends CommandBase {
   public void initialize() {
     disabledLimelightCommand.schedule();
     arm.resetRotationsCommand().schedule();
-    leds.setAnimationCommand(Animation.CRYPTONITE);
+    leds.setAnimationCommand(Animation.CRYPTONITE).schedule();
 
     updatePaths();
     drivetrain.setPose();
