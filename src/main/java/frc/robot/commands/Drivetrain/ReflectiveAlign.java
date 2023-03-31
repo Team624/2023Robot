@@ -3,6 +3,7 @@ package frc.robot.commands.Drivetrain;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -22,8 +23,8 @@ public class ReflectiveAlign extends CommandBase {
 
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MaxVel, 2);
-  private final ProfiledPIDController yController =
-      new ProfiledPIDController(0.1, 0.0, 0.0, Y_CONSTRAINTS);
+  private final PIDController yController =
+      new PIDController(0.15, 0.0, 0.0);
 
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
   new TrapezoidProfile.Constraints(2 * Math.PI, Math.pow(2 * Math.PI, 2));
@@ -35,7 +36,7 @@ public class ReflectiveAlign extends CommandBase {
     this.limelight = limelight;
     this.m_drivetrain = m_drivetrain;
     values =  new ArrayList<Double>();
-    yController.setGoal(0);
+    yController.setSetpoint(0);
     yController.setTolerance(.01);
 
     omegaController.setGoal(0);
@@ -45,14 +46,15 @@ public class ReflectiveAlign extends CommandBase {
 
   @Override
   public void initialize() {
-    yController.reset(limelight.getData().tx);
     omegaController.reset(m_drivetrain.getPose().getRotation().getRadians());
     System.out.println("Running reflective align");
   }
 
   public void execute() {
-    if(limelight.getData().pipeline != 1) return;
+    // if(limelight.getData().pipeline != 1) return;
     double currentAngle = limelight.getData().tx;
+
+    System.out.println("Current angle: " + currentAngle);
 
     values.add(currentAngle);
     
@@ -60,12 +62,14 @@ public class ReflectiveAlign extends CommandBase {
       values.remove(0);
     }
 
+    System.out.println("Average angle: " + getAverageAngle());
+
     double yFeedback = -yController.calculate(getAverageAngle());
     yFeedback = MathUtil.clamp(yFeedback, -0.5, 0.5);
 
     double omegaFeedback = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
 
-    m_drivetrain.drive(new ChassisSpeeds(0, yFeedback, omegaFeedback), true, false);
+    m_drivetrain.drive(new ChassisSpeeds(0, yFeedback, 0), true, false);
   }
 
   public double getAverageAngle(){
@@ -85,6 +89,7 @@ public class ReflectiveAlign extends CommandBase {
   }
 
   public boolean isFinished() {
-    return yController.atGoal();
+    // return yController.atGoal();
+    return false;
   }
 }

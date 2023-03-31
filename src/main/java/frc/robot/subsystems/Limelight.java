@@ -13,9 +13,11 @@ public class Limelight extends SubsystemBase {
   private final NetworkTable networkTable;
 
   private LimelightData data;
+  private String name;
 
   public Limelight(String name) {
     networkTable = NetworkTableInstance.getDefault().getTable("limelight-" + name);
+    this.name = name;
   }
 
   public void setPipeline(int pipeline) {

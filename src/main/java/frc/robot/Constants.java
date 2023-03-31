@@ -318,9 +318,9 @@ public final class Constants {
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(90);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(180);
-    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(1);
+    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
+    public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(90);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
 
