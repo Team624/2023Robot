@@ -358,9 +358,9 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 2, 3));
 
-    left.whileTrue(new ConeAlign(m_drivetrain, false, m_limelightTop));
+    left.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, false, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom)));
 
-    right.whileTrue(new ConeAlign(m_drivetrain, true, m_limelightTop));
+    right.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, true, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom)));
 
     substationButton.whileTrue(
         new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));

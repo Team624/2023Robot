@@ -34,7 +34,7 @@ public class UpdatePose extends CommandBase {
   @Override
   public void execute() {
     if (m_Limelight.getData().tv && keepRunning) {
-      m_Drivetrain.updatePoseLimelight(m_Limelight.getData().botpose.getTranslation().toTranslation2d(), m_Limelight.getData().dataTimestamp -  (m_Limelight.getData().cl + m_Limelight.getData().tl) / 1000);
+      m_Drivetrain.updatePoseLimelight(m_Limelight.getData().botpose.getTranslation().toTranslation2d(), m_Limelight.getData().dataTimestamp);
     }
   }
 
