@@ -311,7 +311,8 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.507;
+    public static final double boreEncoderOffset = -0.844;
+    // -0.507
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -341,6 +342,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final double BORE_ENCODER_OFFSET = 0.1;
+    // 0.1
 
     public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5+36);
     public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2+36);
