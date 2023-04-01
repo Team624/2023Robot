@@ -45,13 +45,8 @@ public class Balance extends CommandBase {
     Rotation2d currentPitch = Rotation2d.fromDegrees(m_drivetrain.getPitch());
     Rotation2d currentRoll = Rotation2d.fromDegrees(m_drivetrain.getRoll());
 
-    // Get deltas for velocity calculations
-    double pitchDelta = currentPitch.getDegrees() - prevPitch;
-    double rollDelta = currentRoll.getDegrees() - prevRoll;
-    double timeDelta = Timer.getFPGATimestamp() - prevTimestamp;
-
-    double pitchDegreesPerSec = pitchDelta / timeDelta;
-    double rollDegreesPerSec = rollDelta / timeDelta;
+    double pitchDegreesPerSec = m_drivetrain.getPitchVelocity();
+    double rollDegreesPerSec = m_drivetrain.getRollVelocity();
 
     // Calculate angle and velocity of the charger
     angleDegrees =
@@ -62,12 +57,9 @@ public class Balance extends CommandBase {
         currentYaw.getCos() * pitchDegreesPerSec + currentYaw.getSin() * rollDegreesPerSec;
 
     System.out.println("Velocity: " + angleVelocityDegreesPerSec);
+  
 
-    prevPitch = currentPitch.getDegrees();
-    prevRoll = currentRoll.getDegrees();
-    prevTimestamp = Timer.getFPGATimestamp();
-
-    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD) {
+    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD && angleVelocityDegreesPerSec <= Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD) {
       offGround = true;
       // System.out.println("off ground" + angleDegrees);
     }

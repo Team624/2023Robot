@@ -145,6 +145,6 @@ public class SwerveModule {
   }
 
   public void forceSetState(SwerveModuleState state) {
-    lastAngle = state.angle;
+    lastAngle = CTREModuleState.optimize(state, getState().angle).angle;
   }
 }

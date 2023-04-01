@@ -263,6 +263,14 @@ public class Drivetrain extends SubsystemBase {
     return ahrs.getPitch();
   }
 
+  public double getPitchVelocity() {
+    return ahrs.getRawGyroX();
+  }
+
+  public double getRollVelocity() {
+    return ahrs.getRawGyroY();
+  }
+
   public void yesCreepMode() {}
 
   public void noCreepMode() {

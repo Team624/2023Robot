@@ -82,7 +82,7 @@ public class ReflectiveAlign extends CommandBase {
     double vx = m_translationXSupplier.getAsDouble();
     vx = filterX.calculate(vx);
 
-    m_drivetrain.drive(new ChassisSpeeds(vx, yFeedback, 0), true, false);
+    m_drivetrain.drive(new ChassisSpeeds(0, yFeedback, 0), true, false);
   }
 
   public double getAverageAngle(){
