@@ -28,7 +28,7 @@ public class Limelight extends SubsystemBase {
 
   public double[] getAlignmentValues() {
     if (data.tid <= 8 && data.tid >= 1) {
-      double distance = Math.abs(data.botpose.getY() - Constants.Limelight.tagLocations[data.tid]);
+      double distance = Math.abs(data.getPose3d().getY() - Constants.Limelight.tagLocations[data.tid]);
       if (data.ta < 0) {
         double[] output = {-distance, -data.ta};
         return output;

@@ -163,9 +163,9 @@ public class RobotContainer {
   private final JoystickButton alignTag3 =
       new JoystickButton(d_controller, XboxController.Button.kB.value);
 
-  private final POVButton left = new POVButton(d_controller, 90);
+  private final POVButton left = new POVButton(d_controller, 270);
 
-  private final POVButton right = new POVButton(d_controller, 270);
+  private final POVButton right = new POVButton(d_controller, 90);
 
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);

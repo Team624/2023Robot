@@ -94,7 +94,7 @@ public class ConeAlign extends CommandBase {
     double rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     UpdatePose.keepRunning = false;
     // m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
-    m_drivetrain.drive(new Translation2d(0, 0), rotSpeed, true, true);
+    m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
   }
 
   public double[] getNodeLocations(Alliance alliance) {
@@ -110,7 +110,7 @@ public class ConeAlign extends CommandBase {
       return locations;
     } else {
       for (int i = 0; i < locations.length; i++) {
-        locations[i] = -8.27 - locations[i];
+        locations[i] = -8.0137 - locations[i];
       }
       return locations;
     }
