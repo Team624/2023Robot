@@ -1,12 +1,16 @@
 package frc.robot.commands.Drivetrain;
 
 import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -15,6 +19,8 @@ import frc.robot.subsystems.Limelight;
 public class ReflectiveAlign extends CommandBase {
 
   private final Drivetrain m_drivetrain;
+  private final DoubleSupplier m_translationXSupplier;
+  private SlewRateLimiter filterX = new SlewRateLimiter(4.5);
 
   private Limelight limelight;
   private ArrayList<Double> values;
@@ -32,21 +38,24 @@ public class ReflectiveAlign extends CommandBase {
   private final ProfiledPIDController omegaController =
     new ProfiledPIDController(Constants.Limelight.kRotationP, 0, 0, OMEGA_CONSTRAINTS);
 
-  public ReflectiveAlign(Drivetrain m_drivetrain, Limelight limelight) {
+  public ReflectiveAlign(Drivetrain m_drivetrain, Limelight limelight,DoubleSupplier translationXSupplier) {
     this.limelight = limelight;
     this.m_drivetrain = m_drivetrain;
+    this.m_translationXSupplier=translationXSupplier;
     values =  new ArrayList<Double>();
     yController.setSetpoint(0);
     yController.setTolerance(.01);
+    omegaController.setTolerance(Units.degreesToRadians(2));
+    omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    omegaController.setGoal(0);
 
     this.addRequirements(m_drivetrain, limelight);
   }
 
   @Override
   public void initialize() {
-    omegaController.reset(m_drivetrain.getPose().getRotation().getRadians());
+    Pose2d pose = m_drivetrain.getPose();
+    omegaController.reset(pose.getRotation().getRadians());
     System.out.println("Running reflective align");
   }
 
@@ -67,9 +76,13 @@ public class ReflectiveAlign extends CommandBase {
     double yFeedback = -yController.calculate(getAverageAngle());
     yFeedback = MathUtil.clamp(yFeedback, -0.5, 0.5);
 
+    omegaController.setGoal(0.0);
     double omegaFeedback = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
 
-    m_drivetrain.drive(new ChassisSpeeds(0, yFeedback, 0), true, false);
+    double vx = m_translationXSupplier.getAsDouble();
+    vx = filterX.calculate(vx);
+
+    m_drivetrain.drive(new ChassisSpeeds(vx, yFeedback, 0), true, false);
   }
 
   public double getAverageAngle(){

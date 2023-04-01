@@ -351,7 +351,7 @@ public class RobotContainer {
     // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
     // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
-    creepMode.whileTrue(new ReflectiveAlign(m_drivetrain, m_limelightBottom));
+    creepMode.whileTrue(new ReflectiveAlign(m_drivetrain, m_limelightBottom,() -> -modifyAxis(d_controller.getRawAxis(translationAxis))));
     // creepMode.whileTrue(new Balance2(m_drivetrain));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
@@ -360,9 +360,9 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 2, 3));
 
-    left.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, false, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom)));
+    left.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, false, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom,() -> -modifyAxis(d_controller.getRawAxis(translationAxis)))));
 
-    right.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, true, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom)));
+    right.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, true, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom,() -> -modifyAxis(d_controller.getRawAxis(translationAxis)))));
 
     
 

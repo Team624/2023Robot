@@ -56,4 +56,5 @@ public class LimelightData {
 
     return new Pose3d(new Translation3d(array[0], array[1], array[2]), new Rotation3d(array[3], array[4], array[5]));
   }
+
 }
