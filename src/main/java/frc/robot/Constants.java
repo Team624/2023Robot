@@ -210,7 +210,7 @@ public final class Constants {
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
-        1.4 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        1.9 * Math.PI; // Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_ACCELERATION =
         Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 1.5); // 2.0
 

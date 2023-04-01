@@ -100,6 +100,8 @@ public class AutonManager extends CommandBase {
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
     SmartDashboard.getEntry("/auto/shooter/set").setString("idle");
 
+    prevShooterState = SmartDashboard.getEntry("/auto/shooter/set").getString("idle");
+
     SmartDashboard.getEntry("/auto/balance/state").setBoolean(false);
 
     SmartDashboard.putBoolean("/auto/state", true);
@@ -126,8 +128,12 @@ public class AutonManager extends CommandBase {
     if (currentArmCommand != null) currentArmCommand.cancel();
     if (currentShooterCommand != null) currentShooterCommand.cancel();
     if (currentFollowPathCommand != null) currentFollowPathCommand.cancel();
-    if (currentBalanceCommand != null) currentShooterCommand.cancel();
-    if (currentShooterCommand != null) currentShooterCommand.cancel();
+    if (currentBalanceCommand != null) currentBalanceCommand.cancel();
+
+    SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
+    SmartDashboard.getEntry("/auto/arm/state").setString("none");
+    SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
+    SmartDashboard.getEntry("/auto/shooter/set").setString("idle");
 
     System.out.println("Auton ended!");
 
@@ -285,6 +291,8 @@ public class AutonManager extends CommandBase {
 
     prevShooterState = state;
 
+    if (currentShooterCommand != null && currentShooterCommand.isScheduled()) currentShooterCommand.cancel();
+
     switch (state) {
       case "prime_high":
         currentShooterCommand =
@@ -322,11 +330,11 @@ public class AutonManager extends CommandBase {
         currentShooterCommand =
             new SequentialCommandGroup(
                     new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint)
-                        .raceWith(new SetShooter(shooter, Constants.Shooter.IntakeSpeed)))
-                .andThen(
-                    () -> {
-                      setNTShooterState("intake");
-                    });
+                    .andThen(
+                      () -> {
+                        setNTShooterState("intake");
+                      })
+                        .alongWith(new SetShooter(shooter, Constants.Shooter.IntakeSpeed)));
         currentShooterCommand.schedule();
         break;
       case "shoot_high":
@@ -390,14 +398,16 @@ public class AutonManager extends CommandBase {
     Number[] indexes =
         SmartDashboard.getEntry("/pathTable/startPathIndex").getNumberArray(new Number[0]);
 
+    if (indexes.length == 0) return false;
+
     SequentialCommandGroup commandGroup = new SequentialCommandGroup();
 
     for (Number index : indexes) {
       int i = (int) index.doubleValue();
 
-      System.out.println("Starting path" + i);
-
       if (i < 0 || i >= paths.length || i <= previousPath) return false;
+
+      System.out.println("Starting path" + i);
 
       commandGroup.addCommands(new FollowPath(this.drivetrain, this.paths[i]));
 
