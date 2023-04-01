@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class SwerveDrive extends CommandBase {
@@ -18,6 +20,7 @@ public class SwerveDrive extends CommandBase {
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier rotationSup;
+  private BooleanSupplier robotCentricSup;
 
   private SlewRateLimiter filterX = new SlewRateLimiter(10);
   private SlewRateLimiter filterY = new SlewRateLimiter(10);
@@ -26,7 +29,8 @@ public class SwerveDrive extends CommandBase {
       Drivetrain s_Swerve,
       DoubleSupplier translationSup,
       DoubleSupplier strafeSup,
-      DoubleSupplier rotationSup) {
+      DoubleSupplier rotationSup,
+      BooleanSupplier robotCentricSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = s_Swerve;
     addRequirements(s_Swerve);
@@ -34,6 +38,7 @@ public class SwerveDrive extends CommandBase {
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
+    this.robotCentricSup = robotCentricSup;
   }
 
   // Called when the command is initially scheduled.
@@ -60,7 +65,7 @@ public class SwerveDrive extends CommandBase {
         new Translation2d(translationVal, strafeVal)
             .times(Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND),
         rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        true,
+        !robotCentricSup.getAsBoolean(),
         true);
   }
 

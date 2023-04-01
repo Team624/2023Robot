@@ -84,7 +84,7 @@ public class Hood extends ProfiledPIDSubsystem {
     enabledEntry.setBoolean(m_enabled);
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
     setpointEntry.setDouble(getController().getGoal().position);
-    goalEntry.setDouble(getController().getGoal().position);
+    goalEntry.setDouble(getBore());
 
     Rotation2d deltaPosition = getAbsoluteRotation().minus(prevPosition);
     double deltaTime = Timer.getFPGATimestamp() - prevTime;

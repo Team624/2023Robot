@@ -274,7 +274,7 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(28.5);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
-        Rotation2d.fromDegrees(240); // TODO TUNE
+        Rotation2d.fromDegrees(240); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
@@ -311,7 +311,8 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.507;
+    public static final double boreEncoderOffset = -0.844;
+    // -0.507
 
     public static final double kS = 0.0;
     public static final double kG = 0.0;
@@ -341,6 +342,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final double BORE_ENCODER_OFFSET = 0.1;
+    // 0.1
 
     public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5+36);
     public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2+36);

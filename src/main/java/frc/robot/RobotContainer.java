@@ -44,6 +44,7 @@ import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
+import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
@@ -165,7 +166,7 @@ public class RobotContainer {
 
   private final POVButton right = new POVButton(d_controller, 270);
 
-  private final JoystickButton substationButton =
+  private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
   private final JoystickButton creepMode =
@@ -317,7 +318,8 @@ public class RobotContainer {
             m_drivetrain,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
             () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
-            () -> -modifyAxis((d_controller.getRawAxis(rotationAxis)))));
+            () -> -modifyAxis(d_controller.getRawAxis(rotationAxis)),
+            () -> robotCentric.getAsBoolean()));
 
     m_arm.setDefaultCommand(new IdleArm(m_arm));
     m_intake.setDefaultCommand(new IdleSpinIntake(m_intake));
@@ -362,8 +364,7 @@ public class RobotContainer {
 
     right.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, true, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom)));
 
-    substationButton.whileTrue(
-        new SubstationAlign(m_drivetrain, DriverStation.getAlliance() == Alliance.Red));
+    
 
     /** Arm */
     manual.and(armMove).whileTrue(m_LeftJoystickCommand);
@@ -522,11 +523,12 @@ public class RobotContainer {
 
   public void setDrivetrainDefaultCommand() {
     Command c =
-        new SwerveDrive(
-            m_drivetrain,
-            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
-            () -> -modifyAxis(d_controller.getRawAxis(rotationAxis)));
+    new SwerveDrive(
+        m_drivetrain,
+        () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+        () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
+        () -> -modifyAxis(d_controller.getRawAxis(rotationAxis)),
+        () -> robotCentric.getAsBoolean());
 
     m_drivetrain.setDefaultCommand(c);
     c.schedule();

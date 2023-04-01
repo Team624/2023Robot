@@ -93,7 +93,8 @@ public class ConeAlign extends CommandBase {
     double yVel = yController.calculate(m_drivetrain.getPose().getY());
     double rotSpeed = omegaController.calculate(m_drivetrain.getPose().getRotation().getRadians());
     UpdatePose.keepRunning = false;
-    m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
+    // m_drivetrain.drive(new Translation2d(0, yVel), rotSpeed, true, true);
+    m_drivetrain.drive(new Translation2d(0, 0), rotSpeed, true, true);
   }
 
   public double[] getNodeLocations(Alliance alliance) {
