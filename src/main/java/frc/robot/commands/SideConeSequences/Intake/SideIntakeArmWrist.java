@@ -26,7 +26,7 @@ public class SideIntakeArmWrist extends ParallelCommandGroup {
     this.m_Arm = arm;
     this.m_Wrist = wrist;
     addCommands(
-        new SetArm(arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE),
+        new SetArm(arm, Constants.Arm.ARM_SETPOINT_PREINTAKE),
         new SetWrist(wrist, Constants.Wrist.wrist_cone_intake));
   }
 }
