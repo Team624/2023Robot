@@ -227,8 +227,8 @@ public final class Constants {
     public static final double AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD = 4.0;
     public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
 
-    public static final double AUTO_BALANCE_P_START = 0.069;
-    public static final double AUTO_BALANCE_P_MULTIPLIER = 0.6;
+    public static final double AUTO_BALANCE_P_START = 0.053;
+    public static final double AUTO_BALANCE_P_MULTIPLIER = 0.8;
 
     public static final double balancedAngle = 0; // The angle the robot should be at when balanced
     public static final double kP = 0.073; // The proportional constant for the PID controller
@@ -277,7 +277,9 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(100);
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(28.5);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
-    public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
+    public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
+        Rotation2d.fromDegrees(170); // 170 for parallel
+        public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
         Rotation2d.fromDegrees(240); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =

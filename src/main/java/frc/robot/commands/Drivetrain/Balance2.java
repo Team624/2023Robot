@@ -85,7 +85,7 @@ public class Balance2 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!onGround && Math.abs(m_Drivetrain.getPitch())< 1) {
+    if (!onGround && Math.abs(m_Drivetrain.getPitch())< 3.5) {
       return timer.get() > 0.1;
     } else {
       timer.reset();

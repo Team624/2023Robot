@@ -27,7 +27,7 @@ public class TelescopeHigh extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_Arm.getAbsoluteRotation().getDegrees() > (Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE).getDegrees()){
+    if(m_Arm.getAbsoluteRotation().getDegrees() > (Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE_AUTON).getDegrees()){
       m_Telescope.setTelescope(Constants.Telescope.TELESCOPE_SETPOINT_HIGH);
     }
     
