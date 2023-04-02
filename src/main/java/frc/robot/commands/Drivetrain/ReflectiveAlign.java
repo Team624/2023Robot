@@ -105,6 +105,6 @@ public class ReflectiveAlign extends CommandBase {
 
   public boolean isFinished() {
     // return yController.atGoal();
-    return limelight.getData().tv && yController.atSetpoint() && !manual;
+    return limelight.getData().tv && yController.atSetpoint() && omegaController.atSetpoint() && !manual;
   }
 }

@@ -7,9 +7,11 @@ package frc.robot.commands.auton;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -71,6 +73,7 @@ public class AutonManager extends CommandBase {
   private String prevArmState = "";
   private String prevShooterState = "";
   private String prevVisionState = "";
+  private Timer timer = new Timer();
 
   public AutonManager(
       Drivetrain drivetrain,
@@ -100,6 +103,9 @@ public class AutonManager extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
+
     disabledLimelightCommand.schedule();
     arm.resetRotationsCommand().schedule();
     leds.setAnimationCommand(Animation.CRYPTONITE).schedule();
@@ -110,8 +116,17 @@ public class AutonManager extends CommandBase {
     SmartDashboard.getEntry("/auto/arm/state").setString("none");
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
     SmartDashboard.getEntry("/auto/shooter/set").setString("idle");
+    SmartDashboard.getEntry("/auto/vision/state").setBoolean(false);
+    SmartDashboard.getEntry("/auto/vision/set").setString("none");
+
+    Command visionCommand = CommandScheduler.getInstance().requiring(limelightBottom);
+    if (visionCommand != null) visionCommand.cancel();
+
+    Command shooterCommand = CommandScheduler.getInstance().requiring(hood);
+    if (shooterCommand != null) shooterCommand.cancel();
 
     prevShooterState = SmartDashboard.getEntry("/auto/shooter/set").getString("idle");
+    prevVisionState = SmartDashboard.getEntry("/auto/vision/set").getString("none");
 
     SmartDashboard.getEntry("/auto/balance/state").setBoolean(false);
 
@@ -133,19 +148,20 @@ public class AutonManager extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    currentFollowPathCommand.cancel();
-
     SmartDashboard.putBoolean("/auto/state", false);
 
     if (currentArmCommand != null) currentArmCommand.cancel();
     if (currentShooterCommand != null) currentShooterCommand.cancel();
     if (currentFollowPathCommand != null) currentFollowPathCommand.cancel();
     if (currentBalanceCommand != null) currentBalanceCommand.cancel();
+    if (currentVisionCommand != null) currentVisionCommand.cancel();
 
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
     SmartDashboard.getEntry("/auto/arm/state").setString("none");
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
     SmartDashboard.getEntry("/auto/shooter/set").setString("idle");
+    SmartDashboard.getEntry("/auto/vision/state").setBoolean(false);
+    SmartDashboard.getEntry("/auto/vision/set").setString("none");
 
     System.out.println("Auton ended!");
 
@@ -153,21 +169,29 @@ public class AutonManager extends CommandBase {
   }
 
   private void updateNTVision() {
+    if (timer.get() < 1) return;
+
     String state = SmartDashboard.getEntry("/auto/vision/set").getString("none");
 
-    if (state.equals(prevVisionState)) return;
+    if (currentVisionCommand != null && currentVisionCommand.isScheduled()) return;
 
+    if (state.equals(prevVisionState)) return;
     prevVisionState = state;
 
     String[] stateArray = state.split(" ");
     if (stateArray.length == 0) return;
 
+    if (stateArray[0].startsWith("cone")) {
+      System.out.println("Starting vision " + state);
+
+      this.currentVisionCommand = new ReflectiveAlign(drivetrain, limelightBottom, () -> {return 0;}, false).andThen(new InstantCommand(() -> {
+        SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
+      }));
+      currentVisionCommand.schedule();
+      return;
+    }
+
     switch (stateArray[0]) {
-      case "cone":
-        this.currentVisionCommand = new ReflectiveAlign(drivetrain, limelightBottom, () -> {return 0;}, false).andThen(new InstantCommand(() -> {
-          SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
-        }));
-        break;
       case "cube":
         if (stateArray.length < 2) return;
 
@@ -279,6 +303,15 @@ public class AutonManager extends CommandBase {
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("high");
+                    });
+        break;
+
+        case "move_cone_high_fast":
+        this.currentArmCommand =
+            new SideScoringParallel(arm, telescope, wrist, 1, true)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("high_fast");
                     });
         break;
 
