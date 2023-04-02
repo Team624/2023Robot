@@ -10,12 +10,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.DisabledLimelight;
 import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.Balance2;
+import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.FollowPath;
+import frc.robot.commands.Drivetrain.ReflectiveAlign;
 import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.ReverseCone;
@@ -49,7 +53,8 @@ public class AutonManager extends CommandBase {
   private Intake intake;
   private Shooter shooter;
   private Hood hood;
-  private Limelight limelight;
+  private Limelight limelightTop;
+  private Limelight limelightBottom;
   private LEDs leds;
 
   private Path[] paths;
@@ -57,13 +62,14 @@ public class AutonManager extends CommandBase {
   private int previousPath = -1;
   private Command currentBalanceCommand;
   private Command currentArmCommand;
-  private Command currentIntakeCommand;
+  private Command currentVisionCommand;
   private Command currentShooterCommand;
 
   private DisabledLimelight disabledLimelightCommand;
 
   private String prevArmState = "";
   private String prevShooterState = "";
+  private String prevVisionState = "";
 
   public AutonManager(
       Drivetrain drivetrain,
@@ -73,7 +79,8 @@ public class AutonManager extends CommandBase {
       Intake intake,
       Shooter shooter,
       Hood hood,
-      Limelight limelight,
+      Limelight limelightTop,
+      Limelight limelightBottom,
       LEDs leds) {
     this.drivetrain = drivetrain;
     this.arm = arm;
@@ -82,10 +89,11 @@ public class AutonManager extends CommandBase {
     this.intake = intake;
     this.shooter = shooter;
     this.hood = hood;
-    this.limelight = limelight;
+    this.limelightTop = limelightTop;
+    this.limelightBottom = limelightBottom;
     this.leds = leds;
 
-    disabledLimelightCommand = new DisabledLimelight(limelight);
+    disabledLimelightCommand = new DisabledLimelight(limelightTop);
   }
 
   // Called when the command is initially scheduled.
@@ -116,9 +124,10 @@ public class AutonManager extends CommandBase {
     startNTPath();
     startNTBalance();
     updateNTArm();
-    // updateNTIntake();
     updateNTShooter();
+    updateNTVision();
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
@@ -139,7 +148,45 @@ public class AutonManager extends CommandBase {
 
     System.out.println("Auton ended!");
 
-    disabledLimelightCommand.end(true);
+    disabledLimelightCommand.cancel();
+  }
+
+  private void updateNTVision() {
+    String state = SmartDashboard.getEntry("/auto/vision/set").getString("none");
+
+    if (state.equals(prevVisionState)) return;
+
+    prevVisionState = state;
+
+    String[] stateArray = state.split(" ");
+    if (stateArray.length == 0) return;
+
+    switch (stateArray[0]) {
+      case "cone":
+        this.currentVisionCommand = new ReflectiveAlign(drivetrain, limelightBottom, () -> {return 0;}, false).andThen(new InstantCommand(() -> {
+          SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
+        }));
+        break;
+      case "cube":
+        if (stateArray.length < 2) return;
+
+        int grid = Integer.parseInt(stateArray[1]);
+
+        this.currentVisionCommand = new PrintCommand("Add apriltag align").andThen(new InstantCommand(() -> {
+          SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
+        }));
+        break;
+      case "none":
+      default:
+        if (currentVisionCommand != null && currentVisionCommand.isScheduled()) {
+          currentVisionCommand.cancel();
+          currentVisionCommand = null;
+        }
+    }
+
+    SmartDashboard.getEntry("/auto/vision/state").setBoolean(false);
+
+    if (currentVisionCommand != null) currentVisionCommand.schedule();
   }
 
   private boolean startNTBalance() {
@@ -155,8 +202,6 @@ public class AutonManager extends CommandBase {
     boolean reversed = Boolean.parseBoolean(balanceSetArr[1]);
 
     if (!startBalance) return false;
-
-    currentFollowPathCommand.end(true);
 
     currentBalanceCommand = new Balance2(drivetrain, reversed);
     currentBalanceCommand.schedule();

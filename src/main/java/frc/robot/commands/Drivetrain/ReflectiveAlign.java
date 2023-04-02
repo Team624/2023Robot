@@ -24,6 +24,7 @@ public class ReflectiveAlign extends CommandBase {
 
   private Limelight limelight;
   private ArrayList<Double> values;
+  private boolean manual;
 
   public static final double MaxVel = Constants.Swerve.MAX_VELOCITY_METERS_PER_SECOND;
 
@@ -38,7 +39,7 @@ public class ReflectiveAlign extends CommandBase {
   private final ProfiledPIDController omegaController =
     new ProfiledPIDController(Constants.Autonomous.DRIVE_CONTROLLER_ROTATION_KP, 0, 0, OMEGA_CONSTRAINTS);
 
-  public ReflectiveAlign(Drivetrain m_drivetrain, Limelight limelight,DoubleSupplier translationXSupplier) {
+  public ReflectiveAlign(Drivetrain m_drivetrain, Limelight limelight,DoubleSupplier translationXSupplier, boolean manual) {
     this.limelight = limelight;
     this.m_drivetrain = m_drivetrain;
     this.m_translationXSupplier=translationXSupplier;
@@ -48,6 +49,7 @@ public class ReflectiveAlign extends CommandBase {
     omegaController.setTolerance(Units.degreesToRadians(2));
     omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
+    this.manual = manual;
 
     this.addRequirements(m_drivetrain, limelight);
   }
@@ -103,6 +105,6 @@ public class ReflectiveAlign extends CommandBase {
 
   public boolean isFinished() {
     // return yController.atGoal();
-    return false;
+    return limelight.getData().tv && yController.atSetpoint() && !manual;
   }
 }
