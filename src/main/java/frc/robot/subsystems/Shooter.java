@@ -68,6 +68,7 @@ public class Shooter extends SubsystemBase {
     shooterPidControllerRight = shooterMotorRight.getPIDController();
     shooterMotorRight.setIdleMode(IdleMode.kCoast);
     shooterMotorRight.setCANTimeout(500);
+    shooterMotorRight.follow(shooterMotorLeft, true);
   }
 
   @Override
@@ -99,17 +100,15 @@ public class Shooter extends SubsystemBase {
 
   public void setPercentOutput(double speed) {
     shooterMotorLeft.set(speed);
-    shooterMotorRight.set(speed);
   }
 
   public void setShooterVoltage(double voltage){
     shooterMotorLeft.setVoltage(voltage);
-    shooterMotorRight.setVoltage(voltage);
+    // shooterMotorRight.setVoltage(voltage);
   }
 
   public void stopShooter() {
     shooterMotorLeft.stopMotor();
-    shooterMotorRight.stopMotor();
   }
 
   public void addPercentOutput() {

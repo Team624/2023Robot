@@ -22,6 +22,8 @@ public class Balance extends CommandBase {
 
   private boolean reversed;
 
+  private Timer timer = new Timer();
+
   public Balance(Drivetrain drivetrain, boolean reversed) {
     this.m_drivetrain = drivetrain;
 
@@ -37,6 +39,7 @@ public class Balance extends CommandBase {
     prevTimestamp = Timer.getFPGATimestamp();
 
     offGround = false;
+    timer.start();
   }
 
   @Override
@@ -59,7 +62,7 @@ public class Balance extends CommandBase {
     System.out.println("Velocity: " + angleVelocityDegreesPerSec);
   
 
-    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD && angleVelocityDegreesPerSec <= Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD) {
+    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD && Math.abs(angleVelocityDegreesPerSec) <= Constants.Autonomous.AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD) {
       offGround = true;
       // System.out.println("off ground" + angleDegrees);
     }
@@ -101,8 +104,13 @@ public class Balance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return offGround
-        && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD;
+    if (offGround
+    && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD) {
+      return timer.get() > 0;
+    } else {
+      timer.reset();
+      return false;
+    }
   }
 
   private void setNTState(boolean state) {

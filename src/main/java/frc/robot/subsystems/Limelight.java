@@ -26,6 +26,12 @@ public class Limelight extends SubsystemBase {
         .setNumber(pipeline);
   }
 
+  public void setLEDs(boolean ledsOn) {
+    networkTable
+      .getEntry("ledMode")
+      .setNumber(ledsOn ? 0 : 1);
+  }
+
   public double[] getAlignmentValues() {
     if (data.tid <= 8 && data.tid >= 1) {
       double distance = Math.abs(data.getPose3d().getY() - Constants.Limelight.tagLocations[data.tid]);

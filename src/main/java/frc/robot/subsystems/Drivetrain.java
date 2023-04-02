@@ -156,6 +156,10 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("/pose/x", currentPose.getX());
     SmartDashboard.putNumber("/pose/y", currentPose.getY());
 
+    SmartDashboard.putNumber("Yaw", getYaw().getDegrees());
+    SmartDashboard.putNumber("Pitch", getPitch());
+    SmartDashboard.putNumber("Roll", getRoll());
+
     field.setRobotPose(
         poseEstimator.getEstimatedPosition().getX(),
         8.0137 + poseEstimator.getEstimatedPosition().getY(),

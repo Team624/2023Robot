@@ -57,6 +57,8 @@ public class ReflectiveAlign extends CommandBase {
     Pose2d pose = m_drivetrain.getPose();
     omegaController.reset(pose.getRotation().getRadians());
     System.out.println("Running reflective align");
+
+    limelight.setLEDs(true);
   }
 
   public void execute() {
@@ -96,9 +98,7 @@ public class ReflectiveAlign extends CommandBase {
   @Override
   public void end(boolean interrupted){
     values.clear();
-
-    // limelight.changePipelined(0);
-    // UpdatePose.keepRunning = true;
+    limelight.setLEDs(false);
   }
 
   public boolean isFinished() {

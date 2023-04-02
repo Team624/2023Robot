@@ -522,6 +522,10 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(new DisabledSwerve(m_drivetrain));
   }
 
+  public void setLimelightLEDsOff() {
+    m_limelightBottom.setLEDs(false);
+  }
+
   public void setDrivetrainDefaultCommand() {
     Command c =
     new SwerveDrive(

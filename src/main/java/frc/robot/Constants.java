@@ -220,14 +220,18 @@ public final class Constants {
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
 
     // TODO: Tune this
-    public static final double AUTO_BALANCE_SPEED = 0.5;
+    public static final double AUTO_BALANCE_SPEED = 0.35;
     public static final double AUTO_BALANCE_GROUND_SPEED = 0.8;
-    public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 10;
-    public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 7.0;
+    public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 14;
+    public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 4.5;
+    public static final double AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD = 4.0;
     public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
 
+    public static final double AUTO_BALANCE_P_START = 0.069;
+    public static final double AUTO_BALANCE_P_MULTIPLIER = 0.6;
+
     public static final double balancedAngle = 0; // The angle the robot should be at when balanced
-    public static final double kP = 0.007; // The proportional constant for the PID controller
+    public static final double kP = 0.073; // The proportional constant for the PID controller
     public static final double angleSetPoint =
         0; // The angle the PID controller should try to reach
     public static final double kTurn = 0.007; // The constant for the turn PID controller

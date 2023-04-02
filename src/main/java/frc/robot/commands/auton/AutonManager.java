@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.DisabledLimelight;
 import frc.robot.commands.Drivetrain.Balance;
+import frc.robot.commands.Drivetrain.Balance2;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.ReverseCone;
+import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
@@ -156,7 +158,7 @@ public class AutonManager extends CommandBase {
 
     currentFollowPathCommand.end(true);
 
-    currentBalanceCommand = new Balance(drivetrain, reversed);
+    currentBalanceCommand = new Balance2(drivetrain, reversed);
     currentBalanceCommand.schedule();
 
     System.out.println("Starting balance!!!");
@@ -206,17 +208,13 @@ public class AutonManager extends CommandBase {
 
     if (state.equals(prevArmState)) return;
 
+    if (currentArmCommand != null) currentArmCommand.cancel();
+
     prevArmState = state;
 
     System.out.println("State: " + state);
 
-    if (state.equals("none")
-        || (this.currentArmCommand != null && this.currentArmCommand.isScheduled())) {
-      if (state.equals("move_intake")) {
-        System.out.println("Canceling arm command!!!");
-      }
-      return;
-    }
+    if (state.equals("none")) return;
 
     switch (state) {
       case "move_intake":
@@ -225,7 +223,7 @@ public class AutonManager extends CommandBase {
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("intake");
-                    });
+                    }).alongWith(new RunIntake(intake));
         System.out.println("RUNNING INTAKE!!!\n\n\n");
         break;
 
@@ -369,11 +367,6 @@ public class AutonManager extends CommandBase {
         break;
       case "idle":
       default:
-        if (currentShooterCommand != null && currentShooterCommand.isScheduled()) {
-          currentShooterCommand.end(true);
-          currentShooterCommand = null;
-        }
-
         new IdleShooter(shooter).schedule();
 
         currentShooterCommand =
@@ -382,6 +375,7 @@ public class AutonManager extends CommandBase {
                     () -> {
                       setNTShooterState("idle");
                     });
+        currentShooterCommand.schedule();
         break;
     }
   }

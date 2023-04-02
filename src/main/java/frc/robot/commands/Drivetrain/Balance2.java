@@ -5,6 +5,7 @@
 package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -18,6 +19,11 @@ public class Balance2 extends CommandBase {
   private double turningEffort;
   private boolean onGround;
   private boolean reversed;
+  private Timer timer;
+
+  private double prevAngle;
+
+  private double kP;
 
   public Balance2(Drivetrain drivetrain, boolean reversed) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,15 +36,21 @@ public class Balance2 extends CommandBase {
   @Override
   public void initialize() {
     onGround = true;
+    timer = new Timer();
+    timer.start();
+
+    kP = Constants.Autonomous.AUTO_BALANCE_P_START;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println(m_Drivetrain.getPitch());
     double angleDegrees = m_Drivetrain.getPitch();
     if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD) {
       onGround = false;
     }
+
     if (onGround) {
       m_Drivetrain.drive(
           new ChassisSpeeds(
@@ -48,13 +60,19 @@ public class Balance2 extends CommandBase {
 
     }
     else{
+      if ((prevAngle < 0 && m_Drivetrain.getPitch() > 0) || (prevAngle > 0 && m_Drivetrain.getPitch() < 0)) {
+        kP *= Constants.Autonomous.AUTO_BALANCE_P_MULTIPLIER;
+        System.out.println("Reducing p " + kP);
+      }
+
       turningEffort =
       m_Drivetrain.calculateThetaSupplier(() -> Constants.Autonomous.angleSetPoint).getAsDouble();
   balanaceEffort =
-      (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) * Constants.Autonomous.kP;
+      (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) *kP;
   m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, turningEffort), false, true);
     }
     
+    prevAngle = m_Drivetrain.getPitch(); 
   }
 
   // Called once the command ends or is interrupted.
@@ -67,8 +85,12 @@ public class Balance2 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(m_Drivetrain.getPitch());
-    return !onGround && Math.abs(m_Drivetrain.getPitch()) < 2;
+    if (!onGround && Math.abs(m_Drivetrain.getPitch())< 1) {
+      return timer.get() > 0.1;
+    } else {
+      timer.reset();
+      return false;
+    }
   }
 
   private void setNTState(boolean state) {
