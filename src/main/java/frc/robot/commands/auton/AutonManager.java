@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -28,13 +29,13 @@ import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
-import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringArmWrist;
 import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.UprightConeSequences.Intake.UprightIntakeSequence;
 import frc.robot.commands.UprightConeSequences.Score.SetpointUprightScore;
+import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
@@ -256,7 +257,12 @@ public class AutonManager extends CommandBase {
     switch (state) {
       case "tipped_intake":
         this.currentArmCommand =
-            new SideIntakeSequence(arm, telescope, wrist)
+            new SequentialCommandGroup(
+                    new ParallelCommandGroup(
+                        new SetArm(arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE),
+                        new SetWrist(wrist, Constants.Wrist.wrist_cone_intake)),
+                    new SetTelescope(
+                        telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE))
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("tipped_intake");
@@ -388,6 +394,38 @@ public class AutonManager extends CommandBase {
       currentShooterCommand.cancel();
 
     switch (state) {
+      case "prime_high_over_bump":
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_Over_Bump_Setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_high_over_bump");
+                    })
+                .deadlineWith(new IdleShooter(shooter));
+        currentShooterCommand.schedule();
+        break;
+      case "prime_high_flat_community":
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_Flat_Community_setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_high_flat_community");
+                    })
+                .deadlineWith(new IdleShooter(shooter));
+        currentShooterCommand.schedule();
+        break;
+
+      case "prime_high_charger":
+        currentShooterCommand =
+            new SetHood(hood, Constants.Hood.Hood_Charger_Setpoint)
+                .andThen(
+                    () -> {
+                      setNTShooterState("prime_high_charger");
+                    })
+                .deadlineWith(new IdleShooter(shooter));
+        currentShooterCommand.schedule();
+        break;
+
       case "prime_high":
         currentShooterCommand =
             new SetHood(hood, Constants.Hood.Hood_High_Setpoint)
@@ -431,6 +469,40 @@ public class AutonManager extends CommandBase {
                     .alongWith(new SetShooter(shooter, Constants.Shooter.IntakeSpeed)));
         currentShooterCommand.schedule();
         break;
+
+      case "shoot_high_over_bump":
+        currentShooterCommand =
+            new ShooterScore(shooter, Constants.Shooter.OverBumpSpeed)
+                .withTimeout(0.6)
+                .andThen(
+                    () -> {
+                      setNTShooterState("shoot_high_over_bump");
+                    });
+        currentShooterCommand.schedule();
+        break;
+
+      case "shoot_high_flat_community":
+        currentShooterCommand =
+            new ShooterScore(shooter, Constants.Shooter.FlatCommunitySpeed)
+                .withTimeout(0.6)
+                .andThen(
+                    () -> {
+                      setNTShooterState("shoot_high_flat_community");
+                    });
+        currentShooterCommand.schedule();
+        break;
+
+      case "shoot_high_charger":
+        currentShooterCommand =
+            new ShooterScore(shooter, Constants.Shooter.ChargerSpeed)
+                .withTimeout(0.6)
+                .andThen(
+                    () -> {
+                      setNTShooterState("shoot_high_charger");
+                    });
+        currentShooterCommand.schedule();
+        break;
+
       case "shoot_high":
         currentShooterCommand =
             new ShooterScore(shooter, Constants.Shooter.HighScoreSpeed)
@@ -441,6 +513,7 @@ public class AutonManager extends CommandBase {
                     });
         currentShooterCommand.schedule();
         break;
+
       case "shoot_mid":
         currentShooterCommand =
             new ShooterScore(shooter, Constants.Shooter.MidScoreSpeed)

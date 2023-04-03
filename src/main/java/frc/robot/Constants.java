@@ -338,6 +338,14 @@ public final class Constants {
     public static final double MidScoreSpeed = -0.3;
     public static final double LowScoreSpeed = -1.0;
     public static final double IntakeSpeed = 0.3;
+    public static final double ChargerSpeed = 0.0;
+    public static final double OverBumpSpeed = 0.0;
+    public static final double FlatCommunitySpeed = 0.0;
+
+    public static final double P = 0.3;
+    public static final double I = 0.3;
+    public static final double D = 0.3;
+    public static final double Izone = 0.3;
   }
 
   public static final class Hood {
@@ -355,6 +363,10 @@ public final class Constants {
     public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8 + 36);
     public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108 + 36);
     public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51 + 36);
+
+    public static final Rotation2d Hood_Charger_Setpoint = Rotation2d.fromDegrees(51 + 36);
+    public static final Rotation2d Hood_Over_Bump_Setpoint = Rotation2d.fromDegrees(51 + 36);
+    public static final Rotation2d Hood_Flat_Community_setpoint = Rotation2d.fromDegrees(51 + 36);
   }
 
   public static final class LEDs {

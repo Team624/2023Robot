@@ -62,12 +62,23 @@ public class Shooter extends SubsystemBase {
     shooterMotorLeft.setIdleMode(IdleMode.kCoast);
     shooterMotorLeft.setCANTimeout(500);
 
+    shooterPidControllerLeft.setP(Constants.Shooter.P);
+    shooterPidControllerLeft.setI(Constants.Shooter.I);
+    shooterPidControllerLeft.setD(Constants.Shooter.D);
+    shooterPidControllerLeft.setIZone(Constants.Shooter.Izone);
+
     shooterMotorLeft.setInverted(true);
 
     shooterEncoderRight = shooterMotorRight.getEncoder();
     shooterPidControllerRight = shooterMotorRight.getPIDController();
     shooterMotorRight.setIdleMode(IdleMode.kCoast);
     shooterMotorRight.setCANTimeout(500);
+
+    shooterPidControllerLeft.setP(Constants.Shooter.P);
+    shooterPidControllerLeft.setI(Constants.Shooter.I);
+    shooterPidControllerLeft.setD(Constants.Shooter.D);
+    shooterPidControllerLeft.setIZone(Constants.Shooter.Izone);
+
     shooterMotorRight.follow(shooterMotorLeft, true);
   }
 
