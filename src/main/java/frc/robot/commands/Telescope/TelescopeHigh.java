@@ -14,6 +14,7 @@ public class TelescopeHigh extends CommandBase {
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
+
   public TelescopeHigh(Arm arm, Telescope telescope) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
@@ -27,10 +28,10 @@ public class TelescopeHigh extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_Arm.getAbsoluteRotation().getDegrees() > (Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE_AUTON).getDegrees()){
+    if (m_Arm.getAbsoluteRotation().getDegrees()
+        > (Constants.Arm.ARM_SETPOINT_PREHIGH_SCORE_AUTON).getDegrees()) {
       m_Telescope.setTelescope(Constants.Telescope.TELESCOPE_SETPOINT_HIGH);
     }
-    
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +43,7 @@ public class TelescopeHigh extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-  return Math.abs(m_Telescope.getStringPot() - Constants.Telescope.TELESCOPE_SETPOINT_HIGH) < 0.01;
+    return Math.abs(m_Telescope.getStringPot() - Constants.Telescope.TELESCOPE_SETPOINT_HIGH)
+        < 0.01;
   }
 }

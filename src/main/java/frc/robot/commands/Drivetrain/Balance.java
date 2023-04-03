@@ -60,9 +60,10 @@ public class Balance extends CommandBase {
         currentYaw.getCos() * pitchDegreesPerSec + currentYaw.getSin() * rollDegreesPerSec;
 
     System.out.println("Velocity: " + angleVelocityDegreesPerSec);
-  
 
-    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD && Math.abs(angleVelocityDegreesPerSec) <= Constants.Autonomous.AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD) {
+    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD
+        && Math.abs(angleVelocityDegreesPerSec)
+            <= Constants.Autonomous.AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD) {
       offGround = true;
       // System.out.println("off ground" + angleDegrees);
     }
@@ -105,7 +106,7 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
     if (offGround
-    && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD) {
+        && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD) {
       return timer.get() > 0;
     } else {
       timer.reset();

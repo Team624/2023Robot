@@ -58,21 +58,22 @@ public class Balance2 extends CommandBase {
           true,
           false);
 
-    }
-    else{
-      if ((prevAngle < 0 && m_Drivetrain.getPitch() > 0) || (prevAngle > 0 && m_Drivetrain.getPitch() < 0)) {
+    } else {
+      if ((prevAngle < 0 && m_Drivetrain.getPitch() > 0)
+          || (prevAngle > 0 && m_Drivetrain.getPitch() < 0)) {
         kP *= Constants.Autonomous.AUTO_BALANCE_P_MULTIPLIER;
         System.out.println("Reducing p " + kP);
       }
 
       turningEffort =
-      m_Drivetrain.calculateThetaSupplier(() -> Constants.Autonomous.angleSetPoint).getAsDouble();
-  balanaceEffort =
-      (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) *kP;
-  m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, turningEffort), false, true);
+          m_Drivetrain
+              .calculateThetaSupplier(() -> Constants.Autonomous.angleSetPoint)
+              .getAsDouble();
+      balanaceEffort = (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) * kP;
+      m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, turningEffort), false, true);
     }
-    
-    prevAngle = m_Drivetrain.getPitch(); 
+
+    prevAngle = m_Drivetrain.getPitch();
   }
 
   // Called once the command ends or is interrupted.
@@ -85,7 +86,7 @@ public class Balance2 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!onGround && Math.abs(m_Drivetrain.getPitch())< 3.5) {
+    if (!onGround && Math.abs(m_Drivetrain.getPitch()) < 3.5) {
       return timer.get() > 0.1;
     } else {
       timer.reset();

@@ -35,10 +35,10 @@ public class ShooterScore extends CommandBase {
   public void execute() {
     if (timer.get() < .3) {
       // m_shooter.setPercentOutput(0.2);
-      m_shooter.setShooterVoltage(12*0.2);
+      m_shooter.setShooterVoltage(12 * 0.2);
     } else {
       // m_shooter.setPercentOutput(m_speed + m_shooter.addedPercentOutput);
-      m_shooter.setShooterVoltage(12*(m_speed -m_shooter.addedPercentOutput));
+      m_shooter.setShooterVoltage(12 * (m_speed - m_shooter.addedPercentOutput));
     }
   }
 

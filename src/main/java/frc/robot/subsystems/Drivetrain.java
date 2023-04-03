@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -191,7 +190,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void updatePoseLimelight(Translation2d translation, double timestampSeconds) {
-    poseEstimator.addVisionMeasurement(new Pose2d(translation, getPose().getRotation()), timestampSeconds);
+    poseEstimator.addVisionMeasurement(
+        new Pose2d(translation, getPose().getRotation()), timestampSeconds);
   }
 
   public SwerveModuleState[] getModuleStates() {

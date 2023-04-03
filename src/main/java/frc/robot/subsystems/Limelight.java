@@ -1,10 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utility.LimelightData;
@@ -21,20 +18,17 @@ public class Limelight extends SubsystemBase {
   }
 
   public void setPipeline(int pipeline) {
-    networkTable
-        .getEntry("pipeline")
-        .setNumber(pipeline);
+    networkTable.getEntry("pipeline").setNumber(pipeline);
   }
 
   public void setLEDs(boolean ledsOn) {
-    networkTable
-      .getEntry("ledMode")
-      .setNumber(ledsOn ? 0 : 1);
+    networkTable.getEntry("ledMode").setNumber(ledsOn ? 0 : 1);
   }
 
   public double[] getAlignmentValues() {
     if (data.tid <= 8 && data.tid >= 1) {
-      double distance = Math.abs(data.getPose3d().getY() - Constants.Limelight.tagLocations[data.tid]);
+      double distance =
+          Math.abs(data.getPose3d().getY() - Constants.Limelight.tagLocations[data.tid]);
       if (data.ta < 0) {
         double[] output = {-distance, -data.ta};
         return output;

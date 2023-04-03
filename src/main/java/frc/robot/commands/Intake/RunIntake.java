@@ -24,8 +24,7 @@ public class RunIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_Intake.getCurrentIntake() < 5)
-    m_Intake.runIntake(0.8);
+    if (m_Intake.getCurrentIntake() < 5) m_Intake.runIntake(0.8);
   }
 
   // Called once the command ends or is interrupted.

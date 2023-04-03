@@ -279,7 +279,7 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
         Rotation2d.fromDegrees(170); // 170 for parallel
-        public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
+    public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
         Rotation2d.fromDegrees(240); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
@@ -350,11 +350,11 @@ public final class Constants {
     public static final double BORE_ENCODER_OFFSET = 0.1;
     // 0.1
 
-    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5+36);
-    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2+36);
-    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8+36);
-    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108+36);
-    public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51+36);
+    public static final Rotation2d Hood_Upright_Setpoint = Rotation2d.fromDegrees(3.5 + 36);
+    public static final Rotation2d Hood_High_Setpoint = Rotation2d.fromDegrees(33.2 + 36);
+    public static final Rotation2d Hood_Mid_Setpoint = Rotation2d.fromDegrees(31.8 + 36);
+    public static final Rotation2d Hood_Intake_Setpoint = Rotation2d.fromDegrees(108 + 36);
+    public static final Rotation2d Hood_Hybrid_Setpoint = Rotation2d.fromDegrees(51 + 36);
   }
 
   public static final class LEDs {
@@ -363,7 +363,9 @@ public final class Constants {
   }
 
   public static final class Limelight {
-    public static final double[] tagLocations = {0.0, -6.94659, -5.27019, -3.59379, -1.26839, -1.26839, -3.59379, -5.27019, -6.94659};
+    public static final double[] tagLocations = {
+      0.0, -6.94659, -5.27019, -3.59379, -1.26839, -1.26839, -3.59379, -5.27019, -6.94659
+    };
 
     public static final int numValuesAveraged = 5;
 

@@ -142,6 +142,8 @@ public class GoalPose extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return yController.atGoal() && omegaController.atGoal() && Math.abs(m_limelight.getAlignmentValues()[0])<.04;
+    return yController.atGoal()
+        && omegaController.atGoal()
+        && Math.abs(m_limelight.getAlignmentValues()[0]) < .04;
   }
 }

@@ -16,10 +16,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.DisabledLimelight;
-import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.Balance2;
-import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Drivetrain.ReflectiveAlign;
 import frc.robot.commands.Hood.SetHood;
@@ -30,9 +29,11 @@ import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
+import frc.robot.commands.SideConeSequences.Score.SideScoringArmWrist;
 import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.SetTelescope;
+import frc.robot.commands.UprightConeSequences.Intake.UprightIntakeSequence;
 import frc.robot.commands.UprightConeSequences.Score.SetpointUprightScore;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -144,7 +145,6 @@ public class AutonManager extends CommandBase {
     updateNTVision();
   }
 
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -184,29 +184,36 @@ public class AutonManager extends CommandBase {
     if (stateArray[0].startsWith("cone")) {
       System.out.println("Starting vision " + state);
 
-      this.currentVisionCommand = new ReflectiveAlign(drivetrain, limelightBottom, () -> {return 0;}, false).andThen(new InstantCommand(() -> {
-        SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
-      }));
+      this.currentVisionCommand =
+          new ReflectiveAlign(
+                  drivetrain,
+                  limelightBottom,
+                  () -> {
+                    return 0;
+                  },
+                  false)
+              .andThen(
+                  new InstantCommand(
+                      () -> {
+                        SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
+                      }));
       currentVisionCommand.schedule();
       return;
-    }
+    } else if (stateArray[0].startsWith("cube")) {
+      if (stateArray.length < 2) return;
 
-    switch (stateArray[0]) {
-      case "cube":
-        if (stateArray.length < 2) return;
+      int grid = Integer.parseInt(stateArray[1]);
 
-        int grid = Integer.parseInt(stateArray[1]);
-
-        this.currentVisionCommand = new PrintCommand("Add apriltag align").andThen(new InstantCommand(() -> {
-          SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
-        }));
-        break;
-      case "none":
-      default:
-        if (currentVisionCommand != null && currentVisionCommand.isScheduled()) {
-          currentVisionCommand.cancel();
-          currentVisionCommand = null;
-        }
+      this.currentVisionCommand =
+          new PrintCommand("Add apriltag align")
+              .andThen(
+                  new InstantCommand(
+                      () -> {
+                        SmartDashboard.getEntry("/auto/vision/state").setBoolean(true);
+                      }));
+    } else if (currentVisionCommand != null && currentVisionCommand.isScheduled()) {
+      currentVisionCommand.cancel();
+      currentVisionCommand = null;
     }
 
     SmartDashboard.getEntry("/auto/vision/state").setBoolean(false);
@@ -235,44 +242,6 @@ public class AutonManager extends CommandBase {
     return true;
   }
 
-  // private void updateNTIntake() {
-  //   String state = SmartDashboard.getEntry("/auto/intake/set").getString("idle");
-
-  //   switch (state) {
-  //     case "intake":
-  //       if (currentIntakeCommand != null
-  //           && (currentIntakeCommand instanceof RunIntake && currentIntakeCommand.isScheduled()))
-  //         break;
-  //       currentIntakeCommand.end(true);
-  //       currentIntakeCommand = new RunIntake(intake);
-  //       currentIntakeCommand.schedule();
-  //       break;
-  //     case "cone":
-  //       if (currentIntakeCommand != null
-  //           && (currentIntakeCommand instanceof ReverseCone &&
-  // currentIntakeCommand.isScheduled()))
-  //         break;
-  //       currentIntakeCommand.end(true);
-  //       currentIntakeCommand = new ReverseCone(intake);
-  //       currentIntakeCommand.schedule();
-  //       break;
-
-  //     case "cube":
-  //       if (currentIntakeCommand != null
-  //           && (currentIntakeCommand instanceof ReverseCone &&
-  // currentIntakeCommand.isScheduled()))
-  //         break;
-  //       currentIntakeCommand.end(true);
-  //       currentIntakeCommand = new ReverseCone(intake);
-  //       currentIntakeCommand.schedule();
-  //       break;
-  //     case "idle":
-  //     default:
-  //       currentIntakeCommand = new IdleIntake(intake);
-  //       currentIntakeCommand.schedule();
-  //   }
-  // }
-
   private void updateNTArm() {
     String state = SmartDashboard.getEntry("/auto/arm/set").getString("none");
 
@@ -282,57 +251,104 @@ public class AutonManager extends CommandBase {
 
     prevArmState = state;
 
-    System.out.println("State: " + state);
-
     if (state.equals("none")) return;
 
     switch (state) {
-      case "move_intake":
+      case "tipped_intake":
         this.currentArmCommand =
             new SideIntakeSequence(arm, telescope, wrist)
                 .andThen(
                     () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("intake");
-                    }).alongWith(new RunIntake(intake));
-        System.out.println("RUNNING INTAKE!!!\n\n\n");
+                      SmartDashboard.getEntry("/auto/arm/state").setString("tipped_intake");
+                    })
+                .alongWith(new RunIntake(intake));
         break;
 
-      case "move_cone_high":
+      case "standing_intake":
+        this.currentArmCommand =
+            new UprightIntakeSequence(arm, telescope, wrist)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("standing_intake");
+                    })
+                .alongWith(new RunIntake(intake));
+        break;
+
+      case "full_score_high":
         this.currentArmCommand =
             new SideScoringSequence(arm, telescope, wrist, 1, true)
                 .andThen(
                     () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("high");
+                      SmartDashboard.getEntry("/auto/arm/state").setString("full_score_high");
                     });
         break;
 
-        case "move_cone_high_fast":
-        this.currentArmCommand =
-            new SideScoringParallel(arm, telescope, wrist, 1, true)
-                .andThen(
-                    () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("high_fast");
-                    });
-        break;
-
-      case "move_cone_mid":
+      case "full_score_mid":
         this.currentArmCommand =
             new SideScoringSequence(arm, telescope, wrist, 0, true)
                 .andThen(
                     () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("mid");
+                      SmartDashboard.getEntry("/auto/arm/state").setString("full_score_mid");
                     });
         break;
 
-      case "move_cone_low":
-        SmartDashboard.getEntry("/auto/arm/state").setString("cone_intake");
+      case "full_score_low":
         this.currentArmCommand =
             new SetpointUprightScore(arm, telescope, wrist, 3)
                 .andThen(
                     () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("low");
+                      SmartDashboard.getEntry("/auto/arm/state").setString("full_score_low");
                     });
 
+        break;
+
+      case "fast_score_high":
+        this.currentArmCommand =
+            new SideScoringParallel(arm, telescope, wrist, 1, true)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("fast_score_high");
+                    });
+        break;
+
+      case "pre_score_high":
+        this.currentArmCommand =
+            new SequentialCommandGroup(
+                    new SideScoringArmWrist(arm, wrist, 1, true),
+                    new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_HIGH))
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("pre_score_high");
+                    });
+        break;
+
+      case "pre_score_mid":
+        this.currentArmCommand =
+            new SequentialCommandGroup(
+                    new SideScoringArmWrist(arm, wrist, 0, true),
+                    new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_MID))
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("pre_score_mid");
+                    });
+        break;
+
+      case "finish_score_high":
+        this.currentArmCommand =
+            new SetArm(arm, Constants.Arm.ARM_SETPOINT_HIGH)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("finish_score_high");
+                    });
+        break;
+
+      case "finish_score_mid":
+        this.currentArmCommand =
+            new SetArm(arm, Constants.Arm.ARM_SETPOINT_MID)
+                .andThen(
+                    () -> {
+                      SmartDashboard.getEntry("/auto/arm/state").setString("finish_score_mid");
+                    });
         break;
 
       case "move_inside_bot":
@@ -368,7 +384,8 @@ public class AutonManager extends CommandBase {
 
     prevShooterState = state;
 
-    if (currentShooterCommand != null && currentShooterCommand.isScheduled()) currentShooterCommand.cancel();
+    if (currentShooterCommand != null && currentShooterCommand.isScheduled())
+      currentShooterCommand.cancel();
 
     switch (state) {
       case "prime_high":
@@ -406,12 +423,12 @@ public class AutonManager extends CommandBase {
       case "deploy_intake":
         currentShooterCommand =
             new SequentialCommandGroup(
-                    new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint)
+                new SetHood(hood, Constants.Hood.Hood_Intake_Setpoint)
                     .andThen(
-                      () -> {
-                        setNTShooterState("intake");
-                      })
-                        .alongWith(new SetShooter(shooter, Constants.Shooter.IntakeSpeed)));
+                        () -> {
+                          setNTShooterState("intake");
+                        })
+                    .alongWith(new SetShooter(shooter, Constants.Shooter.IntakeSpeed)));
         currentShooterCommand.schedule();
         break;
       case "shoot_high":

@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -24,13 +22,10 @@ import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.DoubleSubstation.*;
-import frc.robot.commands.Drivetrain.Balance;
-import frc.robot.commands.Drivetrain.Balance2;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.ReflectiveAlign;
-import frc.robot.commands.Drivetrain.SubstationAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
 import frc.robot.commands.Hood.ControlHood;
@@ -45,7 +40,6 @@ import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
-import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
@@ -352,7 +346,12 @@ public class RobotContainer {
     // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
     // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
 
-    creepMode.whileTrue(new ReflectiveAlign(m_drivetrain, m_limelightBottom,() -> -modifyAxis(d_controller.getRawAxis(translationAxis)), true));
+    creepMode.whileTrue(
+        new ReflectiveAlign(
+            m_drivetrain,
+            m_limelightBottom,
+            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+            true));
     // creepMode.whileTrue(new Balance(m_drivetrain, true));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
@@ -361,11 +360,23 @@ public class RobotContainer {
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 2, 3));
 
-    left.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, false, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom,() -> -modifyAxis(d_controller.getRawAxis(translationAxis)), true)));
+    left.whileTrue(
+        new SequentialCommandGroup(
+            new ConeAlign(m_drivetrain, false, m_limelightTop),
+            new ReflectiveAlign(
+                m_drivetrain,
+                m_limelightBottom,
+                () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+                true)));
 
-    right.whileTrue(new SequentialCommandGroup(new ConeAlign(m_drivetrain, true, m_limelightTop),new ReflectiveAlign(m_drivetrain, m_limelightBottom,() -> -modifyAxis(d_controller.getRawAxis(translationAxis)), true)));
-
-    
+    right.whileTrue(
+        new SequentialCommandGroup(
+            new ConeAlign(m_drivetrain, true, m_limelightTop),
+            new ReflectiveAlign(
+                m_drivetrain,
+                m_limelightBottom,
+                () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+                true)));
 
     /** Arm */
     manual.and(armMove).whileTrue(m_LeftJoystickCommand);
@@ -529,12 +540,12 @@ public class RobotContainer {
 
   public void setDrivetrainDefaultCommand() {
     Command c =
-    new SwerveDrive(
-        m_drivetrain,
-        () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-        () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
-        () -> -modifyAxis(d_controller.getRawAxis(rotationAxis)),
-        () -> robotCentric.getAsBoolean());
+        new SwerveDrive(
+            m_drivetrain,
+            () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+            () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
+            () -> -modifyAxis(d_controller.getRawAxis(rotationAxis)),
+            () -> robotCentric.getAsBoolean());
 
     m_drivetrain.setDefaultCommand(c);
     c.schedule();

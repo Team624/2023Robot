@@ -50,15 +50,11 @@ public class SideScoringParallel extends ParallelCommandGroup {
     } else {
       newWristPos = Constants.Wrist.wrist_upright_cone_intake;
     }
-    if(i==1){
-      telescopeCommand= new TelescopeHigh(arm, telescope);
-    }
-    else{
+    if (i == 1) {
+      telescopeCommand = new TelescopeHigh(arm, telescope);
+    } else {
       telescopeCommand = new SetTelescope(telescope, telePos[i]);
     }
-    addCommands(
-        new SetWrist(wrist, newWristPos),
-        telescopeCommand,
-        new SetArm(arm, armPos[i]));
+    addCommands(new SetWrist(wrist, newWristPos), telescopeCommand, new SetArm(arm, armPos[i]));
   }
 }
