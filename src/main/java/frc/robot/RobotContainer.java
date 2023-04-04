@@ -563,6 +563,10 @@ public class RobotContainer {
     }
   }
 
+  public void setNormalArmConstraints() {
+    m_arm.setSlowMode(false);
+  }
+
   private static double modifyAxis(double value) {
     // Deadband
     value = deadband(value, Constants.Swerve.DRIVETRAIN_INPUT_DEADBAND);

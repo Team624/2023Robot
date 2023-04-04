@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.setInitialConeMode();
 
     m_robotContainer.setDrivetrainDefaultCommand();
+    m_robotContainer.setNormalArmConstraints();
   }
 
   /** This function is called periodically during operator control. */

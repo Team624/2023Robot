@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -33,6 +34,7 @@ import frc.robot.commands.SideConeSequences.Score.SideScoringArmWrist;
 import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.SetTelescope;
+import frc.robot.commands.Telescope.SetTelescopeScore;
 import frc.robot.commands.UprightConeSequences.Intake.UprightIntakeSequence;
 import frc.robot.commands.UprightConeSequences.Score.SetpointUprightScore;
 import frc.robot.subsystems.Arm;
@@ -110,6 +112,8 @@ public class AutonManager extends CommandBase {
     disabledLimelightCommand.schedule();
     arm.resetRotationsCommand().schedule();
     leds.setAnimationCommand(Animation.CRYPTONITE).schedule();
+
+    arm.setSlowMode(true);
 
     updatePaths();
     drivetrain.setPose();
@@ -256,12 +260,14 @@ public class AutonManager extends CommandBase {
     switch (state) {
       case "tipped_intake":
         this.currentArmCommand =
+          new ParallelCommandGroup(
+            new SetTelescopeScore(arm, telescope, true, false).alongWith(new ReverseCone(intake).withTimeout(0.43).andThen(new RunIntake(intake))),
             new SideIntakeSequence(arm, telescope, wrist)
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("tipped_intake");
                     })
-                .alongWith(new RunIntake(intake));
+                );
         break;
 
       case "standing_intake":
@@ -313,13 +319,16 @@ public class AutonManager extends CommandBase {
 
       case "pre_score_high":
         this.currentArmCommand =
+          new ParallelCommandGroup(
+            new SetTelescopeScore(arm, telescope, true, true),
             new SequentialCommandGroup(
                     new SideScoringArmWrist(arm, wrist, 1, true),
                     new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_HIGH))
                 .andThen(
                     () -> {
                       SmartDashboard.getEntry("/auto/arm/state").setString("pre_score_high");
-                    });
+                    })
+          );
         break;
 
       case "pre_score_mid":

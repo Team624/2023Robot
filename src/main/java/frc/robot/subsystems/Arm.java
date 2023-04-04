@@ -43,6 +43,10 @@ public class Arm extends ProfiledPIDSubsystem {
   private double voltage = 0;
   public boolean recentFunnel = false;
 
+  private static final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(Constants.Arm.kMaxVelocityRadiansPerSecond, Constants.Arm.kMaxAccelerationRadiansPerSecondSquared);
+
+  private static final TrapezoidProfile.Constraints slowConstraints = new TrapezoidProfile.Constraints(Constants.Arm.kSlowMaxVelocityRadiansPerSecond, Constants.Arm.kSlowMaxAccelerationRadiansPerSecondSquared);
+
   private GenericEntry enabledEntry;
   private GenericEntry voltageEntry;
   private GenericEntry coneEntry;
@@ -68,9 +72,7 @@ public class Arm extends ProfiledPIDSubsystem {
             Constants.Arm.kP,
             Constants.Arm.kI,
             Constants.Arm.kD,
-            new TrapezoidProfile.Constraints(
-                Constants.Arm.kMaxVelocityRadiansPerSecond,
-                Constants.Arm.kMaxAccelerationRadiansPerSecondSquared)));
+            normalConstraints));
 
     getController().setTolerance(Units.degreesToRadians(3));
 
@@ -132,7 +134,8 @@ public class Arm extends ProfiledPIDSubsystem {
     return this.runOnce(
         () -> {
           this.rotations = 0;
-        });
+          this.setGoal(getAbsoluteRotation());
+        }).ignoringDisable(true);
   }
 
   @Override
@@ -161,6 +164,10 @@ public class Arm extends ProfiledPIDSubsystem {
   public double getBore() {
     return MathUtil.inputModulus(
         boreEncoder.getAbsolutePosition() + Constants.Arm.BORE_ENCODER_OFFSET, 0.0, 1.0);
+  }
+
+  public void setSlowMode(boolean slow) {
+    this.getController().setConstraints(slow ? slowConstraints : normalConstraints);
   }
 
   public Rotation2d getAbsoluteRotation() {

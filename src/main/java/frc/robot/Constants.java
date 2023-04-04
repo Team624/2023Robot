@@ -266,6 +266,9 @@ public final class Constants {
     public static final double kMaxVelocityRadiansPerSecond = 5.45;
     public static final double kMaxAccelerationRadiansPerSecondSquared = 5.9;
 
+    public static final double kSlowMaxVelocityRadiansPerSecond = 3.7;
+    public static final double kSlowMaxAccelerationRadiansPerSecondSquared = 4.0;
+
     // Feedforward constants
     public static final double kS = 0.0;
     public static final double kG = 0.35;
