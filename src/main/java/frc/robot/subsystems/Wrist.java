@@ -122,11 +122,14 @@ public class Wrist extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
+      if (!softLimit(-voltage)) {
+        wristMotor.setVoltage(-voltage);
+      }
+
       // if (voltage < 0 && getAbsoluteRotation().getRadians() < 0) {
       //   voltage = 0;
       // }
 
-      wristMotor.setVoltage(-voltage);
       voltageEntry.setDouble(-voltage);
     }
   }
@@ -162,10 +165,9 @@ public class Wrist extends ProfiledPIDSubsystem {
 
   public void set(double speed) {
     disable();
-    // if (!softLimit(speed)) {
-    //   wristMotor.set(speed);
-    // }
-    wristMotor.set(speed);
+    if (!softLimit(-speed)) {
+      wristMotor.set(speed);
+    }
   }
 
   public double AbsoluteRadians() {
@@ -174,9 +176,12 @@ public class Wrist extends ProfiledPIDSubsystem {
   }
 
   public boolean softLimit(double value) {
+    if (value > 0 && (getAbsoluteRotation().getDegrees() > 190)) {
+      wristMotor.stopMotor();
+      return true;
+    }
 
-    if (value > 0 && (getAbsoluteRotation().getDegrees() > 340)) {
-
+    if (value < 0 && (getAbsoluteRotation().getDegrees() < -10)) {
       wristMotor.stopMotor();
       return true;
     }
