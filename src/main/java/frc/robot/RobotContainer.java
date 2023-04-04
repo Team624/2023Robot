@@ -34,6 +34,7 @@ import frc.robot.commands.Hood.SetHood;
 import frc.robot.commands.InsideBotSequences.InsideBot;
 import frc.robot.commands.Intake.IdleIntake;
 import frc.robot.commands.Intake.IdleSpinIntake;
+import frc.robot.commands.Intake.OverrideIntake;
 import frc.robot.commands.Intake.ReverseCone;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
@@ -477,6 +478,7 @@ public class RobotContainer {
                 new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_BOT)));
 
     runIntake.whileTrue(m_OperatorXButton);
+    runIntake.and(coneModify).whileTrue(new OverrideIntake(m_intake));
     runIntake.whileFalse(m_OperatorXButtonFalse);
 
     substationSetpoint.whileTrue(new DoubleSubstation(m_arm, m_telescope, m_wrist));
