@@ -362,7 +362,7 @@ public class AutonManager extends CommandBase {
                     });
         break;
 
-      case "move_inside_bot":
+      case "inside_bot":
         this.currentArmCommand =
             new InsideBot(arm, telescope, wrist)
                 .andThen(
