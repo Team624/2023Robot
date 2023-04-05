@@ -115,8 +115,6 @@ public class AutonManager extends CommandBase {
     arm.resetRotationsCommand().schedule();
     leds.setAnimationCommand(Animation.CRYPTONITE).schedule();
 
-    arm.setSlowMode(true);
-
     updatePaths();
     drivetrain.setPose();
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
@@ -397,6 +395,10 @@ public class AutonManager extends CommandBase {
 
     if (currentShooterCommand != null && currentShooterCommand.isScheduled())
       currentShooterCommand.cancel();
+
+    boolean slowMode = SmartDashboard.getEntry("/auto/arm/slow").getBoolean(true);
+
+    arm.setSlowMode(slowMode);
 
     switch (state) {
       case "prime_high_over_bump":
