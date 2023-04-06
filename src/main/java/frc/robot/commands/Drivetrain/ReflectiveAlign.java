@@ -35,8 +35,7 @@ public class ReflectiveAlign extends CommandBase {
       new TrapezoidProfile.Constraints(2 * Math.PI, Math.pow(2 * Math.PI, 2));
 
   private final ProfiledPIDController omegaController =
-      new ProfiledPIDController(
-          1.0, 0, 0.01, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(1.0, 0, 0.01, OMEGA_CONSTRAINTS);
 
   public ReflectiveAlign(
       Drivetrain m_drivetrain,
@@ -90,8 +89,7 @@ public class ReflectiveAlign extends CommandBase {
     double vx = m_translationXSupplier.getAsDouble();
     vx = filterX.calculate(vx);
 
-    m_drivetrain.drive(new ChassisSpeeds(vx, yFeedback, 0
-    ), true, false);
+    m_drivetrain.drive(new ChassisSpeeds(vx, yFeedback, 0), true, false);
   }
 
   public double getAverageAngle() {

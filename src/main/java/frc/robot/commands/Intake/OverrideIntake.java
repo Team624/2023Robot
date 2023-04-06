@@ -10,6 +10,7 @@ import frc.robot.subsystems.Intake;
 public class OverrideIntake extends CommandBase {
   /** Creates a new OverrideIntake. */
   private final Intake m_Intake;
+
   public OverrideIntake(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Intake = intake;

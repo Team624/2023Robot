@@ -221,13 +221,13 @@ public final class Constants {
 
     // TODO: Tune this
     public static final double AUTO_BALANCE_SPEED = 0.35;
-    public static final double AUTO_BALANCE_GROUND_SPEED = 0.8;
+    public static final double AUTO_BALANCE_GROUND_SPEED = 1.1;
     public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 14;
     public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 4.5;
     public static final double AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD = 4.0;
     public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
 
-    public static final double AUTO_BALANCE_P_START = 0.053;
+    public static final double AUTO_BALANCE_P_START = 0.051;
     public static final double AUTO_BALANCE_P_MULTIPLIER = 0.8;
 
     public static final double balancedAngle = 0; // The angle the robot should be at when balanced

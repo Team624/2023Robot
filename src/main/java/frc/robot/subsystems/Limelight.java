@@ -22,7 +22,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public void setLEDs(boolean ledsOn) {
-    networkTable.getEntry("ledMode").setNumber(ledsOn ? 0 : 1);
+    networkTable.getEntry("ledMode").setNumber(ledsOn ? 3 : 1);
   }
 
   public double[] getAlignmentValues() {

@@ -22,6 +22,8 @@ import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.DoubleSubstation.*;
+import frc.robot.commands.Drivetrain.Balance;
+import frc.robot.commands.Drivetrain.Balance2;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
@@ -353,7 +355,7 @@ public class RobotContainer {
             m_limelightBottom,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
             true));
-    // creepMode.whileTrue(new Balance(m_drivetrain, true));
+    // creepMode.whileTrue(new Balance2(m_drivetrain, true));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
 

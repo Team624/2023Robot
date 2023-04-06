@@ -59,6 +59,7 @@ public class Balance2 extends CommandBase {
           false);
 
     } else {
+      System.out.println("ON CHARGER");
       if ((prevAngle < 0 && m_Drivetrain.getPitch() > 0)
           || (prevAngle > 0 && m_Drivetrain.getPitch() < 0)) {
         kP *= Constants.Autonomous.AUTO_BALANCE_P_MULTIPLIER;
@@ -86,7 +87,7 @@ public class Balance2 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!onGround && Math.abs(m_Drivetrain.getPitch()) < 3.5) {
+    if (!onGround && Math.abs(m_Drivetrain.getPitch()) < 2.5) {
       return timer.get() > 0.1;
     } else {
       timer.reset();
