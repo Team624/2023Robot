@@ -71,7 +71,7 @@ public class Balance2 extends CommandBase {
               .calculateThetaSupplier(() -> Constants.Autonomous.angleSetPoint)
               .getAsDouble();
       balanaceEffort = (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) * kP;
-      m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, turningEffort), false, true);
+      m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, 0), false, true);
     }
 
     prevAngle = m_Drivetrain.getPitch();

@@ -282,7 +282,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double calculteTheta(double goalAngleRadians) {
-    return thetaController.calculate(getYaw().getRadians(), goalAngleRadians);
+    return thetaController.calculate(getPose().getRotation().getRadians(), goalAngleRadians);
   }
 
   public DoubleSupplier calculateThetaSupplier(DoubleSupplier goalAngleSupplierRadians) {
