@@ -122,7 +122,7 @@ public class Wrist extends ProfiledPIDSubsystem {
 
       voltage = MathUtil.clamp(voltage, -9.0, 9.0);
 
-      if (!softLimit(-voltage)) {
+      if (!softLimit(voltage)) {
         wristMotor.setVoltage(-voltage);
       }
 
