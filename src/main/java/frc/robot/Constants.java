@@ -243,6 +243,8 @@ public final class Constants {
     public static final double D = 0;
     public static final int intakeMotor = 12;
     public static final int PWMPort = 0;
+
+    public static final int intakeCurrentLimit = 8;
   }
 
   public static final class Arm {
@@ -317,6 +319,9 @@ public final class Constants {
     public static final double D = 0.0;
     public static final int WristMotor = 13;
 
+    public static final double WristMaxVelocity = 9.8;
+    public static final double WristMaxAccel = 17;
+
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
@@ -353,6 +358,9 @@ public final class Constants {
 
   public static final class Hood {
     public static final int hoodMotor = 14;
+
+    public static final double HoodMaxVelocity = 7.5;
+    public static final double HoodMaxAccel = 6.5;
 
     public static final double kP = 10.0;
     public static final double kI = 0.0;
