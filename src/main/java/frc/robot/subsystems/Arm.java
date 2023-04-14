@@ -148,7 +148,8 @@ public class Arm extends ProfiledPIDSubsystem {
 
     enabledEntry.setBoolean(m_enabled);
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
-    setpointEntry.setDouble(Units.radiansToDegrees(getController().getSetpoint().position));
+    setpointEntry.setDouble(getBore());
+    // setpointEntry.setDouble(Units.radiansToDegrees(getController().getSetpoint().position));
     goalEntry.setDouble(Units.radiansToDegrees(getController().getGoal().position));
     currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
     currentRightEntry.setDouble(armMotorRight.getOutputCurrent());

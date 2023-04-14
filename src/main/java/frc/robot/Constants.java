@@ -256,7 +256,7 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = -0.6;
+    public static final double BORE_ENCODER_OFFSET = 0.562-.047;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
@@ -285,11 +285,11 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
         Rotation2d.fromDegrees(170); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
-        Rotation2d.fromDegrees(240); // 170 for parallel
+        Rotation2d.fromDegrees(248); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(272);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(280);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
   }
 
@@ -299,11 +299,11 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
-    public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.161;
+    public static final double TELESCOPE_SETPOINT_ZERO = 0.161;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
-    public static final double TELESCOPE_SETPOINT_MID = 0.15;
+    public static final double TELESCOPE_SETPOINT_MID = 0.161;
     public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
 
     // FF constants
@@ -325,7 +325,7 @@ public final class Constants {
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.844;
+    public static final double boreEncoderOffset = -0.35;
     // -0.507
 
     public static final double kS = 0.0;
