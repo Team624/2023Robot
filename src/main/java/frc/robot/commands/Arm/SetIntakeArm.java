@@ -22,11 +22,14 @@ public class SetIntakeArm extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Arm.enable();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("im here");
 
     if(m_Telescope.getStringPot()> Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE/2){
       m_Arm.setGoal(Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE);
@@ -35,11 +38,17 @@ public class SetIntakeArm extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_Arm.disable();
+    m_Arm.stopArm();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (m_Arm.getController().atGoal()) {
+      // System.out.println("At setpoint");
+    }
+    return m_Arm.getController().atGoal();
   }
 }

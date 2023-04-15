@@ -266,7 +266,7 @@ public final class Constants {
     public static final double kD = 0.0;
 
     public static final double kMaxVelocityRadiansPerSecond = 5.45;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.9;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 6.4;
 
     public static final double kSlowMaxVelocityRadiansPerSecond = 4.2;
     public static final double kSlowMaxAccelerationRadiansPerSecondSquared = 4.0;
@@ -281,18 +281,18 @@ public final class Constants {
 
     public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(100);
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(28.5);
-    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
+    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(49);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
         Rotation2d.fromDegrees(170); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
-        Rotation2d.fromDegrees(248); // 170 for parallel
+        Rotation2d.fromDegrees(244); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(280);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
   }
-
+//balls
   public static final class Telescope {
     public static final double P = 11.5;
     public static final double I = 0.0;
@@ -359,7 +359,7 @@ public final class Constants {
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double HoodMaxVelocity = 7.5;
+    public static final double HoodMaxVelocity = 9.5;
     public static final double HoodMaxAccel = 6.5;
 
     public static final double kP = 10.0;
