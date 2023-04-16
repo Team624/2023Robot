@@ -40,7 +40,6 @@ import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
-import frc.robot.commands.SideConeSequences.Intake.FastSideIntake;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
@@ -136,6 +135,7 @@ public class RobotContainer {
   private final POVButton setBotMid = new POVButton(m_controller, 90);
 
   private final POVButton setBotIntake = new POVButton(m_controller, 180);
+  private final POVButton setBotIntake2 = new POVButton(m_controller, 225);
 
   private final POVButton setBotInside = new POVButton(m_controller, 270);
 
@@ -257,6 +257,13 @@ public class RobotContainer {
           this::select);
 
   private Command m_OperatorIntakeDpad =
+      new SelectCommand(
+          Map.ofEntries(
+              Map.entry(CommandSelector.ARM, new SideIntakeSequence(m_arm, m_telescope, m_wrist)),
+              Map.entry(
+                  CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint))),
+          this::select);
+          private Command m_OperatorIntakeDpad2 =
       new SelectCommand(
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new SideIntakeSequence(m_arm, m_telescope, m_wrist)),
@@ -443,6 +450,10 @@ public class RobotContainer {
     setBotIntake.whileTrue(
         new ParallelCommandGroup(
             new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad));
+
+    setBotIntake2.whileTrue(
+        new ParallelCommandGroup(
+            new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad2));
 
     setBotIntake
         .and(coneModify)

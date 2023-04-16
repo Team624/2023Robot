@@ -196,17 +196,17 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 1.4;
+    public static final double DRIVE_CONTROLLER_X_KP = 1.55;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 1.4;
+    public static final double DRIVE_CONTROLLER_Y_KP = 1.55;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.0; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.1; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
@@ -256,7 +256,7 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = 0.562-.047;
+    public static final double BORE_ENCODER_OFFSET = 0.562 - .047;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
@@ -292,7 +292,7 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(280);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
   }
-//balls
+  // balls
   public static final class Telescope {
     public static final double P = 11.5;
     public static final double I = 0.0;

@@ -14,10 +14,11 @@ public class SetIntakeArm extends CommandBase {
   private final Arm m_Arm;
 
   private final Telescope m_Telescope;
+
   public SetIntakeArm(Arm arm, Telescope telescope) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_Arm=arm;
-    this.m_Telescope=telescope;
+    this.m_Arm = arm;
+    this.m_Telescope = telescope;
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +32,7 @@ public class SetIntakeArm extends CommandBase {
   public void execute() {
     System.out.println("im here");
 
-    if(m_Telescope.getStringPot()> Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE/2){
+    if (m_Telescope.getStringPot() > Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE / 2) {
       m_Arm.setGoal(Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE);
     }
   }

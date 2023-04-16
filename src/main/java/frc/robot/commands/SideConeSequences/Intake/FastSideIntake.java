@@ -22,12 +22,17 @@ public class FastSideIntake extends SequentialCommandGroup {
 
   private final Telescope m_Telescope;
   private final Wrist m_Wrist;
+
   public FastSideIntake(Arm arm, Telescope telescope, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     this.m_Arm = arm;
     this.m_Telescope = telescope;
     this.m_Wrist = wrist;
-    addCommands(new SideIntakeArmWrist(arm, wrist), new ParallelCommandGroup(new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE),new SetIntakeArm(arm, telescope)));
+    addCommands(
+        new SideIntakeArmWrist(arm, wrist),
+        new ParallelCommandGroup(
+            new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE),
+            new SetIntakeArm(arm, telescope)));
   }
 }
