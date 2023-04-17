@@ -299,12 +299,12 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.161;
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.165;
     public static final double TELESCOPE_SETPOINT_ZERO = 0.161;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
     public static final double TELESCOPE_SETPOINT_MID = 0.161;
-    public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
+    public static final double TELESCOPE_SETPOINT_HIGH = 1.19;
 
     // FF constants
     public static final double kS = 0.0;
