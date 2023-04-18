@@ -314,7 +314,7 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 15.1;
+    public static final double P = 17.2;
     public static final double I = 0.1;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
@@ -360,7 +360,7 @@ public final class Constants {
     public static final int hoodMotor = 14;
 
     public static final double HoodMaxVelocity = 10;
-    public static final double HoodMaxAccel = 10.5;
+    public static final double HoodMaxAccel = 13.5;
 
     public static final double kP = 10.0;
     public static final double kI = 0.0;
