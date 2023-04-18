@@ -83,6 +83,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
     armMotorRight.setSmartCurrentLimit(30);
+    armMotorRight.setInverted(false);
+    armMotorRight.burnFlash();
 
     armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
     armMotorLeft.setIdleMode(IdleMode.kBrake);
@@ -90,6 +92,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorLeft.setSmartCurrentLimit(30);
 
     armMotorLeft.setInverted(true);
+
+    armMotorLeft.burnFlash();
 
     boreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_PORT);
 

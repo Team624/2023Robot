@@ -41,6 +41,7 @@ import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
+import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
@@ -86,6 +87,9 @@ public class RobotContainer {
   /* Operator Controls */
 
   /* LEDs */
+
+  private final JoystickButton fastArm=
+      new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   private final JoystickButton toggleMode =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
@@ -224,6 +228,8 @@ public class RobotContainer {
               Map.entry(
                   CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_High_Setpoint))),
           this::select);
+
+
   private Command m_OperatorUpDpadConeModify =
       new SelectCommand(
           Map.ofEntries(
@@ -462,6 +468,11 @@ public class RobotContainer {
                 new SetTelescopeScore(m_arm, m_telescope, coneMode, false),
                 new UprightIntakeSequence(m_arm, m_telescope, m_wrist)));
 
+    setBotHigh.and(fastArm).whileTrue(new ParallelCommandGroup(
+        new SetTelescopeScore(m_arm, m_telescope, coneMode, true), new SideScoringParallel(m_arm, m_telescope, m_wrist, 1, false)));
+        
+    setBotHigh.and(fastArm).and(coneModify).whileTrue(new ParallelCommandGroup(
+        new SetTelescopeScore(m_arm, m_telescope, coneMode, true), new SideScoringParallel(m_arm, m_telescope, m_wrist, 1, true)));
     setBotInside.whileTrue(m_OperatorInsideButton);
 
     hybridSpit.whileTrue(m_OperatorSpitout);

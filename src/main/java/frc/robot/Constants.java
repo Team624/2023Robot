@@ -304,7 +304,7 @@ public final class Constants {
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
     public static final double TELESCOPE_SETPOINT_MID = 0.161;
-    public static final double TELESCOPE_SETPOINT_HIGH = 1.19;
+    public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
 
     // FF constants
     public static final double kS = 0.0;
@@ -334,7 +334,7 @@ public final class Constants {
     public static final double kA = 0.0;
 
     public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(4);
     public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(90);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
@@ -359,8 +359,8 @@ public final class Constants {
   public static final class Hood {
     public static final int hoodMotor = 14;
 
-    public static final double HoodMaxVelocity = 9.5;
-    public static final double HoodMaxAccel = 6.5;
+    public static final double HoodMaxVelocity = 10;
+    public static final double HoodMaxAccel = 10.5;
 
     public static final double kP = 10.0;
     public static final double kI = 0.0;
