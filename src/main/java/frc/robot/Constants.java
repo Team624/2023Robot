@@ -196,17 +196,17 @@ public final class Constants {
 
   public static final class Autonomous {
     // PID Controler for x alignment
-    public static final double DRIVE_CONTROLLER_X_KP = 1.4;
+    public static final double DRIVE_CONTROLLER_X_KP = 1.55;
     public static final double DRIVE_CONTROLLER_X_KI = 0.0;
     public static final double DRIVE_CONTROLLER_X_KD = 0.0;
 
     // PID Controller for y alignment
-    public static final double DRIVE_CONTROLLER_Y_KP = 1.4;
+    public static final double DRIVE_CONTROLLER_Y_KP = 1.55;
     public static final double DRIVE_CONTROLLER_Y_KI = 0.0;
     public static final double DRIVE_CONTROLLER_Y_KD = 0.0;
 
     // Profiled PID Controller for rotation
-    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.0; // 0.4
+    public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.1; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
@@ -221,13 +221,13 @@ public final class Constants {
 
     // TODO: Tune this
     public static final double AUTO_BALANCE_SPEED = 0.35;
-    public static final double AUTO_BALANCE_GROUND_SPEED = 0.8;
+    public static final double AUTO_BALANCE_GROUND_SPEED = 1.1;
     public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 14;
     public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 4.5;
     public static final double AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD = 4.0;
     public static final double AUTO_BALANCE_POSITION_THRESHOLD = 3.0;
 
-    public static final double AUTO_BALANCE_P_START = 0.053;
+    public static final double AUTO_BALANCE_P_START = 0.051;
     public static final double AUTO_BALANCE_P_MULTIPLIER = 0.8;
 
     public static final double balancedAngle = 0; // The angle the robot should be at when balanced
@@ -243,6 +243,8 @@ public final class Constants {
     public static final double D = 0;
     public static final int intakeMotor = 12;
     public static final int PWMPort = 0;
+
+    public static final int intakeCurrentLimit = 8;
   }
 
   public static final class Arm {
@@ -254,17 +256,17 @@ public final class Constants {
     public static final int BORE_ENCODER_PORT = 0;
 
     // Absolute encoder offset
-    public static final double BORE_ENCODER_OFFSET = -0.6;
+    public static final double BORE_ENCODER_OFFSET = 0.562 - .047;
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
     // Profiled PID controller gains
-    public static final double kP = 30.1;
+    public static final double kP = 34.1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
     public static final double kMaxVelocityRadiansPerSecond = 5.45;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 5.9;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 6.4;
 
     public static final double kSlowMaxVelocityRadiansPerSecond = 4.2;
     public static final double kSlowMaxAccelerationRadiansPerSecondSquared = 4.0;
@@ -279,29 +281,29 @@ public final class Constants {
 
     public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(100);
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(28.5);
-    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(63);
+    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(49);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
         Rotation2d.fromDegrees(170); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
-        Rotation2d.fromDegrees(240); // 170 for parallel
+        Rotation2d.fromDegrees(244); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(272);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(280);
     public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
   }
-
+  // balls
   public static final class Telescope {
     public static final double P = 11.5;
     public static final double I = 0.0;
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.15;
-    public static final double TELESCOPE_SETPOINT_ZERO = 0.15;
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.165;
+    public static final double TELESCOPE_SETPOINT_ZERO = 0.161;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
-    public static final double TELESCOPE_SETPOINT_MID = 0.15;
+    public static final double TELESCOPE_SETPOINT_MID = 0.161;
     public static final double TELESCOPE_SETPOINT_HIGH = 1.11;
 
     // FF constants
@@ -312,15 +314,18 @@ public final class Constants {
   }
 
   public static final class Wrist {
-    public static final double P = 15.1;
+    public static final double P = 17.2;
     public static final double I = 0.1;
     public static final double D = 0.0;
     public static final int WristMotor = 13;
 
+    public static final double WristMaxVelocity = 9.8;
+    public static final double WristMaxAccel = 17;
+
     public static final Rotation2d WRIST_STOP_MAX = new Rotation2d();
     public static final Rotation2d WRIST_STOP_MIN = new Rotation2d();
 
-    public static final double boreEncoderOffset = -0.844;
+    public static final double boreEncoderOffset = -0.35;
     // -0.507
 
     public static final double kS = 0.0;
@@ -329,7 +334,7 @@ public final class Constants {
     public static final double kA = 0.0;
 
     public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(1);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(4);
     public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(90);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
@@ -353,6 +358,9 @@ public final class Constants {
 
   public static final class Hood {
     public static final int hoodMotor = 14;
+
+    public static final double HoodMaxVelocity = 10;
+    public static final double HoodMaxAccel = 13.5;
 
     public static final double kP = 10.0;
     public static final double kI = 0.0;

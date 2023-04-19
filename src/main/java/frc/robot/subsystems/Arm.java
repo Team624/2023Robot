@@ -43,9 +43,15 @@ public class Arm extends ProfiledPIDSubsystem {
   private double voltage = 0;
   public boolean recentFunnel = false;
 
-  private static final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(Constants.Arm.kMaxVelocityRadiansPerSecond, Constants.Arm.kMaxAccelerationRadiansPerSecondSquared);
+  private static final TrapezoidProfile.Constraints normalConstraints =
+      new TrapezoidProfile.Constraints(
+          Constants.Arm.kMaxVelocityRadiansPerSecond,
+          Constants.Arm.kMaxAccelerationRadiansPerSecondSquared);
 
-  private static final TrapezoidProfile.Constraints slowConstraints = new TrapezoidProfile.Constraints(Constants.Arm.kSlowMaxVelocityRadiansPerSecond, Constants.Arm.kSlowMaxAccelerationRadiansPerSecondSquared);
+  private static final TrapezoidProfile.Constraints slowConstraints =
+      new TrapezoidProfile.Constraints(
+          Constants.Arm.kSlowMaxVelocityRadiansPerSecond,
+          Constants.Arm.kSlowMaxAccelerationRadiansPerSecondSquared);
 
   private GenericEntry enabledEntry;
   private GenericEntry voltageEntry;
@@ -69,10 +75,7 @@ public class Arm extends ProfiledPIDSubsystem {
   public Arm() {
     super(
         new ProfiledPIDController(
-            Constants.Arm.kP,
-            Constants.Arm.kI,
-            Constants.Arm.kD,
-            normalConstraints));
+            Constants.Arm.kP, Constants.Arm.kI, Constants.Arm.kD, normalConstraints));
 
     getController().setTolerance(Units.degreesToRadians(3));
 
@@ -80,6 +83,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorRight.setIdleMode(IdleMode.kBrake);
     armMotorRight.setCANTimeout(500);
     armMotorRight.setSmartCurrentLimit(30);
+    armMotorRight.setInverted(false);
+    armMotorRight.burnFlash();
 
     armMotorLeft = new CANSparkMax(Constants.Arm.armMotorLeft, MotorType.kBrushless);
     armMotorLeft.setIdleMode(IdleMode.kBrake);
@@ -87,6 +92,8 @@ public class Arm extends ProfiledPIDSubsystem {
     armMotorLeft.setSmartCurrentLimit(30);
 
     armMotorLeft.setInverted(true);
+
+    armMotorLeft.burnFlash();
 
     boreEncoder = new DutyCycleEncoder(Constants.Arm.BORE_ENCODER_PORT);
 
@@ -132,10 +139,11 @@ public class Arm extends ProfiledPIDSubsystem {
 
   public Command resetRotationsCommand() {
     return this.runOnce(
-        () -> {
-          this.rotations = 0;
-          this.setGoal(getAbsoluteRotation());
-        }).ignoringDisable(true);
+            () -> {
+              this.rotations = 0;
+              this.setGoal(getAbsoluteRotation());
+            })
+        .ignoringDisable(true);
   }
 
   @Override
@@ -144,7 +152,8 @@ public class Arm extends ProfiledPIDSubsystem {
 
     enabledEntry.setBoolean(m_enabled);
     positionEntry.setDouble(getAbsoluteRotation().getDegrees());
-    setpointEntry.setDouble(Units.radiansToDegrees(getController().getSetpoint().position));
+    setpointEntry.setDouble(getBore());
+    // setpointEntry.setDouble(Units.radiansToDegrees(getController().getSetpoint().position));
     goalEntry.setDouble(Units.radiansToDegrees(getController().getGoal().position));
     currentLeftEntry.setDouble(armMotorLeft.getOutputCurrent());
     currentRightEntry.setDouble(armMotorRight.getOutputCurrent());

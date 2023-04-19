@@ -41,6 +41,7 @@ import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
+import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
 import frc.robot.commands.SideConeSequences.Score.SideScoringSequence;
 import frc.robot.commands.Telescope.ControlTelescope;
 import frc.robot.commands.Telescope.IdleTelescope;
@@ -86,6 +87,9 @@ public class RobotContainer {
   /* Operator Controls */
 
   /* LEDs */
+
+  private final JoystickButton fastArm=
+      new JoystickButton(m_controller, XboxController.Button.kA.value);
 
   private final JoystickButton toggleMode =
       new JoystickButton(m_controller, XboxController.Button.kY.value);
@@ -135,6 +139,7 @@ public class RobotContainer {
   private final POVButton setBotMid = new POVButton(m_controller, 90);
 
   private final POVButton setBotIntake = new POVButton(m_controller, 180);
+  private final POVButton setBotIntake2 = new POVButton(m_controller, 225);
 
   private final POVButton setBotInside = new POVButton(m_controller, 270);
 
@@ -223,6 +228,8 @@ public class RobotContainer {
               Map.entry(
                   CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_High_Setpoint))),
           this::select);
+
+
   private Command m_OperatorUpDpadConeModify =
       new SelectCommand(
           Map.ofEntries(
@@ -256,6 +263,13 @@ public class RobotContainer {
           this::select);
 
   private Command m_OperatorIntakeDpad =
+      new SelectCommand(
+          Map.ofEntries(
+              Map.entry(CommandSelector.ARM, new SideIntakeSequence(m_arm, m_telescope, m_wrist)),
+              Map.entry(
+                  CommandSelector.HOOD, new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint))),
+          this::select);
+          private Command m_OperatorIntakeDpad2 =
       new SelectCommand(
           Map.ofEntries(
               Map.entry(CommandSelector.ARM, new SideIntakeSequence(m_arm, m_telescope, m_wrist)),
@@ -353,7 +367,7 @@ public class RobotContainer {
             m_limelightBottom,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
             true));
-    // creepMode.whileTrue(new Balance(m_drivetrain, true));
+    // creepMode.whileTrue(new Balance2(m_drivetrain, true));
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
 
@@ -443,6 +457,10 @@ public class RobotContainer {
         new ParallelCommandGroup(
             new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad));
 
+    setBotIntake2.whileTrue(
+        new ParallelCommandGroup(
+            new SetTelescopeScore(m_arm, m_telescope, coneMode, false), m_OperatorIntakeDpad2));
+
     setBotIntake
         .and(coneModify)
         .whileTrue(
@@ -450,6 +468,11 @@ public class RobotContainer {
                 new SetTelescopeScore(m_arm, m_telescope, coneMode, false),
                 new UprightIntakeSequence(m_arm, m_telescope, m_wrist)));
 
+    setBotHigh.and(fastArm).whileTrue(new ParallelCommandGroup(
+        new SetTelescopeScore(m_arm, m_telescope, coneMode, true), new SideScoringParallel(m_arm, m_telescope, m_wrist, 1, false)));
+        
+    setBotHigh.and(fastArm).and(coneModify).whileTrue(new ParallelCommandGroup(
+        new SetTelescopeScore(m_arm, m_telescope, coneMode, true), new SideScoringParallel(m_arm, m_telescope, m_wrist, 1, true)));
     setBotInside.whileTrue(m_OperatorInsideButton);
 
     hybridSpit.whileTrue(m_OperatorSpitout);

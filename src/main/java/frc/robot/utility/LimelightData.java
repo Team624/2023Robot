@@ -72,6 +72,8 @@ public class LimelightData {
   }
 
   public static Pose3d modifiedPose3d(double[] array) {
+    if (array.length < 6) return new Pose3d();
+
     array[1] = -(8.0137 - array[1]);
     return new Pose3d(
         new Translation3d(array[0], array[1], array[2]),

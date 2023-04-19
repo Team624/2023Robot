@@ -29,7 +29,6 @@ import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Shooter.IdleShooter;
 import frc.robot.commands.Shooter.SetShooter;
 import frc.robot.commands.Shooter.ShooterScore;
-import frc.robot.commands.SideConeSequences.Intake.SideIntakeArmWrist;
 import frc.robot.commands.SideConeSequences.Intake.SideIntakeSequence;
 import frc.robot.commands.SideConeSequences.Score.SideScoringArmWrist;
 import frc.robot.commands.SideConeSequences.Score.SideScoringParallel;
@@ -38,7 +37,6 @@ import frc.robot.commands.Telescope.SetTelescope;
 import frc.robot.commands.Telescope.SetTelescopeScore;
 import frc.robot.commands.UprightConeSequences.Intake.UprightIntakeSequence;
 import frc.robot.commands.UprightConeSequences.Score.SetpointUprightScore;
-import frc.robot.commands.Wrist.SetWrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
@@ -120,18 +118,13 @@ public class AutonManager extends CommandBase {
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
     SmartDashboard.getEntry("/auto/arm/state").setString("none");
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
-    SmartDashboard.getEntry("/auto/shooter/set").setString("idle");
     SmartDashboard.getEntry("/auto/vision/state").setBoolean(false);
-    SmartDashboard.getEntry("/auto/vision/set").setString("none");
 
     Command visionCommand = CommandScheduler.getInstance().requiring(limelightBottom);
     if (visionCommand != null) visionCommand.cancel();
 
     Command shooterCommand = CommandScheduler.getInstance().requiring(hood);
     if (shooterCommand != null) shooterCommand.cancel();
-
-    prevShooterState = SmartDashboard.getEntry("/auto/shooter/set").getString("idle");
-    prevVisionState = SmartDashboard.getEntry("/auto/vision/set").getString("none");
 
     SmartDashboard.getEntry("/auto/balance/state").setBoolean(false);
 
@@ -163,9 +156,7 @@ public class AutonManager extends CommandBase {
     SmartDashboard.getEntry("/pathTable/status/finishedPath").setString("false -1");
     SmartDashboard.getEntry("/auto/arm/state").setString("none");
     SmartDashboard.getEntry("/auto/shooter/state").setString("idle");
-    SmartDashboard.getEntry("/auto/shooter/set").setString("idle");
     SmartDashboard.getEntry("/auto/vision/state").setBoolean(false);
-    SmartDashboard.getEntry("/auto/vision/set").setString("none");
 
     System.out.println("Auton ended!");
 
@@ -263,14 +254,15 @@ public class AutonManager extends CommandBase {
     switch (state) {
       case "tipped_intake":
         this.currentArmCommand =
-          new ParallelCommandGroup(
-            new SetTelescopeScore(arm, telescope, true, false).alongWith(new ReverseCone(intake).withTimeout(0.43).andThen(new RunIntake(intake))),
-            new SideIntakeSequence(arm, telescope, wrist)
-                .andThen(
-                    () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("tipped_intake");
-                    })
-                );
+            new ParallelCommandGroup(
+                new SetTelescopeScore(arm, telescope, true, false)
+                    .alongWith(
+                        new ReverseCone(intake).withTimeout(0.43).andThen(new RunIntake(intake))),
+                new SideIntakeSequence(arm, telescope, wrist)
+                    .andThen(
+                        () -> {
+                          SmartDashboard.getEntry("/auto/arm/state").setString("tipped_intake");
+                        }));
         break;
 
       case "standing_intake":
@@ -322,16 +314,15 @@ public class AutonManager extends CommandBase {
 
       case "pre_score_high":
         this.currentArmCommand =
-          new ParallelCommandGroup(
-            new SetTelescopeScore(arm, telescope, true, true),
-            new SequentialCommandGroup(
-                    new SideScoringArmWrist(arm, wrist, 1, true),
-                    new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_HIGH))
-                .andThen(
-                    () -> {
-                      SmartDashboard.getEntry("/auto/arm/state").setString("pre_score_high");
-                    })
-          );
+            new ParallelCommandGroup(
+                new SetTelescopeScore(arm, telescope, true, true),
+                new SequentialCommandGroup(
+                        new SideScoringArmWrist(arm, wrist, 1, true),
+                        new SetTelescope(telescope, Constants.Telescope.TELESCOPE_SETPOINT_HIGH))
+                    .andThen(
+                        () -> {
+                          SmartDashboard.getEntry("/auto/arm/state").setString("pre_score_high");
+                        }));
         break;
 
       case "pre_score_mid":
