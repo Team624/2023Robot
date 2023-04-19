@@ -79,7 +79,7 @@ public class Shooter extends SubsystemBase {
     shooterPidControllerLeft.setD(Constants.Shooter.D);
     shooterPidControllerLeft.setIZone(Constants.Shooter.Izone);
 
-    shooterMotorRight.follow(shooterMotorLeft, true);
+    // shooterMotorRight.follow(shooterMotorLeft, true);
   }
 
   @Override
@@ -111,15 +111,17 @@ public class Shooter extends SubsystemBase {
 
   public void setPercentOutput(double speed) {
     shooterMotorLeft.set(speed);
+    shooterMotorRight.set(speed);
   }
 
   public void setShooterVoltage(double voltage) {
     shooterMotorLeft.setVoltage(voltage);
-    // shooterMotorRight.setVoltage(voltage);
+    shooterMotorRight.setVoltage(voltage);
   }
 
   public void stopShooter() {
     shooterMotorLeft.stopMotor();
+    shooterMotorRight.stopMotor();
   }
 
   public void addPercentOutput() {

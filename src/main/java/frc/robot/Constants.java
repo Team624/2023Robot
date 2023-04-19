@@ -261,7 +261,7 @@ public final class Constants {
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 
     // Profiled PID controller gains
-    public static final double kP = 30.1;
+    public static final double kP = 34.1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
