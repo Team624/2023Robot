@@ -93,7 +93,7 @@ public class FollowPath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= path.getSeconds() && (controller.atReference() || !path.getStopAtEnd()));
+    return (timer.get() >= path.getSeconds() && controller.atReference());
   }
 
   @Override

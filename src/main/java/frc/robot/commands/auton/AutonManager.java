@@ -246,9 +246,6 @@ public class AutonManager extends CommandBase {
 
     prevArmState = state;
 
-    boolean slowMode = SmartDashboard.getEntry("/auto/arm/slow").getBoolean(true);
-    arm.setSlowMode(slowMode);
-
     if (state.equals("none")) return;
 
     switch (state) {
@@ -382,12 +379,17 @@ public class AutonManager extends CommandBase {
 
   private void updateNTShooter() {
     String state = SmartDashboard.getEntry("/auto/shooter/set").getString("idle");
+
     if (state.equals(prevShooterState)) return;
 
     prevShooterState = state;
 
     if (currentShooterCommand != null && currentShooterCommand.isScheduled())
       currentShooterCommand.cancel();
+
+    boolean slowMode = SmartDashboard.getEntry("/auto/arm/slow").getBoolean(true);
+
+    arm.setSlowMode(slowMode);
 
     switch (state) {
       case "prime_high_over_bump":
