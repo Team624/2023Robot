@@ -81,6 +81,7 @@ public class FollowPath extends CommandBase {
         controller.calculate(currentPose, state.pose, state.velocity, state.wantedHeading);
 
     drivetrain.drive(chassisSpeeds, false, false);
+    System.out.println("velocity: "+state.velocity);
   }
 
   // Called once the command ends or is interrupted.

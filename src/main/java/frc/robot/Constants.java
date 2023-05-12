@@ -215,8 +215,8 @@ public final class Constants {
         Math.pow(DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY, 1.5); // 2.0
 
     // Rotational tolerance for autonomous paths
-    public static final double AUTONOMOUS_X_TOLERANCE = 0.25;
-    public static final double AUTONOMOUS_Y_TOLERANCE = 0.25;
+    public static final double AUTONOMOUS_X_TOLERANCE = 0.28;
+    public static final double AUTONOMOUS_Y_TOLERANCE = 0.28;
     public static final Rotation2d AUTONOMOUS_ROTATION_TOLERANCE = Rotation2d.fromRadians(0.3);
 
     // TODO: Tune this
@@ -279,9 +279,9 @@ public final class Constants {
 
     // Setpoints
 
-    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(100);
-    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(28.5);
-    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(49);
+    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(102);
+    public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(30.5);
+    public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(51);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
         Rotation2d.fromDegrees(170); // 170 for parallel
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE =
@@ -289,8 +289,8 @@ public final class Constants {
     public static final Rotation2d ARM_SETPOINT_UPRIGHT_CONE_INTAKE = Rotation2d.fromDegrees(49.3);
     public static final Rotation2d ARM_SETPOINT_SIDE_CONE_INTAKE =
         Rotation2d.fromDegrees(41.26); // 42.8
-    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(280);
-    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(259);
+    public static final Rotation2d ARM_SETPOINT_MID = Rotation2d.fromDegrees(282);
+    public static final Rotation2d ARM_SETPOINT_HIGH = Rotation2d.fromDegrees(264);
   }
   // balls
   public static final class Telescope {
