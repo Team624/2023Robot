@@ -25,6 +25,7 @@ import frc.robot.commands.DoubleSubstation.*;
 import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
 import frc.robot.commands.Drivetrain.GoalPose;
+import frc.robot.commands.Drivetrain.LockedRotationSwerveDrive;
 import frc.robot.commands.Drivetrain.ReflectiveAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
@@ -370,7 +371,11 @@ public class RobotContainer {
 
     alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
 
-    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 1, 3));
+    alignTag2.whileTrue(new LockedRotationSwerveDrive(m_drivetrain, 
+    () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
+    () -> -modifyAxis(d_controller.getRawAxis(strafeAxis)),
+     0.0, 
+    () -> robotCentric.getAsBoolean()));
 
     alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 2, 3));
 

@@ -207,6 +207,7 @@ public final class Constants {
 
     // Profiled PID Controller for rotation
     public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.1; // 0.4
+    public static final double DRIVE_LOCKED_ROTATION_KP = 7.0; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
@@ -221,7 +222,7 @@ public final class Constants {
 
     // TODO: Tune this
     public static final double AUTO_BALANCE_SPEED = 0.35;
-    public static final double AUTO_BALANCE_GROUND_SPEED = 1.1;
+    public static final double AUTO_BALANCE_GROUND_SPEED = 1.5;
     public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 14;
     public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 4.5;
     public static final double AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD = 4.0;
@@ -303,8 +304,8 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.165;
-    public static final double TELESCOPE_SETPOINT_ZERO = 0.161;
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.2;
+    public static final double TELESCOPE_SETPOINT_ZERO = 0.2;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
     public static final double TELESCOPE_SETPOINT_MID = 0.161;
