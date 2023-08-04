@@ -258,7 +258,7 @@ public final class Constants {
 
     // Absolute encoder offset
     // public static final double BORE_ENCODER_OFFSET = 0.562 - .09;
-    public static final double BORE_ENCODER_OFFSET = 0.446733011168325 - 0.85;
+    public static final double BORE_ENCODER_OFFSET = 0.446733011168325 - 0.93;
     // public static final double BORE_ENCODER_OFFSET = 0.572094689302367;
     // public static final double BORE_ENCODER_OFFSET = 0.0;
     
