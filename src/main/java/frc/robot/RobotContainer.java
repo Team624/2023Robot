@@ -343,7 +343,6 @@ public class RobotContainer {
             m_limelightBottom,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
             true));
-
     /** Arm */
     manual.and(armMove).whileTrue(m_LeftJoystickCommand);
     manual.and(armMove2).whileTrue(m_LeftJoystickCommand);

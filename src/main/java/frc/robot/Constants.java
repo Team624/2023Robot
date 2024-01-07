@@ -129,7 +129,7 @@ public final class Constants {
 
       public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(136.142);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(136.0546875);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -147,7 +147,7 @@ public final class Constants {
 
       public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(171.032);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(172.79296875);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -165,7 +165,7 @@ public final class Constants {
 
       public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
 
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(353.76);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(352.353515625);
 
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(
@@ -207,6 +207,7 @@ public final class Constants {
 
     // Profiled PID Controller for rotation
     public static final double DRIVE_CONTROLLER_ROTATION_KP = 2.1; // 0.4
+    public static final double DRIVE_LOCKED_ROTATION_KP = 7.0; // 0.4
     public static final double DRIVE_CONTROLLER_ROTATION_KI = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_KD = 0.0;
     public static final double DRIVE_CONTROLLER_ROTATION_MAX_VELOCITY =
@@ -221,7 +222,7 @@ public final class Constants {
 
     // TODO: Tune this
     public static final double AUTO_BALANCE_SPEED = 0.35;
-    public static final double AUTO_BALANCE_GROUND_SPEED = 1.1;
+    public static final double AUTO_BALANCE_GROUND_SPEED = 1.5;
     public static final double AUTO_BALANCE_GROUND_ANGLE_THRESHOLD = 14;
     public static final double AUTO_BALANCE_VELOCITY_THRESHOLD = 4.5;
     public static final double AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD = 4.0;
@@ -257,7 +258,7 @@ public final class Constants {
 
     // Absolute encoder offset
     // public static final double BORE_ENCODER_OFFSET = 0.562 - .09;
-    public static final double BORE_ENCODER_OFFSET = 0.446733011168325 - 0.85;
+    public static final double BORE_ENCODER_OFFSET = 0.446733011168325 - 0.93;
     // public static final double BORE_ENCODER_OFFSET = 0.572094689302367;
     // public static final double BORE_ENCODER_OFFSET = 0.0;
 
@@ -282,7 +283,7 @@ public final class Constants {
 
     // Setpoints
 
-    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(102);
+    public static final Rotation2d ARM_SETPOINT_DOUBLE_SUBSTATION = Rotation2d.fromDegrees(98);
     public static final Rotation2d ARM_SETPOINT_BOT = Rotation2d.fromDegrees(30.5);
     public static final Rotation2d ARM_SETPOINT_PREINTAKE = Rotation2d.fromDegrees(51);
     public static final Rotation2d ARM_SETPOINT_PREHIGH_SCORE_AUTON =
@@ -302,8 +303,8 @@ public final class Constants {
     public static final double D = 0;
     public static final int telescopemotor = 5;
 
-    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.165;
-    public static final double TELESCOPE_SETPOINT_ZERO = 0.161;
+    public static final double TELESCOPE_SETPOINT_DOUBLE_SUBSTATION = 0.2;
+    public static final double TELESCOPE_SETPOINT_ZERO = 0.2;
     public static final double TELESCOPE_SETPOINT_SIDE_CONE_INTAKE = 0.96; // 1.03
     public static final double TELESCOPE_SETPOINT_UPRIGHT_CONE_INTAKE = 0.79;
     public static final double TELESCOPE_SETPOINT_MID = 0.161;
@@ -336,8 +337,8 @@ public final class Constants {
     public static final double kV = 0.0;
     public static final double kA = 0.0;
 
-    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(180);
-    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(4);
+    public static final Rotation2d wrist_upright_cone_intake = Rotation2d.fromDegrees(170);
+    public static final Rotation2d wrist_zero = Rotation2d.fromDegrees(-7);
     public static final Rotation2d wrist_cone_intake = Rotation2d.fromDegrees(90);
     public static final Rotation2d wrist_cone_leftScore = Rotation2d.fromDegrees(90);
   }
