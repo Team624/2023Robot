@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.DisabledLimelight;
-import frc.robot.commands.Drivetrain.Balance2;
+import frc.robot.commands.Drivetrain.Balance;
 import frc.robot.commands.Drivetrain.FollowPath;
 import frc.robot.commands.Drivetrain.ReflectiveAlign;
 import frc.robot.commands.Hood.SetHood;
@@ -230,7 +230,7 @@ public class AutonManager extends CommandBase {
 
     if (!startBalance) return false;
 
-    currentBalanceCommand = new Balance2(drivetrain, reversed);
+    currentBalanceCommand = new Balance(drivetrain, reversed);
     currentBalanceCommand.schedule();
 
     System.out.println("Starting balance!!!");

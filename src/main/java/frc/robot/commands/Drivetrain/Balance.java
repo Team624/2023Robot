@@ -1,6 +1,9 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands.Drivetrain;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,105 +12,78 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class Balance extends CommandBase {
-  private final Drivetrain m_drivetrain;
+  /** Creates a new Balance2. */
+  private final Drivetrain m_Drivetrain;
 
-  private double prevPitch;
-  private double prevRoll;
-
-  private double prevTimestamp;
-
-  private double angleDegrees;
-
-  private boolean offGround;
-
+  private double balanaceEffort;
+  private boolean onGround;
   private boolean reversed;
+  private Timer timer;
 
-  private Timer timer = new Timer();
+  private double prevAngle;
+
+  private double kP;
 
   public Balance(Drivetrain drivetrain, boolean reversed) {
-    this.m_drivetrain = drivetrain;
-
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.m_Drivetrain = drivetrain;
     this.reversed = reversed;
-
     addRequirements(drivetrain);
   }
 
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    prevPitch = m_drivetrain.getPitch();
-    prevRoll = m_drivetrain.getRoll();
-    prevTimestamp = Timer.getFPGATimestamp();
-
-    offGround = false;
+    onGround = true;
+    timer = new Timer();
     timer.start();
+
+    kP = Constants.Autonomous.AUTO_BALANCE_P_START;
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d currentYaw = m_drivetrain.getPose().getRotation();
-    Rotation2d currentPitch = Rotation2d.fromDegrees(m_drivetrain.getPitch());
-    Rotation2d currentRoll = Rotation2d.fromDegrees(m_drivetrain.getRoll());
-
-    double pitchDegreesPerSec = m_drivetrain.getPitchVelocity();
-    double rollDegreesPerSec = m_drivetrain.getRollVelocity();
-
-    // Calculate angle and velocity of the charger
-    angleDegrees =
-        currentYaw.getCos() * m_drivetrain.getPitch()
-            + currentYaw.getSin() * m_drivetrain.getRoll();
-
-    double angleVelocityDegreesPerSec =
-        currentYaw.getCos() * pitchDegreesPerSec + currentYaw.getSin() * rollDegreesPerSec;
-
-    System.out.println("Velocity: " + angleVelocityDegreesPerSec);
-
-    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD
-        && Math.abs(angleVelocityDegreesPerSec)
-            <= Constants.Autonomous.AUTO_BALANCE_GROUND_VELOCITY_THRESHOLD) {
-      offGround = true;
-      // System.out.println("off ground" + angleDegrees);
+    System.out.println(m_Drivetrain.getPitch());
+    double angleDegrees = m_Drivetrain.getPitch();
+    if (Math.abs(angleDegrees) >= Constants.Autonomous.AUTO_BALANCE_GROUND_ANGLE_THRESHOLD) {
+      onGround = false;
     }
 
-    if (!offGround) {
-      m_drivetrain.drive(
+    if (onGround) {
+      m_Drivetrain.drive(
           new ChassisSpeeds(
               Constants.Autonomous.AUTO_BALANCE_GROUND_SPEED * (reversed ? -1 : 1), 0, 0),
           true,
           false);
-      return;
-    }
 
-    // Check thresholds
-    boolean shouldStop =
-        (angleDegrees < 0.0
-                && angleVelocityDegreesPerSec
-                    > Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD)
-            || (angleDegrees > 0.0
-                && angleVelocityDegreesPerSec
-                    < -Constants.Autonomous.AUTO_BALANCE_VELOCITY_THRESHOLD);
-
-    if (shouldStop) {
-      m_drivetrain.stop();
     } else {
-      m_drivetrain.drive(
-          new ChassisSpeeds(
-              Constants.Autonomous.AUTO_BALANCE_SPEED * (angleDegrees > 0.0 ? -1 : 1), 0.0, 0.0),
-          true,
-          false);
+      System.out.println("ON CHARGER");
+      if ((prevAngle < 0 && m_Drivetrain.getPitch() > 0)
+          || (prevAngle > 0 && m_Drivetrain.getPitch() < 0)) {
+        kP *= Constants.Autonomous.AUTO_BALANCE_P_MULTIPLIER;
+        System.out.println("Reducing p " + kP);
+      }
+
+      balanaceEffort = (Constants.Autonomous.balancedAngle - m_Drivetrain.getPitch()) * kP;
+      m_Drivetrain.drive(new ChassisSpeeds(balanaceEffort, 0, 0), false, true);
     }
+
+    prevAngle = m_Drivetrain.getPitch();
   }
 
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.stopWithX();
+    m_Drivetrain.stopWithX();
     setNTState(true);
   }
 
+  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (offGround
-        && Math.abs(angleDegrees) < Constants.Autonomous.AUTO_BALANCE_POSITION_THRESHOLD) {
-      return timer.get() > 0;
+    if (!onGround && Math.abs(m_Drivetrain.getPitch()) < 2.5) {
+      return timer.get() > 0.1;
     } else {
       timer.reset();
       return false;

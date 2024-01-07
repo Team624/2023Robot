@@ -260,7 +260,6 @@ public final class Constants {
     public static final double BORE_ENCODER_OFFSET = 0.446733011168325 - 0.85;
     // public static final double BORE_ENCODER_OFFSET = 0.572094689302367;
     // public static final double BORE_ENCODER_OFFSET = 0.0;
-    
 
     public static final Rotation2d ESTOP_TOLERANCE = Rotation2d.fromDegrees(10);
 

@@ -22,9 +22,7 @@ import frc.robot.commands.Arm.ControlArm;
 import frc.robot.commands.Arm.IdleArm;
 import frc.robot.commands.Arm.SetArm;
 import frc.robot.commands.DoubleSubstation.*;
-import frc.robot.commands.Drivetrain.ConeAlign;
 import frc.robot.commands.Drivetrain.DisabledSwerve;
-import frc.robot.commands.Drivetrain.GoalPose;
 import frc.robot.commands.Drivetrain.ReflectiveAlign;
 import frc.robot.commands.Drivetrain.SwerveDrive;
 import frc.robot.commands.Drivetrain.UpdatePose;
@@ -154,23 +152,10 @@ public class RobotContainer {
   private final JoystickButton zeroGyro =
       new JoystickButton(d_controller, XboxController.Button.kA.value);
 
-  private final JoystickButton alignTag =
-      new JoystickButton(d_controller, XboxController.Button.kX.value);
-
-  private final JoystickButton alignTag2 =
-      new JoystickButton(d_controller, XboxController.Button.kY.value);
-
-  private final JoystickButton alignTag3 =
-      new JoystickButton(d_controller, XboxController.Button.kB.value);
-
-  private final POVButton left = new POVButton(d_controller, 270);
-
-  private final POVButton right = new POVButton(d_controller, 90);
-
   private final JoystickButton robotCentric =
       new JoystickButton(d_controller, XboxController.Button.kLeftBumper.value);
 
-  private final JoystickButton creepMode =
+  private final JoystickButton visionAlign =
       new JoystickButton(d_controller, XboxController.Button.kRightBumper.value);
 
   /* Subsystems */
@@ -350,47 +335,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-
     zeroGyro.onTrue(new InstantCommand(() -> m_drivetrain.zeroGyroscope()));
 
-    // creepMode.onTrue(new InstantCommand(m_drivetrain::yesCreepMode));
-    // creepMode.onFalse(new InstantCommand(m_drivetrain::noCreepMode));
-
-    creepMode.whileTrue(
+    visionAlign.whileTrue(
         new ReflectiveAlign(
             m_drivetrain,
             m_limelightBottom,
             () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
             true));
-    // creepMode.whileTrue(new Balance2(m_drivetrain, true));
-
-    alignTag.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 0, 3));
-
-    alignTag2.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 1, 3));
-
-    alignTag3.whileTrue(new GoalPose(m_drivetrain, m_limelightTop, 2, 3));
-
-    left.whileTrue(
-        new SequentialCommandGroup(
-            new ConeAlign(m_drivetrain, false, m_limelightTop),
-            new ReflectiveAlign(
-                m_drivetrain,
-                m_limelightBottom,
-                () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-                true)));
-
-    right.whileTrue(
-        new SequentialCommandGroup(
-            new ConeAlign(m_drivetrain, true, m_limelightTop),
-            new ReflectiveAlign(
-                m_drivetrain,
-                m_limelightBottom,
-                () -> -modifyAxis(d_controller.getRawAxis(translationAxis)),
-                true)));
 
     /** Arm */
     manual.and(armMove).whileTrue(m_LeftJoystickCommand);
@@ -403,34 +355,6 @@ public class RobotContainer {
     /** Wrist */
     manual.and(wristMove).whileTrue(m_WristCommand);
     manual.and(wristMove2).whileTrue(m_WristCommand);
-
-    /** ARM TESTING */
-
-    // setBotHigh.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_HIGH));
-    // setBotMid.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_MID));
-    // setBotIntake.whileTrue(new SetArm(m_arm, Constants.Arm.ARM_SETPOINT_SIDE_CONE_INTAKE));
-
-    /** WRIST TESTING */
-    // setBotHigh.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_upright_cone_intake));
-    // setBotMid.whileTrue(new SetWrist(m_wrist, Constants.Wrist.wrist_cone_intake));
-    // setBotIntake.whileTrue(new SetWrist(m_wrist,
-    // Constants.Wrist.wrist_zero));
-
-    /** TELESCOPE TESTING */
-
-    // setBotHigh.whileTrue(new SetTelescope(m_telescope,
-    // Constants.Telescope.TELESCOPE_SETPOINT_HIGH));
-    // setBotMid.whileTrue(new SetTelescope(m_telescope,
-    // Constants.Telescope.TELESCOPE_SETPOINT_MID));
-    // setBotIntake.whileTrue(new SetTelescope(m_telescope,
-    // Constants.Telescope.TELESCOPE_SETPOINT_SIDE_CONE_INTAKE));
-
-    /** Hood TESTING */
-    // setBotHigh.whileTrue(new SetHood(m_hood, Constants.Hood.Hood_High_Setpoint));
-    // setBotMid.whileTrue(new SetHood(m_hood, Constants.Hood.Hood_Mid_Setpoint));
-    // setBotIntake.whileTrue(new SetHood(m_hood, Constants.Hood.Hood_Intake_Setpoint));
-
-    // Real stuff
 
     setBotHigh.whileTrue(
         new ParallelCommandGroup(
